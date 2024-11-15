@@ -1,5 +1,5 @@
 //
-//  AuthentificationtokenModel.swift
+//  Authentificationtoken.swift
 //  client
 //
 //  Created by Emircan Duman on 06.11.24.

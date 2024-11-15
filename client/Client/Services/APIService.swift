@@ -13,7 +13,7 @@ class APIService {
     
     private init(){}
     
-//    func fetchPinPoints(complete: @escaping (Result<[PinPoint], Error>) -> Void) {
+//    func getPinPoints(complete: @escaping (Result<[PinPoint], Error>) -> Void) {
 //
 //    }
 //    

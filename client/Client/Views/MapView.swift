@@ -10,8 +10,11 @@ import MapKit
 
 struct MapView: View {
     @State private var mapViewModel = MapViewModel()
-    @State private var locationManager = LocationManager.shared
     @State private var position = MapCameraPosition.userLocation(followsHeading: true, fallback: .automatic)
+    @State private var showAddPinPointSheet = false
+    @State private var screenCoord: CGPoint?
+    @State private var reader: MapProxy?
+    
     
     var body: some View {
         VStack {
@@ -34,17 +37,23 @@ struct MapView: View {
                     MapScaleView()
                 }
                 .onTapGesture { screenCoord in
-                    handleTapGesture(screenCoord: screenCoord, reader: reader)
+                    self.screenCoord = screenCoord
+                    self.reader = reader
+                    showAddPinPointSheet = true
                 }
             }
         }
+        .sheet(isPresented: $showAddPinPointSheet) {
+            let pinLocation = getLocation(reader: reader, screenCoord: screenCoord)
+            AddPinPointSheetView(location: pinLocation)
+                .presentationDragIndicator(.visible)
+        }
     }
     
-    func handleTapGesture(screenCoord: CGPoint, reader: MapProxy) {
-        if let pinLocation = reader.convert(screenCoord, from: .local) {
-            print(pinLocation)
-            mapViewModel.addMockPinPoint(pinLocation)
-        }
+    func getLocation(reader: MapProxy?, screenCoord: CGPoint?) -> CLLocationCoordinate2D? {
+        guard let reader = reader else { return nil}
+        guard let screenCoord = screenCoord else { return nil}
+        return reader.convert(screenCoord, from: .local)
     }
 }
 

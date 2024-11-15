@@ -286,6 +286,7 @@
 				DEVELOPMENT_TEAM = 7H3X64CV7G;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Diese App benötigt Zugriff auf die Kamera, um Fotos aufzunehmen.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Wir benötigen Ihren Standort, um ihn auf der Karte zu verfolgen";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Wir benötigen Ihren Standort, um ihn auf der Karte zu verfolgen";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Wir benötigen Ihren Standort, um ihn auf der Karte anzuzeigen";
@@ -319,6 +320,7 @@
 				DEVELOPMENT_TEAM = 7H3X64CV7G;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Diese App benötigt Zugriff auf die Kamera, um Fotos aufzunehmen.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Wir benötigen Ihren Standort, um ihn auf der Karte zu verfolgen";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Wir benötigen Ihren Standort, um ihn auf der Karte zu verfolgen";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Wir benötigen Ihren Standort, um ihn auf der Karte anzuzeigen";

@@ -1,5 +1,5 @@
 //
-//  UserModel.swift
+//  User.swift
 //  client
 //
 //  Created by Emircan Duman on 06.11.24.
@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-class UserModel: Codable, Identifiable {
+class User: Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
         case email
         case tokens
@@ -17,17 +17,16 @@ class UserModel: Codable, Identifiable {
         case isLoggedIn
     }
     @Attribute(.unique) var email: String
-    @Relationship(deleteRule: .cascade) var tokens: [AuthenticationTokenModel] = []
-    @Relationship(deleteRule: .cascade, inverse: \PinPointModel.user) var geoCoordinate: [PinPointModel] = []
-    @Relationship(deleteRule: .cascade, inverse: \CommentModel.user) var comments: [CommentModel] = []
-    @Relationship(deleteRule: .cascade, inverse: \LikeModel.user) var likes: [LikeModel] = []
+    @Relationship(deleteRule: .cascade) var tokens: [AuthenticationToken] = []
+    @Relationship(deleteRule: .cascade, inverse: \PinPoint.user) var geoCoordinate: [PinPoint] = []
+    @Relationship(deleteRule: .cascade, inverse: \Comment.user) var comments: [Comment] = []
+    @Relationship(deleteRule: .cascade, inverse: \Like.user) var likes: [Like] = []
     
     var username: String
     var isLoggedIn: Bool
     
-    init(email: String, tokens: [AuthenticationTokenModel], username: String, isLoggedIn: Bool = false) {
+    init(email: String, username: String, isLoggedIn: Bool = false) {
         self.email = email
-        self.tokens = tokens
         self.username = username
         self.isLoggedIn = isLoggedIn
     }
@@ -35,7 +34,7 @@ class UserModel: Codable, Identifiable {
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.email = try container.decode(String.self, forKey: .email)
-        self.tokens = try container.decode([AuthenticationTokenModel].self, forKey: .tokens)
+        self.tokens = try container.decode([AuthenticationToken].self, forKey: .tokens)
         self.username = try container.decode(String.self, forKey: .username)
         self.isLoggedIn = try container.decode(Bool.self, forKey: .isLoggedIn)
     }
@@ -46,5 +45,9 @@ class UserModel: Codable, Identifiable {
         try container.encode(tokens, forKey: .tokens)
         try container.encode(username, forKey: .username)
         try container.encode(isLoggedIn, forKey: .isLoggedIn)
+    }
+    
+    static func mock() -> User {
+        return User(email: UUID().uuidString, username: "admin", isLoggedIn: true)
     }
 }

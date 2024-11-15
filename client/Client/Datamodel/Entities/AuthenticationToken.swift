@@ -10,7 +10,7 @@ import SwiftData
 
 
 @Model
-class AuthenticationTokenModel: Codable, Identifiable {
+class AuthenticationToken: Codable, Identifiable {
     
     enum CodingKeys: String, CodingKey {
         case token
@@ -18,9 +18,9 @@ class AuthenticationTokenModel: Codable, Identifiable {
     }
     
     var token: String
-    @Relationship(deleteRule: .cascade) var duration: DurationModel
+    @Relationship(deleteRule: .cascade) var duration: Duration
     
-    init(token: String, duration: DurationModel) {
+    init(token: String, duration: Duration) {
         self.token = token
         self.duration = duration
     }
@@ -28,7 +28,7 @@ class AuthenticationTokenModel: Codable, Identifiable {
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         token = try container.decode(String.self, forKey: .token)
-        duration = try container.decode(DurationModel.self, forKey: .duration)
+        duration = try container.decode(Duration.self, forKey: .duration)
     }
     
     func encode(to encoder: Encoder) throws {

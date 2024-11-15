@@ -1,5 +1,5 @@
 //
-//  ImageModel.swift
+//  LocationImage.swift
 //  client
 //
 //  Created by Emircan Duman on 06.11.24.
@@ -10,7 +10,7 @@ import SwiftData
 
 
 @Model
-class ImageModel: Codable, Identifiable {
+class LocationImage: Codable, Identifiable {
     
     enum CodingKeys: String, CodingKey {
         case filePath
@@ -22,9 +22,9 @@ class ImageModel: Codable, Identifiable {
     var filePath: String
     var label: String
     var type: ImageType
-    var pinPoint: PinPointModel
+    var pinPoint: PinPoint
     
-    init(filePath: String, label: String, type: ImageType, pinPoint: PinPointModel) {
+    init(filePath: String, label: String, type: ImageType, pinPoint: PinPoint) {
         self.filePath = filePath
         self.label = label
         self.type = type
@@ -36,7 +36,7 @@ class ImageModel: Codable, Identifiable {
         self.filePath = try container.decode(String.self, forKey: .filePath)
         self.label = try container.decode(String.self, forKey: .label)
         self.type = try container.decode(ImageType.self, forKey: .type)
-        self.pinPoint = try container.decode(PinPointModel.self, forKey: .pinPoint)
+        self.pinPoint = try container.decode(PinPoint.self, forKey: .pinPoint)
     }
     
     func encode(to encoder: Encoder) throws {

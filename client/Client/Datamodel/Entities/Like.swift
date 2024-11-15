@@ -1,5 +1,5 @@
 //
-//  LikeModel.swift
+//  Like.swift
 //  client
 //
 //  Created by Emircan Duman on 06.11.24.
@@ -10,7 +10,7 @@ import SwiftData
 
 
 @Model
-class LikeModel: Codable, Identifiable {
+class Like: Codable, Identifiable {
     
     enum CodingKeys: String, CodingKey {
         case isLike
@@ -19,10 +19,10 @@ class LikeModel: Codable, Identifiable {
     }
     
     var isLike: Bool
-    var user: UserModel
-    var pinPoint: PinPointModel
+    var user: User
+    var pinPoint: PinPoint
     
-    init(isLike: Bool, user: UserModel, pinPoint: PinPointModel) {
+    init(isLike: Bool, user: User, pinPoint: PinPoint) {
         self.isLike = isLike
         self.user = user
         self.pinPoint = pinPoint
@@ -30,9 +30,9 @@ class LikeModel: Codable, Identifiable {
     
     required init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.user = try container.decode(UserModel.self , forKey: .user)
+        self.user = try container.decode(User.self , forKey: .user)
         self.isLike = try container.decode(Bool.self, forKey: .isLike)
-        self.pinPoint = try container.decode(PinPointModel.self, forKey: .pinPoint)
+        self.pinPoint = try container.decode(PinPoint.self, forKey: .pinPoint)
     }
     
     func encode(to encoder: any Encoder) throws {

@@ -6,7 +6,14 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		4E529C9D2CE14EC00056CE5D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4E529C9B2CE14EC00056CE5D /* Localizable.strings */; };
+		4E529CA32CE14F650056CE5D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4E529CA22CE14F650056CE5D /* Localizable.strings */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		4E529CA02CE14F190056CE5D /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		4E529CA42CE14F690056CE5D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = "en.lproj/Localizable 2.strings"; sourceTree = "<group>"; };
 		4EEC7A9C2CDBC12B005E2466 /* client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = client.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -32,6 +39,8 @@
 		4EEC7A932CDBC12B005E2466 = {
 			isa = PBXGroup;
 			children = (
+				4E529C9B2CE14EC00056CE5D /* Localizable.strings */,
+				4E529CA22CE14F650056CE5D /* Localizable.strings */,
 				4EEC7A9E2CDBC12B005E2466 /* client */,
 				4EEC7A9D2CDBC12B005E2466 /* Products */,
 			);
@@ -85,12 +94,13 @@
 					};
 				};
 			};
-			buildConfigurationList = 4EEC7A972CDBC12B005E2466 /* Build configuration list for PBXProject "client" */;
+			buildConfigurationList = 4EEC7A972CDBC12B005E2466 /* Build configuration list for PBXProject "Client" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				de,
 			);
 			mainGroup = 4EEC7A932CDBC12B005E2466;
 			minimizedProjectReferenceProxies = 1;
@@ -109,6 +119,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E529CA32CE14F650056CE5D /* Localizable.strings in Resources */,
+				4E529C9D2CE14EC00056CE5D /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,6 +135,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		4E529C9B2CE14EC00056CE5D /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4E529CA02CE14F190056CE5D /* de */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		4E529CA22CE14F650056CE5D /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4E529CA42CE14F690056CE5D /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		4EEC7AAA2CDBC12D005E2466 /* Debug */ = {
@@ -255,11 +286,15 @@
 				DEVELOPMENT_TEAM = 7H3X64CV7G;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Wir benötigen Ihren Standort, um ihn auf der Karte zu verfolgen";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Wir benötigen Ihren Standort, um ihn auf der Karte zu verfolgen";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Wir benötigen Ihren Standort, um ihn auf der Karte anzuzeigen";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -284,11 +319,15 @@
 				DEVELOPMENT_TEAM = 7H3X64CV7G;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Wir benötigen Ihren Standort, um ihn auf der Karte zu verfolgen";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Wir benötigen Ihren Standort, um ihn auf der Karte zu verfolgen";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Wir benötigen Ihren Standort, um ihn auf der Karte anzuzeigen";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -305,7 +344,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		4EEC7A972CDBC12B005E2466 /* Build configuration list for PBXProject "client" */ = {
+		4EEC7A972CDBC12B005E2466 /* Build configuration list for PBXProject "Client" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4EEC7AAA2CDBC12D005E2466 /* Debug */,

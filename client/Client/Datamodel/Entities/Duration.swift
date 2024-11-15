@@ -1,5 +1,5 @@
 //
-//  DurationModel.swift
+//  Duration.swift
 //  client
 //
 //  Created by Emircan Duman on 06.11.24.
@@ -10,19 +10,19 @@ import SwiftData
 
 
 @Model
-class DurationModel: Codable, Identifiable {
+class Duration: Codable, Identifiable {
     
     enum CodingKeys: String, CodingKey {
         case startTime
         case endTime
     }
     
-    var startTime: Int
+    private var startTime: Double
     var startDate: Date {
         return Date(timeIntervalSince1970: TimeInterval(startTime))
     }
     
-    var endTime: Int
+    private var endTime: Double
     var endDate: Date {
         return Date(timeIntervalSince1970: TimeInterval(endTime))
     }
@@ -31,15 +31,15 @@ class DurationModel: Codable, Identifiable {
         return Date() < endDate
     }
     
-    init(startTime: Int, endTime: Int) {
+    init(startTime: Double, endTime: Double) {
         self.startTime = startTime
         self.endTime = endTime
     }
     
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.startTime = try container.decode(Int.self, forKey: .startTime)
-        self.endTime = try container.decode(Int.self, forKey: .endTime)
+        self.startTime = try container.decode(Double.self, forKey: .startTime)
+        self.endTime = try container.decode(Double.self, forKey: .endTime)
     }
     
     func encode(to encoder: any Encoder) throws {
@@ -47,5 +47,8 @@ class DurationModel: Codable, Identifiable {
         try container.encode(startTime, forKey: .startTime)
         try container.encode(endTime, forKey: .endTime)
     }
-
+    
+    static func mock() -> Duration {
+        return Duration(startTime: Date().timeIntervalSince1970, endTime: Date().addingTimeInterval(60*10).timeIntervalSince1970)
+    }
 }

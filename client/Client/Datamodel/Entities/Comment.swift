@@ -1,5 +1,5 @@
 //
-//  CommentModel.swift
+//  Comment.swift
 //  client
 //
 //  Created by Emircan Duman on 06.11.24.
@@ -10,7 +10,7 @@ import SwiftData
 
 
 @Model
-class CommentModel: Codable, Identifiable {
+class Comment: Codable, Identifiable {
     
     enum CodingKeys: String, CodingKey {
         case message
@@ -19,10 +19,10 @@ class CommentModel: Codable, Identifiable {
     }
     
     var message: String
-    var user: UserModel
-    var pinPoint: PinPointModel
+    var user: User
+    var pinPoint: PinPoint
     
-    init(message: String, user: UserModel, pinPoint: PinPointModel) {
+    init(message: String, user: User, pinPoint: PinPoint) {
         self.message = message
         self.user = user
         self.pinPoint = pinPoint
@@ -31,8 +31,8 @@ class CommentModel: Codable, Identifiable {
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         message = try container.decode(String.self, forKey: .message)
-        user = try container.decode(UserModel.self, forKey: .user)
-        pinPoint = try container.decode(PinPointModel.self, forKey: .pinPoint)
+        user = try container.decode(User.self, forKey: .user)
+        pinPoint = try container.decode(PinPoint.self, forKey: .pinPoint)
     }
     
     func encode(to encoder: Encoder) throws {

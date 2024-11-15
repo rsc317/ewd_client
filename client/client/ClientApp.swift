@@ -1,6 +1,6 @@
 //
-//  clientApp.swift
-//  client
+//  ClientApp.swift
+//  Client
 //
 //  Created by Emircan Duman on 06.11.24.
 //
@@ -9,10 +9,18 @@ import SwiftUI
 import SwiftData
 
 @main
-struct clientApp: App {
+struct ClientApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Address.self,
+            AuthenticationToken.self,
+            Comment.self,
+            Duration.self,
+            GeoCoordinate.self,
+            LocationImage.self,
+            Like.self,
+            PinPoint.self,
+            User.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

@@ -1,5 +1,5 @@
 //
-//  PinPointsModel.swift
+//  PinPoints.swift
 //  client
 //
 //  Created by Emircan Duman on 06.11.24.
@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-class PinPointModel: Codable, Identifiable {
+class PinPoint: Codable, Identifiable {
     
     enum CodingKeys: String, CodingKey {
         case title
@@ -23,14 +23,14 @@ class PinPointModel: Codable, Identifiable {
     var title: String
     var body: String
     var isDeleted: Bool
-    var user: UserModel
-    @Relationship(deleteRule: .cascade) var duration: DurationModel
-    @Relationship(deleteRule: .cascade, inverse: \GeoCoordinateModel.pinPoint) var geoCoordinate: GeoCoordinateModel
-    @Relationship(deleteRule: .cascade, inverse: \ImageModel.pinPoint) var images: [ImageModel] = []
-    @Relationship(deleteRule: .cascade, inverse: \CommentModel.pinPoint) var comments: [CommentModel] = []
-    @Relationship(deleteRule: .cascade, inverse: \LikeModel.pinPoint) var likes: [LikeModel] = []
+    var user: User
+    @Relationship(deleteRule: .cascade) var duration: Duration
+    @Relationship(deleteRule: .cascade) var geoCoordinate: GeoCoordinate
+    @Relationship(deleteRule: .cascade, inverse: \LocationImage.pinPoint) var images: [LocationImage] = []
+    @Relationship(deleteRule: .cascade, inverse: \Comment.pinPoint) var comments: [Comment] = []
+    @Relationship(deleteRule: .cascade, inverse: \Like.pinPoint) var likes: [Like] = []
 
-    init(title: String, body: String, isDeleted: Bool, user: UserModel, duration: DurationModel, geoCoordinate: GeoCoordinateModel) {
+    init(title: String, body: String, isDeleted: Bool, user: User, duration: Duration, geoCoordinate: GeoCoordinate) {
         self.title = title
         self.body = body
         self.isDeleted = isDeleted
@@ -44,9 +44,9 @@ class PinPointModel: Codable, Identifiable {
         self.title = try container.decode(String.self, forKey: .title)
         self.body = try container.decode(String.self, forKey: .body)
         self.isDeleted = try container.decode(Bool.self, forKey: .isDeleted)
-        self.user = try container.decode(UserModel.self, forKey: .user)
-        self.duration = try container.decode(DurationModel.self, forKey: .duration)
-        self.geoCoordinate = try container.decode(GeoCoordinateModel.self, forKey: .geoCoordinate)
+        self.user = try container.decode(User.self, forKey: .user)
+        self.duration = try container.decode(Duration.self, forKey: .duration)
+        self.geoCoordinate = try container.decode(GeoCoordinate.self, forKey: .geoCoordinate)
     }
     
     func encode(to encoder: Encoder) throws {

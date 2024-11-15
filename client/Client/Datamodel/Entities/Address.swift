@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-class AddressModel: Codable, Identifiable {
+class Address: Codable, Identifiable {
     
     enum CodingKeys: String, CodingKey {
         case streetName
@@ -32,9 +32,9 @@ class AddressModel: Codable, Identifiable {
             }
         }
     }
-    var geoCoordinate: GeoCoordinateModel
+    var geoCoordinate: GeoCoordinate
     
-    init(streetName: String, streetNumber: String, city: String, zipCode: String, country: String, geocoordinate: GeoCoordinateModel) {
+    init(streetName: String, streetNumber: String, city: String, zipCode: String, country: String, geocoordinate: GeoCoordinate) {
         self.streetName = streetName
         self.streetNumber = streetNumber
         self.city = city
@@ -55,7 +55,7 @@ class AddressModel: Codable, Identifiable {
         city = try container.decode(String.self, forKey: .city)
         country = try container.decode(String.self, forKey: .country)
         zipCode = try container.decode(String.self, forKey: .zipCode)
-        geoCoordinate = try container.decode(GeoCoordinateModel.self, forKey: .geoCoordinate)
+        geoCoordinate = try container.decode(GeoCoordinate.self, forKey: .geoCoordinate)
     }
     
     func encode(to encoder: Encoder) throws {

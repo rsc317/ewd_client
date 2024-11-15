@@ -9,36 +9,29 @@ import Foundation
 import SwiftData
 
 
-@Model
-class Comment: Codable, Identifiable {
-    
+struct Comment: Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
         case message
-        case user
         case pinPoint
     }
-    
+    let id = UUID()
     var message: String
-    var user: User
     var pinPoint: PinPoint
     
-    init(message: String, user: User, pinPoint: PinPoint) {
+    init(message: String, pinPoint: PinPoint) {
         self.message = message
-        self.user = user
         self.pinPoint = pinPoint
     }
     
-    required init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         message = try container.decode(String.self, forKey: .message)
-        user = try container.decode(User.self, forKey: .user)
         pinPoint = try container.decode(PinPoint.self, forKey: .pinPoint)
     }
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(message, forKey: .message)
-        try container.encode(user, forKey: .user)
         try container.encode(pinPoint, forKey: .pinPoint)
     }
 }

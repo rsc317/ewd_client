@@ -12,14 +12,7 @@ import SwiftData
 struct ClientApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Address.self,
             AuthenticationToken.self,
-            Comment.self,
-            Duration.self,
-            GeoCoordinate.self,
-            LocationImage.self,
-            Like.self,
-            PinPoint.self,
             User.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)

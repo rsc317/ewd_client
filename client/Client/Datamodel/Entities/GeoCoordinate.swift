@@ -10,9 +10,7 @@ import SwiftData
 import MapKit
 
 
-@Model
-class GeoCoordinate: Codable, Identifiable {
-    
+struct GeoCoordinate: Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
         case lattitude
         case longitude
@@ -20,10 +18,11 @@ class GeoCoordinate: Codable, Identifiable {
         case address
     }
     
+    let id = UUID()
     private var lattitude: Double
     private var longitude: Double
-    var radius: Double
-    @Relationship(deleteRule: .cascade, inverse: \Address.geoCoordinate) var address: Address?
+    let radius: Double
+    var address: Address?
     
     var coordinates: CLLocationCoordinate2D {
         return CLLocationCoordinate2D(latitude: lattitude, longitude: longitude)
@@ -38,7 +37,7 @@ class GeoCoordinate: Codable, Identifiable {
         }
     }
     
-    required init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.lattitude = try container.decode(Double.self, forKey: .lattitude)
         self.longitude = try container.decode(Double.self, forKey: .longitude)

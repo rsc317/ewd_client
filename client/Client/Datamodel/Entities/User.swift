@@ -18,9 +18,6 @@ class User: Codable, Identifiable {
     }
     @Attribute(.unique) var email: String
     @Relationship(deleteRule: .cascade) var tokens: [AuthenticationToken] = []
-    @Relationship(deleteRule: .cascade, inverse: \PinPoint.user) var geoCoordinate: [PinPoint] = []
-    @Relationship(deleteRule: .cascade, inverse: \Comment.user) var comments: [Comment] = []
-    @Relationship(deleteRule: .cascade, inverse: \Like.user) var likes: [Like] = []
     
     var username: String
     var isLoggedIn: Bool

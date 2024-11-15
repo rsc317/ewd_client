@@ -40,7 +40,7 @@ class MapViewModel {
 //    }
     
     private func createMock(lattiude: Double, longitude: Double) -> PinPoint {
-        return PinPoint(title: "MockTitle", body: "MockBody", isDeleted: false, user: .mock(), duration: .mock(), geoCoordinate: .mock(lattitude: lattiude, longitude: longitude))
+        return PinPoint(title: "MockTitle", description: "MockBody", isDeleted: false, user: .mock(), duration: .mock(), geoCoordinate: .mock(lattitude: lattiude, longitude: longitude))
     }
     
 }

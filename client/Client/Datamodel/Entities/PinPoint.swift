@@ -8,51 +8,57 @@
 import Foundation
 import SwiftData
 
-@Model
-class PinPoint: Codable, Identifiable {
-    
+
+struct PinPoint: Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
         case title
-        case body
+        case description
         case isDeleted
         case user
         case duration
         case geoCoordinate
+        case images
+        case comments
+        case likes
     }
     
-    var title: String
-    var body: String
+    let id = UUID()
+    let title: String
+    let description: String
     var isDeleted: Bool
-    var user: User
-    @Relationship(deleteRule: .cascade) var duration: Duration
-    @Relationship(deleteRule: .cascade) var geoCoordinate: GeoCoordinate
-    @Relationship(deleteRule: .cascade, inverse: \LocationImage.pinPoint) var images: [LocationImage] = []
-    @Relationship(deleteRule: .cascade, inverse: \Comment.pinPoint) var comments: [Comment] = []
-    @Relationship(deleteRule: .cascade, inverse: \Like.pinPoint) var likes: [Like] = []
+    let user: User
+    let duration: Duration
+    let geoCoordinate: GeoCoordinate
+    var images: [ImageResponse] = []
+    var comments: [Comment] = []
+    var likes: [Like] = []
 
-    init(title: String, body: String, isDeleted: Bool, user: User, duration: Duration, geoCoordinate: GeoCoordinate) {
+    init(title: String, description: String, isDeleted: Bool, user: User, duration: Duration, geoCoordinate: GeoCoordinate) {
         self.title = title
-        self.body = body
+        self.description = description
         self.isDeleted = isDeleted
         self.user = user
         self.duration = duration
         self.geoCoordinate = geoCoordinate
     }
     
-    required init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.title = try container.decode(String.self, forKey: .title)
-        self.body = try container.decode(String.self, forKey: .body)
+        self.description = try container.decode(String.self, forKey: .description)
         self.isDeleted = try container.decode(Bool.self, forKey: .isDeleted)
         self.user = try container.decode(User.self, forKey: .user)
         self.duration = try container.decode(Duration.self, forKey: .duration)
         self.geoCoordinate = try container.decode(GeoCoordinate.self, forKey: .geoCoordinate)
+        self.images = try container.decode([ImageResponse].self, forKey: .images)
+        self.comments = try container.decode([Comment].self, forKey: .comments)
+        self.likes = try container.decode([Like].self, forKey: .likes)
     }
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(title, forKey: .title)
-        try container.encode(body, forKey: .body)
+        try container.encode(description, forKey: .description)
         try container.encode(isDeleted, forKey: .isDeleted)
         try container.encode(user, forKey: .user)
         try container.encode(duration, forKey: .duration)

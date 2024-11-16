@@ -19,7 +19,14 @@ class MapViewModel {
         
     }
     
-    func postPinPoint(_ locationCoordinates: CLLocationCoordinate2D) async throws {
+    func postPinPoint(
+        locationCoordinates: CLLocationCoordinate2D?,
+        title: String,
+        description: String,
+        minutes: Int,
+        hours: Int,
+        imagesResponses: [ImageResponse]
+    ) async throws {
         
     }
     

@@ -8,14 +8,13 @@
 import SwiftUI
 import MapKit
 
+
 struct MapView: View {
     @State private var mapViewModel = MapViewModel()
     @State private var position = MapCameraPosition.userLocation(followsHeading: true, fallback: .automatic)
     @State private var showCreatePinPointSheet = false
-    @State private var screenCoord: CGPoint?
-    @State private var reader: MapProxy?
-    
-    
+    @State var pinLocation: CLLocationCoordinate2D?
+
     var body: some View {
         VStack {
             MapReader { reader in
@@ -37,23 +36,24 @@ struct MapView: View {
                     MapScaleView()
                 }
                 .onTapGesture { screenCoord in
-                    self.screenCoord = screenCoord
-                    self.reader = reader
-                    showCreatePinPointSheet = true
+                    handleTapGesture(screenCoord: screenCoord, reader: reader)
                 }
             }
         }
         .sheet(isPresented: $showCreatePinPointSheet) {
-            let pinLocation = getLocation(reader: reader, screenCoord: screenCoord)
-            CreatePinPointSheetView(location: pinLocation)
+            CreatePinPointSheetView(mapViewModel: $mapViewModel, pinLocation: $pinLocation)
                 .presentationDragIndicator(.visible)
         }
+        .onAppear(perform: {
+            //mapViewModel.fetchAllPinPoints()
+        })
     }
     
-    func getLocation(reader: MapProxy?, screenCoord: CGPoint?) -> CLLocationCoordinate2D? {
-        guard let reader = reader else { return nil}
-        guard let screenCoord = screenCoord else { return nil}
-        return reader.convert(screenCoord, from: .local)
+    func handleTapGesture(screenCoord: CGPoint, reader: MapProxy) {
+        if let pinLocation = reader.convert(screenCoord, from: .local) {
+            self.pinLocation = pinLocation
+            showCreatePinPointSheet = true
+        }
     }
 }
 

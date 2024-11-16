@@ -10,13 +10,14 @@ import MapKit
 
 
 struct CreatePinPointSheetView: View {
-    @State private var mapViewModel = MapViewModel()
+    @Binding var mapViewModel: MapViewModel
+    @Binding var pinLocation: CLLocationCoordinate2D?
+
     @State private var title: String = ""
     @State private var description: String = ""
     @State private var selectedMinutes: Int = 0
     @State private var selectedHours: Int = 0
     @State private var imageResponses: [ImageResponse] = []
-    @State var location: CLLocationCoordinate2D?
     
     @Environment(\.dismiss) var dismiss
     
@@ -114,13 +115,17 @@ struct CreatePinPointSheetView: View {
     }
     
     private func saveData() {
-        dismiss()
-        print("Titel: \(title)")
-        print("Beschreibung: \(description)")
-        print("Dauer: \(selectedHours)h \(selectedMinutes)min")
+        if let pinLocation = self.pinLocation {
+            mapViewModel.addMockPinPoint(pinLocation)
+            dismiss()
+        }
+
     }
 }
 
 #Preview {
-    CreatePinPointSheetView()
+    @Previewable @State var pinLocation: CLLocationCoordinate2D?
+    @Previewable @State var mapViewModel: MapViewModel = MapViewModel()
+
+    CreatePinPointSheetView(mapViewModel: $mapViewModel, pinLocation: $pinLocation)
 }

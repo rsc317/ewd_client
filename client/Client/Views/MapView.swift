@@ -11,7 +11,7 @@ import MapKit
 struct MapView: View {
     @State private var mapViewModel = MapViewModel()
     @State private var position = MapCameraPosition.userLocation(followsHeading: true, fallback: .automatic)
-    @State private var showAddPinPointSheet = false
+    @State private var showCreatePinPointSheet = false
     @State private var screenCoord: CGPoint?
     @State private var reader: MapProxy?
     
@@ -39,13 +39,13 @@ struct MapView: View {
                 .onTapGesture { screenCoord in
                     self.screenCoord = screenCoord
                     self.reader = reader
-                    showAddPinPointSheet = true
+                    showCreatePinPointSheet = true
                 }
             }
         }
-        .sheet(isPresented: $showAddPinPointSheet) {
+        .sheet(isPresented: $showCreatePinPointSheet) {
             let pinLocation = getLocation(reader: reader, screenCoord: screenCoord)
-            AddPinPointSheetView(location: pinLocation)
+            CreatePinPointSheetView(location: pinLocation)
                 .presentationDragIndicator(.visible)
         }
     }

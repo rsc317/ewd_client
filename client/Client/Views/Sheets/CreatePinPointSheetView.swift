@@ -1,5 +1,5 @@
 //
-//  AddPinPointSheetView.swift
+//  CreatePinPointSheetView.swift
 //  client
 //
 //  Created by Emircan Duman on 15.11.24.
@@ -7,23 +7,25 @@
 
 import SwiftUI
 import MapKit
+import PhotosUI
 
 
-struct AddPinPointSheetView: View {
+struct CreatePinPointSheetView: View {
     @State private var mapViewModel = MapViewModel()
     @State private var title: String = ""
     @State private var description: String = ""
     @State private var selectedMinutes: Int = 0
     @State private var selectedHours: Int = 0
-    @State private var selectedImage: UIImage? = nil
     @State private var showCamera = false
-    @State private var showGalleryPicker = false
+//    @State private var capturedPhotos: [ImageResponse] = []
+    @State private var selectedPhotos: [PhotosPickerItem] = []
+    @State private var selectedImages: [ImageResponse] = []
     @State var location: CLLocationCoordinate2D?
     
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        NavigationView {
+        NavigationStack{
             VStack(alignment: .leading, spacing: 20) {
                 Text("PinPoint")
                     .font(.largeTitle)
@@ -44,7 +46,7 @@ struct AddPinPointSheetView: View {
                     .font(.headline)
                     .padding(.horizontal)
                     .foregroundColor(Color("IconColor"))
-
+                
                 TextEditor(text: $description)
                     .frame(height: 150)
                     .overlay(
@@ -52,13 +54,13 @@ struct AddPinPointSheetView: View {
                             .stroke(Color.gray, lineWidth: 1)
                     )
                     .padding(.horizontal)
-
+                
                 HStack {
                     Picker("Stunden", selection: $selectedHours) {
                         ForEach(0..<24) { hour in
                             Text("\(hour)").tag(hour)
                                 .foregroundColor(Color("IconColor"))
-
+                            
                         }
                     }
                     .pickerStyle(.wheel)
@@ -71,7 +73,7 @@ struct AddPinPointSheetView: View {
                         ForEach(0..<60) { minute in
                             Text("\(minute)").tag(minute)
                                 .foregroundColor(Color("IconColor"))
-
+                            
                         }
                     }
                     .pickerStyle(.wheel)
@@ -81,73 +83,66 @@ struct AddPinPointSheetView: View {
                         .foregroundColor(Color("IconColor"))
                 }
                 .padding(.horizontal)
-                
                 VStack {
-                    if let image = selectedImage {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFit()
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .shadow(radius: 5)
-                    } else {
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(Color.gray.opacity(0.3))
-                            .overlay(
-                                Text("Kein Bild ausgewählt")
-                                    .foregroundColor(.gray)
-                            )
-                            .frame(height: 150)
-                    }
-                    Spacer()
-                    Button(action: {
-                        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                    PictureGalleryPreview(images: $selectedImages)
+                    HStack {
+                        PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 10, matching: .images) {
+                            Image(systemName: "photo")
+                                .foregroundColor(Color("IconColor"))
+                                .font(.system(size: 32, weight: .bold))
+                                .padding()
+                        }
+                        .onChange(of: selectedPhotos) { oldValue, newValue in
+                            Task {
+                                selectedImages = []
+                                for photo in newValue {
+                                    if let data = try? await photo.loadTransferable(type: Data.self),
+                                       let image = UIImage(data: data){
+                                        selectedImages.append(ImageResponse(uiImage: image))
+                                    }
+                                }
+                            }
+                        }
+                        Spacer()
+                        Button(action: {
                             showCamera = true
-                        } else {
-                            showGalleryPicker = true
-                        }
-                    }) {
-                        HStack {
+                        }) {
                             Image(systemName: "camera")
-                                .font(.headline)
-                            Text("Foto schießen")
-                                .font(.headline)
+                                .foregroundColor(Color("IconColor"))
+                                .font(.system(size: 32, weight: .bold))
+                                .padding()
                         }
-                        .padding()
-                        .foregroundColor(Color.white)
-                        .background(Color("IconColor"))
-                        .cornerRadius(10)
+                        .fullScreenCover(isPresented: $showCamera) {
+                            CameraCaptureView(capturedPhotos: $selectedImages)
+                        }
                     }
-                    .padding(.horizontal)
                 }
+                .padding()
                 Spacer()
             }
-            .padding()
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .topBarLeading) {
                     Button(action: saveData) {
                         Text("Speichern")
                             .font(.headline)
-                            .foregroundColor(Color("IconColor"))
+                            .foregroundColor(Color("AccentColor"))
                     }
                 }
                 
-                ToolbarItem(placement: .navigationBarTrailing) {
+                
+                ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
                         dismiss()
                     }) {
                         Image(systemName: "xmark.circle.fill")
                             .font(.system(size: 16, weight: .light))
-                            .foregroundColor(Color("IconColor"))
+                            .foregroundColor(Color("AccentColor"))
                     }
                 }
+                
             }
             .navigationBarTitleDisplayMode(.inline)
-        }
-        .sheet(isPresented: $showGalleryPicker) {
-            PhotoPickerView(selectedImage: $selectedImage)
-        }
-        .fullScreenCover(isPresented: $showCamera) {
-            CameraView(selectedImage: $selectedImage)
+            .padding()
         }
     }
     
@@ -156,14 +151,9 @@ struct AddPinPointSheetView: View {
         print("Titel: \(title)")
         print("Beschreibung: \(description)")
         print("Dauer: \(selectedHours)h \(selectedMinutes)min")
-        if let image = selectedImage {
-            print("Bild wurde ausgewählt")
-        } else {
-            print("Kein Bild ausgewählt")
-        }
     }
 }
 
 #Preview {
-    AddPinPointSheetView()
+    CreatePinPointSheetView()
 }

@@ -6,15 +6,15 @@
 //
 
 import SwiftUI
+import PhotosUI
 
-
-import SwiftUI
 
 struct PictureGalleryView: View {
     @Binding var imageResponses: [ImageResponse]
     @State private var isSelecting = false
     @State private var selectedImages = Set<UUID>()
     @State private var showDeleteAlert = false
+    @Environment(\.dismiss) var dismiss
 
     var body: some View {
         ZStack {
@@ -87,7 +87,7 @@ struct PictureGalleryView: View {
                 }
             }
         }
-        .navigationTitle("Aufgenommene Bilder")
+        .navigationTitle("Bilder")
         .toolbarTitleDisplayMode(.inline)
         .navigationBarItems(trailing:
             Button(isSelecting ? "Abbrechen" : "Auswählen") {
@@ -115,12 +115,57 @@ struct PictureGalleryView: View {
                 selectedImages.contains(imageResponse.id)
             }
             selectedImages.removeAll()
+            isSelecting = false
+            if imageResponses.isEmpty {
+                dismiss()
+            }
         }
     }
 }
+
+struct PictureGalleryPickerView: View {
+    @Binding var imageResponses: [ImageResponse]
+    @State private var selectedPhotos: [PhotosPickerItem] = []
+    @State private var showCamera = false
+    
+    var body: some View {
+        HStack {
+            PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 10, matching: .images) {
+                Image(systemName: "photo")
+                    .foregroundColor(Color("IconColor"))
+                    .font(.system(size: 32, weight: .bold))
+                    .padding()
+            }
+            .onChange(of: selectedPhotos) { oldValue, newValue in
+                Task {
+                    imageResponses = []
+                    for photo in newValue {
+                        if let data = try? await photo.loadTransferable(type: Data.self),
+                           let image = UIImage(data: data){
+                            imageResponses.append(ImageResponse(uiImage: image))
+                        }
+                    }
+                }
+            }
+            Spacer()
+            Button(action: {
+                showCamera = true
+            }) {
+                Image(systemName: "camera")
+                    .foregroundColor(Color("IconColor"))
+                    .font(.system(size: 32, weight: .bold))
+                    .padding()
+            }
+            .fullScreenCover(isPresented: $showCamera) {
+                CameraCaptureView(imageResponses: $imageResponses)
+            }
+        }
+    }
+}
+
 struct PictureGalleryPreview: View {
     @Binding var imageResponses: [ImageResponse]
-    
+
     var body: some View {
         NavigationLink(destination: PictureGalleryView(imageResponses: $imageResponses)) {
             ScrollView(.horizontal) {
@@ -135,6 +180,7 @@ struct PictureGalleryPreview: View {
                 }
             }
         }
+        .allowsHitTesting(!imageResponses.isEmpty)
         .buttonStyle(PlainButtonStyle())
     }
 }

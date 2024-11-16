@@ -7,7 +7,6 @@
 
 import SwiftUI
 import MapKit
-import PhotosUI
 
 
 struct CreatePinPointSheetView: View {
@@ -16,8 +15,6 @@ struct CreatePinPointSheetView: View {
     @State private var description: String = ""
     @State private var selectedMinutes: Int = 0
     @State private var selectedHours: Int = 0
-    @State private var showCamera = false
-    @State private var selectedPhotos: [PhotosPickerItem] = []
     @State private var imageResponses: [ImageResponse] = []
     @State var location: CLLocationCoordinate2D?
     
@@ -82,41 +79,12 @@ struct CreatePinPointSheetView: View {
                         .foregroundColor(Color("IconColor"))
                 }
                 .padding(.horizontal)
-                VStack {
-                    PictureGalleryPreview(imageResponses: $imageResponses)
-                    HStack {
-                        PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 10, matching: .images) {
-                            Image(systemName: "photo")
-                                .foregroundColor(Color("IconColor"))
-                                .font(.system(size: 32, weight: .bold))
-                                .padding()
-                        }
-                        .onChange(of: selectedPhotos) { oldValue, newValue in
-                            Task {
-                                imageResponses = []
-                                for photo in newValue {
-                                    if let data = try? await photo.loadTransferable(type: Data.self),
-                                       let image = UIImage(data: data){
-                                        imageResponses.append(ImageResponse(uiImage: image))
-                                    }
-                                }
-                            }
-                        }
-                        Spacer()
-                        Button(action: {
-                            showCamera = true
-                        }) {
-                            Image(systemName: "camera")
-                                .foregroundColor(Color("IconColor"))
-                                .font(.system(size: 32, weight: .bold))
-                                .padding()
-                        }
-                        .fullScreenCover(isPresented: $showCamera) {
-                            CameraCaptureView(imageResponses: $imageResponses)
-                        }
-                    }
-                }
-                .padding()
+                
+                PictureGalleryPreview(imageResponses: $imageResponses)
+                    .padding()
+                PictureGalleryPickerView(imageResponses: $imageResponses)
+                    .padding()
+                
                 Spacer()
             }
             .toolbar {

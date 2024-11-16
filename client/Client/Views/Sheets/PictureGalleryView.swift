@@ -11,7 +11,7 @@ import SwiftUI
 import SwiftUI
 
 struct PictureGalleryView: View {
-    @Binding var images: [ImageResponse]
+    @Binding var imageResponses: [ImageResponse]
     @State private var isSelecting = false
     @State private var selectedImages = Set<UUID>()
     @State private var showDeleteAlert = false
@@ -23,7 +23,7 @@ struct PictureGalleryView: View {
                     LazyVGrid(
                         columns: [GridItem(.adaptive(minimum: 150))]
                     ) {
-                        ForEach(images) { imageResponse in
+                        ForEach(imageResponses) { imageResponse in
                             ZStack {
                                 Image(uiImage: imageResponse.uiImage)
                                     .resizable()
@@ -111,7 +111,7 @@ struct PictureGalleryView: View {
 
     func deleteSelectedImages() {
         withAnimation {
-            images.removeAll { imageResponse in
+            imageResponses.removeAll { imageResponse in
                 selectedImages.contains(imageResponse.id)
             }
             selectedImages.removeAll()
@@ -119,13 +119,13 @@ struct PictureGalleryView: View {
     }
 }
 struct PictureGalleryPreview: View {
-    @Binding var images: [ImageResponse]
+    @Binding var imageResponses: [ImageResponse]
     
     var body: some View {
-        NavigationLink(destination: PictureGalleryView(images: $images)) {
+        NavigationLink(destination: PictureGalleryView(imageResponses: $imageResponses)) {
             ScrollView(.horizontal) {
                 LazyHGrid(rows: [GridItem(.adaptive(minimum: 100))]) {
-                    ForEach(images) { imageResponse in
+                    ForEach(imageResponses) { imageResponse in
                         Image(uiImage: imageResponse.uiImage)
                             .resizable()
                             .scaledToFill()
@@ -140,7 +140,7 @@ struct PictureGalleryPreview: View {
 }
 
 #Preview {
-    @Previewable @State var images: [ImageResponse] = [
+    @Previewable @State var imageResponses: [ImageResponse] = [
         ImageResponse(uiImage: UIImage(imageLiteralResourceName: "default")),
         ImageResponse(uiImage: UIImage(imageLiteralResourceName: "default")),
         ImageResponse(uiImage: UIImage(imageLiteralResourceName: "default")),
@@ -148,5 +148,5 @@ struct PictureGalleryPreview: View {
         ImageResponse(uiImage: UIImage(imageLiteralResourceName: "default")),
         ImageResponse(uiImage: UIImage(imageLiteralResourceName: "default")),
     ]
-    PictureGalleryView(images: $images)
+    PictureGalleryView(imageResponses: $imageResponses)
 }

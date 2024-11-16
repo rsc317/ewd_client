@@ -17,9 +17,8 @@ struct CreatePinPointSheetView: View {
     @State private var selectedMinutes: Int = 0
     @State private var selectedHours: Int = 0
     @State private var showCamera = false
-//    @State private var capturedPhotos: [ImageResponse] = []
     @State private var selectedPhotos: [PhotosPickerItem] = []
-    @State private var selectedImages: [ImageResponse] = []
+    @State private var imageResponses: [ImageResponse] = []
     @State var location: CLLocationCoordinate2D?
     
     @Environment(\.dismiss) var dismiss
@@ -84,7 +83,7 @@ struct CreatePinPointSheetView: View {
                 }
                 .padding(.horizontal)
                 VStack {
-                    PictureGalleryPreview(images: $selectedImages)
+                    PictureGalleryPreview(imageResponses: $imageResponses)
                     HStack {
                         PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 10, matching: .images) {
                             Image(systemName: "photo")
@@ -94,11 +93,11 @@ struct CreatePinPointSheetView: View {
                         }
                         .onChange(of: selectedPhotos) { oldValue, newValue in
                             Task {
-                                selectedImages = []
+                                imageResponses = []
                                 for photo in newValue {
                                     if let data = try? await photo.loadTransferable(type: Data.self),
                                        let image = UIImage(data: data){
-                                        selectedImages.append(ImageResponse(uiImage: image))
+                                        imageResponses.append(ImageResponse(uiImage: image))
                                     }
                                 }
                             }
@@ -113,7 +112,7 @@ struct CreatePinPointSheetView: View {
                                 .padding()
                         }
                         .fullScreenCover(isPresented: $showCamera) {
-                            CameraCaptureView(capturedPhotos: $selectedImages)
+                            CameraCaptureView(imageResponses: $imageResponses)
                         }
                     }
                 }

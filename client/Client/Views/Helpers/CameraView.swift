@@ -10,7 +10,7 @@ import AVFoundation
 
 
 struct CameraCaptureView: UIViewControllerRepresentable {
-    @Binding var capturedPhotos: [ImageResponse]
+    @Binding var imageResponses: [ImageResponse]
     @Environment(\.presentationMode) var presentationMode
     
 
@@ -34,7 +34,7 @@ struct CameraCaptureView: UIViewControllerRepresentable {
         }
 
         func didCapturePhoto(_ image: UIImage) {
-            parent.capturedPhotos.append(ImageResponse(uiImage: image))
+            parent.imageResponses.append(ImageResponse(uiImage: image))
             parent.presentationMode.wrappedValue.dismiss()
         }
 

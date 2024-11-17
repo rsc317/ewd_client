@@ -138,7 +138,12 @@ struct PictureGalleryPickerView: View {
             }
             .onChange(of: selectedPhotos) { oldValue, newValue in
                 Task {
-                    imageResponses = []
+                    for photo in oldValue {
+                        if let data = try? await photo.loadTransferable(type: Data.self),
+                           let image = UIImage(data: data){
+                            imageResponses.removeAll(where: { $0.uiImage.pngData() == image.pngData() })
+                        }
+                    }
                     for photo in newValue {
                         if let data = try? await photo.loadTransferable(type: Data.self),
                            let image = UIImage(data: data){

@@ -18,7 +18,21 @@ class MapViewModel {
     var errorMessage: String?
     
     func fetchAllPinPoints() async throws {
+        isLoading = true
+        errorMessage = nil
         
+        do {
+            let fetchedPins: [PinPoint] = try await APIService.shared.get(endpoint: "/pinpoints")
+            self.pinPoints = fetchedPins
+        } catch {
+            if let apiError = error as? APIError {
+                self.errorMessage = apiError.localizedDescription
+            } else {
+                self.errorMessage = error.localizedDescription
+            }
+        }
+        
+        isLoading = false
     }
     
     func createPinPoint(

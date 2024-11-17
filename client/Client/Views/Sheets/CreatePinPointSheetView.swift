@@ -45,10 +45,10 @@ struct CreatePinPointSheetView: View {
                     .foregroundColor(Color("IconColor"))
                 
                 TextEditor(text: $description)
-                    .frame(height: 150)
+                    .frame(height: 120)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.gray, lineWidth: 1)
+                            .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                     )
                     .padding(.horizontal)
                 
@@ -85,8 +85,6 @@ struct CreatePinPointSheetView: View {
                     .padding()
                 PictureGalleryPickerView(imageResponses: $imageResponses)
                     .padding()
-                
-                Spacer()
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {

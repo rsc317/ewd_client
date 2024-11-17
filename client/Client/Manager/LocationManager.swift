@@ -15,7 +15,8 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     
     let locationManager = CLLocationManager()
     var region = MKCoordinateRegion()
-    
+    var authorizationDenied: Bool = false
+
     override init() {
         super.init()
         locationManager.delegate = self
@@ -33,12 +34,10 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         case .restricted:
             print("Location access is restricted")
         case .denied:
+            authorizationDenied = true
             print("Location access was denied")
-        case .authorizedAlways:
-            requestLocation()
-        case .authorizedWhenInUse:
-            requestLocation()
-        case .authorized:
+        case .authorizedAlways, .authorizedWhenInUse, .authorized:
+            authorizationDenied = false
             requestLocation()
             
         @unknown default:

@@ -31,9 +31,9 @@ class Duration: Codable, Identifiable {
         return Date() < endDate
     }
     
-    init(startTime: Double, endTime: Double) {
-        self.startTime = startTime
-        self.endTime = endTime
+    init(hours: Double, minutes: Double) {
+        self.startTime = Date().timeIntervalSince1970
+        self.endTime = Date().timeIntervalSince1970 + (hours+minutes)
     }
     
     required init(from decoder: Decoder) throws {
@@ -49,6 +49,6 @@ class Duration: Codable, Identifiable {
     }
     
     static func mock() -> Duration {
-        return Duration(startTime: Date().timeIntervalSince1970, endTime: Date().addingTimeInterval(60*10).timeIntervalSince1970)
+        return Duration(hours: 2.0, minutes: 30.0)
     }
 }

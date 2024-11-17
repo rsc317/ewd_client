@@ -45,7 +45,13 @@ struct MapView: View {
                 .presentationDragIndicator(.visible)
         }
         .onAppear(perform: {
-            //mapViewModel.fetchAllPinPoints()
+            Task {
+                do {
+                    try await mapViewModel.fetchAllPinPoints()
+                } catch {
+                    print("Fehler beim Laden der Daten: \(error)")
+                }
+            }
         })
     }
     

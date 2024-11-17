@@ -25,7 +25,7 @@ struct PinPoint: Codable, Identifiable {
     let id = UUID()
     let title: String
     let description: String
-    var isDeleted: Bool
+    var isDeleted: Bool = false
     let user: User
     let duration: Duration
     let geoCoordinate: GeoCoordinate
@@ -33,10 +33,9 @@ struct PinPoint: Codable, Identifiable {
     var comments: [Comment] = []
     var likes: [Like] = []
 
-    init(title: String, description: String, isDeleted: Bool, user: User, duration: Duration, geoCoordinate: GeoCoordinate) {
+    init(title: String, description: String, user: User, duration: Duration, geoCoordinate: GeoCoordinate) {
         self.title = title
         self.description = description
-        self.isDeleted = isDeleted
         self.user = user
         self.duration = duration
         self.geoCoordinate = geoCoordinate

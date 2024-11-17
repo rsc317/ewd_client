@@ -12,11 +12,11 @@ import MapKit
 struct CreatePinPointSheetView: View {
     @Binding var mapViewModel: MapViewModel
     @Binding var pinLocation: CLLocationCoordinate2D?
-
+    
     @State private var title: String = ""
     @State private var description: String = ""
-    @State private var selectedMinutes: Int = 0
-    @State private var selectedHours: Int = 0
+    @State private var selectedMinutes: Double = 0
+    @State private var selectedHours: Double = 0
     @State private var imageResponses: [ImageResponse] = []
     
     @Environment(\.dismiss) var dismiss
@@ -115,11 +115,14 @@ struct CreatePinPointSheetView: View {
     }
     
     private func saveData() {
-        if let pinLocation = self.pinLocation {
-            mapViewModel.addMockPinPoint(pinLocation)
-            dismiss()
+        Task {
+            do {
+                try await mapViewModel.createPinPoint(locationCoordinates: pinLocation, title: title, description: description, minutes: selectedMinutes, hours: selectedHours, imagesResponses: imageResponses)
+            } catch {
+                print("Fehler beim Laden der Daten: \(error)")
+            }
         }
-
+        dismiss()
     }
 }
 

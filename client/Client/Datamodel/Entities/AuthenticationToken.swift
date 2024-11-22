@@ -9,31 +9,35 @@ import Foundation
 import SwiftData
 
 
-@Model
-class AuthenticationToken: Codable, Identifiable {
+struct AuthenticationToken: Codable, Identifiable {
     
     enum CodingKeys: String, CodingKey {
         case token
-        case duration
+        case expiresIn="expires_in"
     }
     
+    var id: UUID = UUID()
     var token: String
-    @Relationship(deleteRule: .cascade) var duration: Duration
+    var expireDate: Date
     
-    init(token: String, duration: Duration) {
+    init(token: String, expiresIn: Double) {
         self.token = token
-        self.duration = duration
+        self.expireDate = Date(timeIntervalSinceNow: expiresIn)
     }
     
-    required init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         token = try container.decode(String.self, forKey: .token)
-        duration = try container.decode(Duration.self, forKey: .duration)
+        
+        let expiresIn = try container.decode(Double.self, forKey: .expiresIn)
+        expireDate = Date().addingTimeInterval(expiresIn)
     }
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(token, forKey: .token)
-        try container.encode(duration, forKey: .duration)
+        
+        let expireInterval = expireDate.timeIntervalSinceReferenceDate
+        try container.encode(expireInterval, forKey: .expiresIn)
     }
 }

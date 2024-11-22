@@ -23,7 +23,7 @@ struct MapView: View {
                 Map(position: $position) {
                     UserAnnotation()
                     ForEach(mapViewModel.pinPoints, id: \.id) { pinPoint in
-                        Annotation(pinPoint.title, coordinate: pinPoint.geoCoordinate.coordinates) {
+                        Annotation(pinPoint.title, coordinate: pinPoint.coordinate.coordinates) {
                             Image(systemName: "mappin.and.ellipse")
                                 .foregroundStyle(Color("IconColor"))
                                 .padding()
@@ -51,13 +51,7 @@ struct MapView: View {
         }
         .onAppear(perform: {
             locationManager.requestLocation()
-            Task {
-                do {
-                    try await mapViewModel.fetchAllPinPoints()
-                } catch {
-                    print("Fehler beim Laden der Daten: \(error)")
-                }
-            }
+            fetchPinPoints()
         })
         .alert("Standortzugriff benötigt",
                isPresented: $showSettingsAlert,
@@ -74,6 +68,7 @@ struct MapView: View {
     
     func handleTapGesture(screenCoord: CGPoint, reader: MapProxy) {
         if let pinLocation = reader.convert(screenCoord, from: .local) {
+//            self.mapViewModel.addMockPinPoint(pinLocation)
             self.pinLocation = pinLocation
             showCreatePinPointSheet = true && !locationManager.authorizationDenied
             showSettingsAlert = locationManager.authorizationDenied
@@ -84,6 +79,16 @@ struct MapView: View {
         if let url = URL(string: UIApplication.openSettingsURLString) {
             if UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+        }
+    }
+    
+    private func fetchPinPoints() {
+        Task {
+            do {
+                try await mapViewModel.fetchAllPinPoints()
+            } catch {
+                print("Fehler beim Laden der Daten: \(error)")
             }
         }
     }

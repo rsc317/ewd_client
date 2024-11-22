@@ -137,20 +137,7 @@ struct PictureGalleryPickerView: View {
                     .padding()
             }
             .onChange(of: selectedPhotos) { oldValue, newValue in
-                Task {
-                    for photo in oldValue {
-                        if let data = try? await photo.loadTransferable(type: Data.self),
-                           let image = UIImage(data: data){
-                            imageResponses.removeAll(where: { $0.uiImage.pngData() == image.pngData() })
-                        }
-                    }
-                    for photo in newValue {
-                        if let data = try? await photo.loadTransferable(type: Data.self),
-                           let image = UIImage(data: data){
-                            imageResponses.append(ImageResponse(uiImage: image))
-                        }
-                    }
-                }
+                updateImages(oldValue: oldValue, newValue: newValue)
             }
             Spacer()
             Button(action: {
@@ -163,6 +150,23 @@ struct PictureGalleryPickerView: View {
             }
             .fullScreenCover(isPresented: $showCamera) {
                 CameraCaptureView(imageResponses: $imageResponses)
+            }
+        }
+    }
+    
+    func updateImages(oldValue: [PhotosPickerItem], newValue: [PhotosPickerItem]) {
+        Task {
+            for photo in oldValue {
+                if let data = try? await photo.loadTransferable(type: Data.self),
+                   let image = UIImage(data: data){
+                    imageResponses.removeAll(where: { $0.uiImage.pngData() == image.pngData() })
+                }
+            }
+            for photo in newValue {
+                if let data = try? await photo.loadTransferable(type: Data.self),
+                   let image = UIImage(data: data){
+                    imageResponses.append(ImageResponse(uiImage: image))
+                }
             }
         }
     }

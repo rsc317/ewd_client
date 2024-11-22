@@ -12,26 +12,23 @@ import MapKit
 
 struct GeoCoordinate: Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
-        case lattitude
+        case latitude
         case longitude
-        case radius
         case address
     }
     
     let id = UUID()
-    private var lattitude: Double
+    private var latitude: Double
     private var longitude: Double
-    let radius: Double
     var address: Address?
     
     var coordinates: CLLocationCoordinate2D {
-        return CLLocationCoordinate2D(latitude: lattitude, longitude: longitude)
+        return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
 
-    init (lattitude: Double, longitude: Double, radius: Double, address: Address? = nil) {
-        self.lattitude = lattitude
+    init (latitude: Double, longitude: Double, address: Address? = nil) {
+        self.latitude = latitude
         self.longitude = longitude
-        self.radius = radius
         if let address {
             self.address = address
         }
@@ -39,23 +36,21 @@ struct GeoCoordinate: Codable, Identifiable {
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.lattitude = try container.decode(Double.self, forKey: .lattitude)
+        self.latitude = try container.decode(Double.self, forKey: .latitude)
         self.longitude = try container.decode(Double.self, forKey: .longitude)
-        self.radius = try container.decode(Double.self, forKey: .radius)
         self.address = try container.decodeIfPresent(Address.self , forKey: .address)
     }
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(lattitude, forKey: .lattitude)
+        try container.encode(latitude, forKey: .latitude)
         try container.encode(longitude, forKey: .longitude)
-        try container.encode(radius, forKey: .radius)
         if let address = address {
             try container.encode(address, forKey: .address)
         }
     }
     
-    static func mock(lattitude: Double = 52.5200, longitude: Double = 13.4050) -> GeoCoordinate {
-        return GeoCoordinate(lattitude: lattitude, longitude: longitude, radius: 1000)
+    static func mock(latitude: Double = 52.5200, longitude: Double = 13.4050) -> GeoCoordinate {
+        return GeoCoordinate(latitude: latitude, longitude: longitude)
     }
 }

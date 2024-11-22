@@ -10,28 +10,57 @@ import Combine
 
 
 class AuthenticationManager: ObservableObject {
-    @Published var isAuthenticated: Bool = false
-    @Published var currentUser: User?
+    var token: AuthenticationToken?
+    @Published var isAuthenticated: Bool {
+        didSet {
+            UserDefaults.standard.set(isAuthenticated, forKey: "isLoggedIn")
+        }
+    }
+    private var tokenTimer: Timer?
 
     static let shared = AuthenticationManager()
-
-    private init() {}
-
-    func signIn(email: String, password: String) {
-        /**
-         @TODO Remove mock and implement logic to authentification user on backend
-         */
-        let user = User.mock()
-        DispatchQueue.main.async {
-            self.currentUser = user
-            self.isAuthenticated = true
+    
+    private init() {
+        self.isAuthenticated = UserDefaults.standard.bool(forKey: "isLoggedIn")
+        self.token = loadToken()
+        
+        if let token = self.token, isTokenValid() {
+            scheduleTokenExpiration()
+            print("Token geladen und gültig: \(token.token)")
+        } else {
+            logOut()
         }
     }
 
-    func signOut() {
+    func LogIn(username: String, password: String) {
+        let apiService = APIService.shared
+
+        Task {
+            do {
+                let requestBody = UserLoginRequest(username: username, password: password)
+                let response: AuthenticationToken = try await apiService.postLogin(
+                    endpoint: "auth/login",
+                    body: requestBody
+                )
+                self.token = response
+                DispatchQueue.main.async {
+                      self.token = response
+                      self.isAuthenticated = true
+                      self.saveToken(response)
+                      self.scheduleTokenExpiration()
+                  }
+            } catch {
+                print("Fehler: \(error)")
+            }
+        }
+    }
+
+    func logOut() {
         DispatchQueue.main.async {
-            self.currentUser = nil
             self.isAuthenticated = false
+            self.token = nil
+            self.tokenTimer?.invalidate()
+            self.clearToken()
         }
     }
     
@@ -41,5 +70,58 @@ class AuthenticationManager: ObservableObject {
     
     func confirmRegistration(token: AuthenticationToken) {
         
+    }
+    
+    private func saveToken(_ token: AuthenticationToken) {
+        let defaults = UserDefaults.standard
+        do {
+            let tokenData = try JSONEncoder().encode(token)
+            defaults.set(tokenData, forKey: "authToken")
+            print("Token gespeichert.")
+        } catch {
+            print("Fehler beim Speichern des Tokens: \(error)")
+        }
+    }
+    
+    private func loadToken() -> AuthenticationToken? {
+        let defaults = UserDefaults.standard
+        guard let tokenData = defaults.data(forKey: "authToken") else {
+            return nil
+        }
+        do {
+            return try JSONDecoder().decode(AuthenticationToken.self, from: tokenData)
+        } catch {
+            print("Fehler beim Laden des Tokens: \(error)")
+            return nil
+        }
+    }
+    
+    private func clearToken() {
+        let defaults = UserDefaults.standard
+        defaults.removeObject(forKey: "authToken")
+        defaults.removeObject(forKey: "tokenExpireDate")
+    }
+    
+    private func isTokenValid() -> Bool {
+        guard let token = token else {
+            return false
+        }
+        return Date() < token.expireDate
+    }
+    
+    private func scheduleTokenExpiration() {
+        guard let expireDate = UserDefaults.standard.object(forKey: "tokenExpireDate") as? Date else {
+            return
+        }
+        
+        let timeInterval = expireDate.timeIntervalSinceNow
+        if timeInterval > 0 {
+            tokenTimer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: false) { [weak self] _ in
+                self?.logOut()
+                print("Token abgelaufen. Benutzer wurde abgemeldet.")
+            }
+        } else {
+            logOut()
+        }
     }
 }

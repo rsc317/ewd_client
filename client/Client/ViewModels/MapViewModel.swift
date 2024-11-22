@@ -18,12 +18,13 @@ class MapViewModel {
     var errorMessage: String?
     
     func fetchAllPinPoints() async throws {
+        pinPoints = []
         isLoading = true
         errorMessage = nil
         
         do {
-            let fetchedPins: [PinPoint] = try await APIService.shared.get(endpoint: "/pinpoints")
-            self.pinPoints = fetchedPins
+            let fetchedPins: [PinPoint] = try await APIService.shared.get(endpoint: "pinpoints", queryParameters: self.getQueryParamsForPintPoint())
+            pinPoints.append(contentsOf: fetchedPins)
         } catch {
             if let apiError = error as? APIError {
                 self.errorMessage = apiError.localizedDescription
@@ -47,23 +48,34 @@ class MapViewModel {
         errorMessage = nil
         
         guard let locationCoordinates = locationCoordinates else { throw MapError.nilObject("Locations is Nil!") }
-        guard let user = AuthenticationManager.shared.currentUser else { throw MapError.notAuthentificated("User is not logged in!") }
         
         let duration = Duration(hours: hours, minutes: minutes)
-        let geoCoordinates = GeoCoordinate(lattitude: locationCoordinates.latitude, longitude: locationCoordinates.longitude, radius: 20)
-        let newPinPoint: PinPoint = PinPoint(title: title, description: description, user: user, duration: duration, geoCoordinate: geoCoordinates)
+        let geoCoordinates = GeoCoordinate(latitude: locationCoordinates.latitude, longitude: locationCoordinates.longitude)
+        let newPinPoint: PinPoint = PinPoint(title: title, description: description, duration: duration, coordinate: geoCoordinates)
         
         do {
-            let _: PinPoint = try await APIService.shared.post(endpoint: "/pinpoints", body: newPinPoint)
+            try await APIService.shared.post(endpoint: "pinpoints", body: newPinPoint)
+            print("saving pinpoint \(newPinPoint.title) on server)")
         } catch {
             if let apiError = error as? APIError {
-                self.errorMessage = apiError.localizedDescription
+                self.errorMessage = apiError.localizedDescription	
             } else {
                 self.errorMessage = error.localizedDescription
             }
+            print("saving pinpoint failed:\(self.errorMessage!)")
         }
         
         isLoading = false
+    }
+    
+    private func getQueryParamsForPintPoint() -> [String: String] {
+        guard let latitue = LocationManager.shared.getCurrentLocation()?.coordinate.latitude else {
+            return [:]
+        }
+        guard let longitude = LocationManager.shared.getCurrentLocation()?.coordinate.longitude else {
+            return [:]
+        }
+        return ["latitude": String(latitue), "longitude": String(longitude), "radius": "100000000000"]
     }
     
     func addMockPinPoint(_ locationCoordinates: CLLocationCoordinate2D) {
@@ -71,9 +83,9 @@ class MapViewModel {
     }
     
     private func createMock(lattiude: Double, longitude: Double) -> PinPoint {
-        return PinPoint(title: "MockTitle", description: "MockBody", user: .mock(), duration: .mock(), geoCoordinate: .mock(lattitude: lattiude, longitude: longitude))
+        let duration = Duration(hours: 3, minutes: 30)
+        return PinPoint(title: "MockTitle", description: "MockBody", duration: duration, coordinate: .mock(latitude: lattiude, longitude: longitude))
     }
-    
 }
 
 enum MapError: Error {

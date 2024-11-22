@@ -10,10 +10,10 @@ import SwiftData
 
 @main
 struct ClientApp: App {
+    @StateObject private var authenticator = AuthenticationManager.shared
+
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            AuthenticationToken.self,
-            User.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -26,7 +26,11 @@ struct ClientApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if authenticator.isAuthenticated {
+                ContentView()
+            } else {
+                LoginView()
+            }
         }
         .modelContainer(sharedModelContainer)
     }

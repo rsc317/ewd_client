@@ -19,72 +19,63 @@ struct CreatePinPointSheetView: View {
     @State private var selectedHours: Double = 0
     @State private var imageResponses: [ImageResponse] = []
     
+    @FocusState private var isFocused: Bool
+
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        NavigationStack{
-            VStack(alignment: .leading, spacing: 20) {
-                Text("PinPoint")
-                    .font(.largeTitle)
-                    .foregroundColor(Color("IconColor"))
-                    .padding(.horizontal)
-                
-                TextField("Titel", text: $title)
-                    .font(.title)
-                    .padding(8)
-                    .background(Color.clear)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                    )
-                    .padding(.horizontal)
-                
-                Text("Beschreibung")
-                    .font(.headline)
-                    .padding(.horizontal)
-                    .foregroundColor(Color("IconColor"))
-                
-                TextEditor(text: $description)
-                    .frame(height: 120)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                    )
-                    .padding(.horizontal)
-                
-                HStack {
-                    Picker("Stunden", selection: $selectedHours) {
-                        ForEach(0..<24) { hour in
-                            Text("\(hour)").tag(hour)
-                                .foregroundColor(Color("IconColor"))
-                            
-                        }
-                    }
-                    .pickerStyle(.wheel)
-                    .frame(height: 100)
-                    Text("h")
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    Spacer()
+                    Text("PinPoint")
+                        .font(.largeTitle)
+                        .foregroundColor(Color("IconColor"))
+                        .padding(.horizontal)
+                    
+                    TextField("Titel", text: $title)
+                        .focused($isFocused)
+                        .font(.title)
+                        .padding(8)
+                        .background(Color.clear)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                        )
+                        .padding(.horizontal)
+                    Spacer()
+                    Text("Beschreibung")
                         .font(.headline)
+                        .padding(.horizontal)
                         .foregroundColor(Color("IconColor"))
                     
-                    Picker("Minuten", selection: $selectedMinutes) {
-                        ForEach(0..<60) { minute in
-                            Text("\(minute)").tag(minute)
-                                .foregroundColor(Color("IconColor"))
-                            
+                    TextEditor(text: $description)
+                        .focused($isFocused)
+                        .frame(height: 120)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                        )
+                        .padding(.horizontal)
+                    Spacer()
+                    PictureGalleryPreview(imageResponses: $imageResponses)
+                        .padding()
+                    Spacer()
+                    PictureGalleryPickerView(imageResponses: $imageResponses)
+                        .padding()
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding(.vertical, 20)
+                .padding(.horizontal)
+                .toolbar {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button("Fertig") {
+                            isFocused = false
                         }
                     }
-                    .pickerStyle(.wheel)
-                    .frame(height: 100)
-                    Text("min")
-                        .font(.headline)
-                        .foregroundColor(Color("IconColor"))
                 }
-                .padding(.horizontal)
-                
-                PictureGalleryPreview(imageResponses: $imageResponses)
-                    .padding()
-                PictureGalleryPickerView(imageResponses: $imageResponses)
-                    .padding()
+
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -95,7 +86,6 @@ struct CreatePinPointSheetView: View {
                     }
                 }
                 
-                
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
                         dismiss()
@@ -105,10 +95,7 @@ struct CreatePinPointSheetView: View {
                             .foregroundColor(Color("AccentColor"))
                     }
                 }
-                
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .padding()
         }
     }
     

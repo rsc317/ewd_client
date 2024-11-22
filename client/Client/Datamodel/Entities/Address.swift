@@ -11,30 +11,29 @@ import SwiftData
 
 struct Address: Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
-        case streetName
-        case streetNumber
+        case streetName = "street_name"
+        case streetNumber = "street_number"
+        case postcode
         case city
         case country
-        case zipCode
     }
     
     let id = UUID()
     let streetName: String
     let streetNumber: String
+    let postcode: String
     let city: String
     let country: String
-    let zipCode: String
     
-    init(streetName: String, streetNumber: String, city: String, zipCode: String, country: String) {
+    init(streetName: String, streetNumber: String, city: String, postcode: String, country: String) {
         self.streetName = streetName
         self.streetNumber = streetNumber
         self.city = city
         self.country = country
-        if zipCode.isNumeric {
-            self.zipCode = zipCode
+        if postcode.isNumeric {
+            self.postcode = postcode
         } else {
-            print("Invalid initial value: Only numeric characters are allowed.")
-            self.zipCode = "00000"
+            self.postcode = "00000"
         }
     }
     
@@ -44,7 +43,7 @@ struct Address: Codable, Identifiable {
         streetNumber = try container.decode(String.self, forKey: .streetNumber)
         city = try container.decode(String.self, forKey: .city)
         country = try container.decode(String.self, forKey: .country)
-        zipCode = try container.decode(String.self, forKey: .zipCode)
+        postcode = try container.decode(String.self, forKey: .postcode)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -53,6 +52,6 @@ struct Address: Codable, Identifiable {
         try container.encode(streetNumber, forKey: .streetNumber)
         try container.encode(city, forKey: .city)
         try container.encode(country, forKey: .country)
-        try container.encode(zipCode, forKey: .zipCode)
+        try container.encode(postcode, forKey: .postcode)
     }
 }

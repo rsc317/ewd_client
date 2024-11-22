@@ -13,8 +13,8 @@ import SwiftData
 class Duration: Codable, Identifiable {
     
     enum CodingKeys: String, CodingKey {
-        case startTime
-        case endTime
+        case startTime = "start_time"
+        case endTime = "end_time"
     }
     
     private var startTime: Double

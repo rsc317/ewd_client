@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  Client
+
+  Created by Emircan Duman on 10.11.24.
+  
+*/
+"map" = "Karte";
+"settings"  = "Einstellungen";
+"my_posts" = "My Posts";

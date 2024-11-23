@@ -1,6 +1,6 @@
 //
-//  clientApp.swift
-//  client
+//  ClientApp.swift
+//  Client
 //
 //  Created by Emircan Duman on 06.11.24.
 //
@@ -9,10 +9,11 @@ import SwiftUI
 import SwiftData
 
 @main
-struct clientApp: App {
+struct ClientApp: App {
+    @StateObject private var authenticator = AuthenticationManager.shared
+
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -25,7 +26,11 @@ struct clientApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if authenticator.isAuthenticated {
+                ContentView()
+            } else {
+                LoginView()
+            }
         }
         .modelContainer(sharedModelContainer)
     }

@@ -23,13 +23,18 @@ struct MapView: View {
                 Map(position: $position) {
                     UserAnnotation()
                     ForEach(mapViewModel.pinPoints, id: \.id) { pinPoint in
-                        Annotation(pinPoint.title, coordinate: pinPoint.coordinate.coordinates) {
+                        Marker(coordinate: pinPoint.coordinate.coordinates, label: {
+                            Text(pinPoint.title)
+                                .foregroundStyle(Color("AccentColor"))
+                                .padding()
+                                .font(.caption)
                             Image(systemName: "mappin.and.ellipse")
                                 .foregroundStyle(Color("IconColor"))
                                 .padding()
                                 .font(.system(size: 25))
-
-                        }
+                        })
+                        .stroke(Color("AccentColor"), style: StrokeStyle(lineWidth: .zero))
+                        
                     }
                 }
                 .mapControls {

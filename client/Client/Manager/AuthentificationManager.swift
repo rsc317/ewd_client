@@ -42,13 +42,13 @@ class AuthenticationManager: ObservableObject {
                     endpoint: "auth/login",
                     body: requestBody
                 )
-                self.token = response
                 DispatchQueue.main.async {
-                      self.token = response
-                      self.isAuthenticated = true
-                      self.saveToken(response)
-                      self.scheduleTokenExpiration()
-                  }
+                    self.tokenTimer?.invalidate()
+                    self.token = response
+                    self.isAuthenticated = true
+                    self.saveToken(response)
+                    self.scheduleTokenExpiration()
+                }
             } catch {
                 print("Fehler: \(error)")
             }
@@ -77,7 +77,8 @@ class AuthenticationManager: ObservableObject {
         do {
             let tokenData = try JSONEncoder().encode(token)
             defaults.set(tokenData, forKey: "authToken")
-            print("Token gespeichert.")
+            defaults.set(token.expireDate, forKey: "tokenExpireDate")
+            print("Token und Ablaufdatum gespeichert.")
         } catch {
             print("Fehler beim Speichern des Tokens: \(error)")
         }
@@ -104,17 +105,23 @@ class AuthenticationManager: ObservableObject {
     
     private func isTokenValid() -> Bool {
         guard let token = token else {
+            print("Kein Token vorhanden.")
             return false
         }
-        return Date() < token.expireDate
+        let valid = Date() < token.expireDate
+        print("Token gültig: \(valid)")
+        return valid
     }
     
     private func scheduleTokenExpiration() {
         guard let expireDate = UserDefaults.standard.object(forKey: "tokenExpireDate") as? Date else {
+            print("Kein Ablaufdatum gefunden.")
             return
         }
         
         let timeInterval = expireDate.timeIntervalSinceNow
+        print("Token läuft ab in \(timeInterval / 60 / 60) Minuten.")
+        
         if timeInterval > 0 {
             tokenTimer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: false) { [weak self] _ in
                 self?.logOut()

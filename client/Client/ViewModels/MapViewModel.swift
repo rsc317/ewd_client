@@ -54,8 +54,9 @@ class MapViewModel {
         let newPinPoint: PinPoint = PinPoint(title: title, description: description, duration: duration, coordinate: geoCoordinates)
         
         do {
-            try await APIService.shared.post(endpoint: "pinpoints", body: newPinPoint)
+            let responseMsg:String = try await APIService.shared.post(endpoint: "pinpoints", body: newPinPoint)
             print("saving pinpoint \(newPinPoint.title) on server)")
+            print("server msg:\(responseMsg)")
         } catch {
             if let apiError = error as? APIError {
                 self.errorMessage = apiError.localizedDescription	
@@ -64,7 +65,13 @@ class MapViewModel {
             }
             print("saving pinpoint failed:\(self.errorMessage!)")
         }
-        
+        Task {
+            do {
+                try await self.fetchAllPinPoints()
+            } catch {
+                print("Fehler beim Laden der Daten: \(error)")
+            }
+        }
         isLoading = false
     }
     

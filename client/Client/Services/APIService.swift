@@ -168,14 +168,12 @@ class APIService {
         }
     }
     
-    // Beispiel für spezifische Methoden, die die generische `request`-Methode nutzen
-    
     func get<T: Codable>(endpoint: String, queryParameters: [String: String]? = nil) async throws -> T {
         return try await request(
             method: .GET,
             endpoint: endpoint,
             queryParameters: queryParameters,
-            body: Optional<Data>.none, // Kein Body für GET-Anfragen
+            body: Optional<Data>.none,
             requiresAuth: true
         )
     }
@@ -196,19 +194,17 @@ class APIService {
             endpoint: endpoint,
             queryParameters: nil,
             body: body,
-            requiresAuth: false // Annahme: Login benötigt kein Auth-Token
+            requiresAuth: false
         )
     }
-}
-
-// Erweiterung zur Pretty-Print der Antwort (optional)
-extension URLResponse {
-    func prettyPrinted(data: Data) -> String {
-        guard let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
-              let prettyData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted),
-              let prettyString = String(data: prettyData, encoding: .utf8) else {
-            return "Keine JSON-Daten zum Anzeigen."
-        }
-        return prettyString
+    
+    func postSignUp<T: Codable, U: Codable>(endpoint: String, body: T) async throws -> U {
+        return try await request(
+            method: .POST,
+            endpoint: endpoint,
+            queryParameters: nil,
+            body: body,
+            requiresAuth: false
+        )
     }
 }

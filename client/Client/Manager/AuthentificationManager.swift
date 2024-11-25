@@ -18,7 +18,7 @@ enum AuthenticationError: Error, Identifiable {
     case passwordNoSpecialCharacter
     case passwordNoCapitalCharacter
     case passwordHasInvalidCharacter
-    case passwordNotMatche
+    case passwordNotMatch
     case emailAlreadyInUse
     case emailInvalid
     case accountNotConfirmed

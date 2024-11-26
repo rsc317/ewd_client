@@ -86,6 +86,10 @@ class APIService {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         
+        if let headers = headers {
+            headers.forEach { request.setValue($0.value, forHTTPHeaderField: $0.key) }
+        }
+        
         if let body = body {
             do {
                 let jsonData = try JSONEncoder().encode(body)

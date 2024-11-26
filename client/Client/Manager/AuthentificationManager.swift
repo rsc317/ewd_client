@@ -54,10 +54,15 @@ class AuthenticationManager: ObservableObject {
 
         Task {
             do {
-                let requestBody = UserLoginRequest(username: username, password: password)
-                let response: AuthenticationToken = try await apiService.postLogin(
+                let credentials = "\(username):\(password)"
+                guard let encodedCredentials = credentials.data(using: .utf8)?.base64EncodedString() else {
+                    return //throw APIError.authFailed(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Ungültige Anmeldedaten"]))
+                }
+                let headerField = "Authorization"
+                let headerValue = "Basic \(encodedCredentials)"
+                let response: AuthenticationToken = try await apiService.getLogin(
                     endpoint: "auth/login",
-                    body: requestBody
+                    headers: [headerField:headerValue]
                 )
                 DispatchQueue.main.async {
                     self.tokenTimer?.invalidate()

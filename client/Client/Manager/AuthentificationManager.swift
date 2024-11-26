@@ -90,7 +90,7 @@ class AuthenticationManager: ObservableObject {
             Task {
                 do {
                     let requestBody = UserRegistrationRequest(username: username, email: email, password: password)
-                    let response: String = try await apiService.postSignUp(
+                    let _ : String = try await apiService.postSignUp(
                         endpoint: "auth/signup",
                         body: requestBody
                     )

@@ -38,4 +38,13 @@ extension URLResponse {
         output += "--- End of HTTP Response ---\n"
         return output
     }
+    
+    func prettyPrinted(data: Data) -> String {
+        guard let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
+              let prettyData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted),
+              let prettyString = String(data: prettyData, encoding: .utf8) else {
+            return "Keine JSON-Daten zum Anzeigen."
+        }
+        return prettyString
+    }
 }

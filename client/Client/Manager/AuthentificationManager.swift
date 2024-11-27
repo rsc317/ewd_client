@@ -8,6 +8,23 @@
 import SwiftUI
 import Combine
 
+enum AuthenticationError: Error, Identifiable {
+    var id: Self { self }
+
+    case usernameAlreadyInUse
+    case usernameToShort
+    case userNotFound
+    case passwordToShort
+    case passwordNoSpecialCharacter
+    case passwordNoCapitalCharacter
+    case passwordHasInvalidCharacter
+    case passwordNotMatch
+    case emailAlreadyInUse
+    case emailInvalid
+    case accountNotConfirmed
+    case networkError
+    case unknownError
+}
 
 class AuthenticationManager: ObservableObject {
     var token: AuthenticationToken?
@@ -64,12 +81,77 @@ class AuthenticationManager: ObservableObject {
         }
     }
     
-    func register(email: String, username: String, isLoggedIn: Bool = false) {
+    func signUp(email: String, username: String, password: String, passwordConfirm: String) -> [AuthenticationError] {
+        let authenticationErrors: [AuthenticationError] = checkForErrors(email: email, username: username, password: password, passwordConfirm: passwordConfirm)
         
+        if authenticationErrors.isEmpty {
+            let apiService = APIService.shared
+
+            Task {
+                do {
+                    let requestBody = UserRegistrationRequest(username: username, email: email, password: password)
+                    let _ : String = try await apiService.postSignUp(
+                        endpoint: "auth/signup",
+                        body: requestBody
+                    )
+                } catch {
+                    print("Fehler: \(error)")
+                }
+            }
+        }
+        
+        return authenticationErrors
     }
     
-    func confirmRegistration(token: AuthenticationToken) {
+    private func checkForErrors(email: String, username: String, password: String, passwordConfirm: String) -> [AuthenticationError] {
+        var authenticationErros: [AuthenticationError] = []
         
+        if isUsernameInUse(username) {
+            authenticationErros.append(.usernameAlreadyInUse)
+        }
+        if isEmailInUse(email) {
+            authenticationErros.append(.emailAlreadyInUse)
+        }
+        if isValidEmail(email) {
+            authenticationErros.append(.emailInvalid)
+        }
+        if username.isEmpty || username.count < 3 {
+            authenticationErros.append(.usernameToShort)
+        }
+        if password != passwordConfirm {
+            authenticationErros.append(.passwordNotMatch)
+        }
+        if password.count < 8 {
+            authenticationErros.append(.passwordToShort)
+        }
+        if password.rangeOfCharacter(from: .uppercaseLetters) == nil {
+            authenticationErros.append(.passwordNoCapitalCharacter)
+        }
+        if password.rangeOfCharacter(from: CharacterSet(charactersIn: "!@#$%^&*()-_=+{}|:,.<>?")) == nil {
+            authenticationErros.append(.passwordNoSpecialCharacter)
+        }
+        if password.rangeOfCharacter(from: CharacterSet(charactersIn: "<>'\"\\/;")) != nil {
+            authenticationErros.append(.passwordHasInvalidCharacter)
+        }
+        
+        return authenticationErros
+    }
+    
+    private func isUsernameInUse(_ username: String) -> Bool {
+        //@TODO implement rest call to check if username is in use
+        return false
+    }
+    
+    private func isEmailInUse(_ username: String) -> Bool {
+        //@TODO implement rest call to check if email is in use
+        return false
+    }
+    
+    private func isValidEmail(_ email: String) -> Bool {
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+
+        let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        return emailPred.evaluate(with: email)
     }
     
     private func saveToken(_ token: AuthenticationToken) {

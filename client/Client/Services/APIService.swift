@@ -58,6 +58,7 @@ class APIService {
         method: HTTPMethod,
         endpoint: String,
         queryParameters: [String: String]? = nil,
+        headers: [String: String]? = nil,
         body: T? = nil,
         requiresAuth: Bool = true
     ) async throws -> U {
@@ -85,6 +86,10 @@ class APIService {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         
+        if let headers = headers {
+            headers.forEach { request.setValue($0.value, forHTTPHeaderField: $0.key) }
+        }
+        
         if let body = body {
             do {
                 let jsonData = try JSONEncoder().encode(body)
@@ -101,7 +106,6 @@ class APIService {
                 throw APIError.invalidResponse
             }
             
-            // Debug: HTTP Status Code und Content-Type
             print("HTTP_STATUS_CODE: \(httpResponse.statusCode)")
             if let contentType = httpResponse.value(forHTTPHeaderField: "Content-Type") {
                 print("Content-Type: \(contentType)")
@@ -109,7 +113,6 @@ class APIService {
                 print("Content-Type: Nicht verfügbar")
             }
             
-            // Debug: Antwortinhalt als String
             if let responseString = String(data: data, encoding: .utf8) {
                 print("Antwortdaten (als String):\n\(responseString)")
             } else {
@@ -168,12 +171,12 @@ class APIService {
         )
     }
     
-    func postLogin<T: Codable, U: Codable>(endpoint: String, body: T) async throws -> U {
+    func getLogin<T: Codable>(endpoint: String, headers: [String: String]? = nil) async throws -> T {        
         return try await request(
-            method: .POST,
+            method: .GET,
             endpoint: endpoint,
-            queryParameters: nil,
-            body: body,
+            headers: headers,
+            body: Optional<Data>.none,
             requiresAuth: false
         )
     }

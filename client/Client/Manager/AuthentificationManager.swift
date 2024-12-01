@@ -44,7 +44,6 @@ class AuthenticationManager: ObservableObject {
         
         if let token = self.token, isTokenValid() {
             scheduleTokenExpiration()
-            print("Token geladen und gültig: \(token.token)")
         } else {
             logOut()
         }
@@ -57,7 +56,7 @@ class AuthenticationManager: ObservableObject {
             do {
                 let credentials = "\(username):\(password)"
                 guard let encodedCredentials = credentials.data(using: .utf8)?.base64EncodedString() else {
-                    return //throw APIError.authFailed(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Ungültige Anmeldedaten"]))
+                    return
                 }
                 let headerField = "Authorization"
                 let headerValue = "Basic \(encodedCredentials)"
@@ -167,7 +166,6 @@ class AuthenticationManager: ObservableObject {
             let tokenData = try JSONEncoder().encode(token)
             defaults.set(tokenData, forKey: "authToken")
             defaults.set(token.expireDate, forKey: "tokenExpireDate")
-            print("Token und Ablaufdatum gespeichert.")
         } catch {
             print("Fehler beim Speichern des Tokens: \(error)")
         }
@@ -194,22 +192,19 @@ class AuthenticationManager: ObservableObject {
     
     private func isTokenValid() -> Bool {
         guard let token = token else {
-            print("Kein Token vorhanden.")
             return false
         }
         let valid = Date() < token.expireDate
-        print("Token gültig: \(valid)")
         return valid
     }
     
     private func scheduleTokenExpiration() {
         guard let expireDate = UserDefaults.standard.object(forKey: "tokenExpireDate") as? Date else {
-            print("Kein Ablaufdatum gefunden.")
             return
         }
 
         let timeInterval = expireDate.timeIntervalSinceNow
-        print("Token läuft ab in \(timeInterval / 60 / 60) Minuten.")
+        print("Token läuft ab in \(timeInterval) Minuten.")
 
         if timeInterval > 0 {
             tokenTimer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: false) { [weak self] _ in

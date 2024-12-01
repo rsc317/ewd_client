@@ -34,6 +34,7 @@ class AuthenticationManager: ObservableObject {
         }
     }
     private var tokenTimer: Timer?
+    private var countdownTimer: Timer?
 
     static let shared = AuthenticationManager()
     
@@ -49,7 +50,7 @@ class AuthenticationManager: ObservableObject {
         }
     }
 
-    func LogIn(username: String, password: String) {
+    func logIn(username: String, password: String) {
         let apiService = APIService.shared
 
         Task {
@@ -82,6 +83,7 @@ class AuthenticationManager: ObservableObject {
             self.isAuthenticated = false
             self.token = nil
             self.tokenTimer?.invalidate()
+            self.countdownTimer?.invalidate()
             self.clearToken()
         }
     }
@@ -205,14 +207,26 @@ class AuthenticationManager: ObservableObject {
             print("Kein Ablaufdatum gefunden.")
             return
         }
-        
+
         let timeInterval = expireDate.timeIntervalSinceNow
         print("Token läuft ab in \(timeInterval / 60 / 60) Minuten.")
-        
+
         if timeInterval > 0 {
             tokenTimer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: false) { [weak self] _ in
                 self?.logOut()
                 print("Token abgelaufen. Benutzer wurde abgemeldet.")
+            }
+
+            countdownTimer?.invalidate()
+            countdownTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
+                guard let self = self else { return }
+
+                let remainingTime = expireDate.timeIntervalSinceNow
+                if remainingTime > 0 {
+                    print("Verbleibende Zeit: \(String(format: "%.0f", remainingTime)) Sekunden")
+                } else {
+                    timer.invalidate()
+                }
             }
         } else {
             logOut()

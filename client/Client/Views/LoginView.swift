@@ -58,7 +58,7 @@ struct LoginView: View {
         if username.isEmpty || password.isEmpty {
             showError = true
         } else {
-            AuthenticationManager.shared.LogIn(username: username, password: password)
+            AuthenticationManager.shared.logIn(username: username, password: password)
             showError = false
         }
     }

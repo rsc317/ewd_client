@@ -11,6 +11,7 @@ import MapKit
 
 struct MapView: View {
     @State private var mapViewModel = MapViewModel()
+    @State private var selectedPinPoint: PinPoint?
     @State private var locationManager = LocationManager.shared
     @State private var position = MapCameraPosition.userLocation(followsHeading: true, fallback: .automatic)
     @State private var showCreatePinPointSheet = false
@@ -23,18 +24,21 @@ struct MapView: View {
                 Map(position: $position) {
                     UserAnnotation()
                     ForEach(mapViewModel.pinPoints, id: \.id) { pinPoint in
-                        Marker(coordinate: pinPoint.coordinate.coordinates, label: {
-                            Text(pinPoint.title)
-                                .foregroundStyle(Color("AccentColor"))
-                                .padding()
-                                .font(.caption)
-                            Image(systemName: "mappin.and.ellipse")
-                                .foregroundStyle(Color("IconColor"))
-                                .padding()
-                                .font(.system(size: 25))
-                        })
-                        .stroke(Color("AccentColor"), style: StrokeStyle(lineWidth: .zero))
-                        
+                        Annotation(pinPoint.title, coordinate: pinPoint.coordinate.coordinates) {
+                            VStack{
+                                Button(action: {
+                                    pinPointPressed(pinPoint)
+                                }) {
+                                    Image(systemName: "mappin.and.ellipse.circle")
+                                        .resizable()
+                                        .foregroundStyle(Color("IconColor"))
+                                        .frame(width: 40, height: 40)
+                                        .background(Color.white)
+                                        .clipShape(Circle())
+                                        .shadow(color: .black.opacity(0.3), radius: 6, x: 2, y: 2)
+                                }
+                            }
+                        }
                     }
                 }
                 .mapControls {
@@ -42,14 +46,27 @@ struct MapView: View {
                     MapCompass()
                     MapScaleView()
                 }
-                .onTapGesture { screenCoord in
-                    handleTapGesture(screenCoord: screenCoord, reader: reader)
-                }
+                .gesture(//Dirtyhack
+                    LongPressGesture(minimumDuration: 0.2)
+                        .sequenced(before: DragGesture(minimumDistance: 0, coordinateSpace: .global))
+                        .onEnded { value in
+                            switch value {
+                            case .second(true, let drag?):
+                                let location = drag.location
+                                handleTapGesture(screenCoord: location, reader: reader)
+                            default:
+                                break
+                            }
+                        }
+                )
             }
         }
         .sheet(isPresented: $showCreatePinPointSheet) {
             CreatePinPointSheetView(mapViewModel: $mapViewModel, pinLocation: $pinLocation)
                 .presentationDragIndicator(.visible)
+        }
+        .sheet(item: $selectedPinPoint) { pinPoint in
+            DetailPinPointView(pinPoint: pinPoint)
         }
         .onChange(of: locationManager.authorizationDenied) { _ , newValue in
             showSettingsAlert = newValue
@@ -71,16 +88,20 @@ struct MapView: View {
         })
     }
     
-    func handleTapGesture(screenCoord: CGPoint, reader: MapProxy) {
+    private func pinPointPressed(_ pinPoint: PinPoint) {
+        selectedPinPoint = pinPoint
+        print("Selected PinPoint: \(pinPoint.title)")
+    }
+    
+    private func handleTapGesture(screenCoord: CGPoint, reader: MapProxy) {
         if let pinLocation = reader.convert(screenCoord, from: .local) {
-//            self.mapViewModel.addMockPinPoint(pinLocation)
             self.pinLocation = pinLocation
             showCreatePinPointSheet = true && !locationManager.authorizationDenied
             showSettingsAlert = locationManager.authorizationDenied
         }
     }
     
-    func openAppSettings() {
+    private func openAppSettings() {
         if let url = URL(string: UIApplication.openSettingsURLString) {
             if UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)

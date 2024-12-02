@@ -11,6 +11,7 @@ import PhotosUI
 
 struct PictureGalleryView: View {
     @Binding var imageResponses: [ImageResponse]
+    @State var selectable: Bool
     @State private var isSelecting = false
     @State private var selectedImages = Set<UUID>()
     @State private var showDeleteAlert = false
@@ -90,12 +91,12 @@ struct PictureGalleryView: View {
         .navigationTitle("Bilder")
         .toolbarTitleDisplayMode(.inline)
         .navigationBarItems(trailing:
-            Button(isSelecting ? "Abbrechen" : "Auswählen") {
+            selectable ? Button(isSelecting ? "Abbrechen" : "Auswählen") {
                 isSelecting.toggle()
                 if !isSelecting {
                     selectedImages.removeAll()
                 }
-            }
+            } : nil
         )
         .alert(isPresented: $showDeleteAlert) {
             Alert(
@@ -174,9 +175,10 @@ struct PictureGalleryPickerView: View {
 
 struct PictureGalleryPreview: View {
     @Binding var imageResponses: [ImageResponse]
+    @State var selectable: Bool = false
 
     var body: some View {
-        NavigationLink(destination: PictureGalleryView(imageResponses: $imageResponses)) {
+        NavigationLink(destination: PictureGalleryView(imageResponses: $imageResponses, selectable: selectable)) {
             ScrollView(.horizontal) {
                 LazyHGrid(rows: [GridItem(.adaptive(minimum: 100))]) {
                     ForEach(imageResponses) { imageResponse in
@@ -203,5 +205,5 @@ struct PictureGalleryPreview: View {
         ImageResponse(uiImage: UIImage(imageLiteralResourceName: "default")),
         ImageResponse(uiImage: UIImage(imageLiteralResourceName: "default")),
     ]
-    PictureGalleryView(imageResponses: $imageResponses)
+    PictureGalleryView(imageResponses: $imageResponses, selectable: false)
 }

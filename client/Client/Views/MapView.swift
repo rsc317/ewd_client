@@ -67,6 +67,7 @@ struct MapView: View {
         }
         .sheet(item: $selectedPinPoint) { pinPoint in
             DetailPinPointView(pinPoint: pinPoint)
+                .presentationDragIndicator(.visible)
         }
         .onChange(of: locationManager.authorizationDenied) { _ , newValue in
             showSettingsAlert = newValue

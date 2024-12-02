@@ -58,7 +58,7 @@ struct CreatePinPointSheetView: View {
                         )
                         .padding(.horizontal)
                     Spacer()
-                    PictureGalleryPreview(imageResponses: $imageResponses)
+                    PictureGalleryPreview(imageResponses: $imageResponses, selectable: true)
                         .padding()
                     Spacer()
                     PictureGalleryPickerView(imageResponses: $imageResponses)

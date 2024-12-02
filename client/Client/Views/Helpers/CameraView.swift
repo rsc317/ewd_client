@@ -96,7 +96,6 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         captureButton.addTarget(self, action: #selector(didTapCapture), for: .touchUpInside)
         view.addSubview(captureButton)
         
-        let closeButtonSize: CGFloat = 30
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         closeButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
         closeButton.tintColor = .white

@@ -34,6 +34,7 @@ class AuthenticationManager: ObservableObject {
         }
     }
     private var tokenTimer: Timer?
+    private var countdownTimer: Timer?
 
     static let shared = AuthenticationManager()
     
@@ -43,20 +44,19 @@ class AuthenticationManager: ObservableObject {
         
         if let token = self.token, isTokenValid() {
             scheduleTokenExpiration()
-            print("Token geladen und gültig: \(token.token)")
         } else {
             logOut()
         }
     }
 
-    func LogIn(username: String, password: String) {
+    func logIn(username: String, password: String) {
         let apiService = APIService.shared
 
         Task {
             do {
                 let credentials = "\(username):\(password)"
                 guard let encodedCredentials = credentials.data(using: .utf8)?.base64EncodedString() else {
-                    return //throw APIError.authFailed(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Ungültige Anmeldedaten"]))
+                    return
                 }
                 let headerField = "Authorization"
                 let headerValue = "Basic \(encodedCredentials)"
@@ -82,6 +82,7 @@ class AuthenticationManager: ObservableObject {
             self.isAuthenticated = false
             self.token = nil
             self.tokenTimer?.invalidate()
+            self.countdownTimer?.invalidate()
             self.clearToken()
         }
     }
@@ -165,7 +166,6 @@ class AuthenticationManager: ObservableObject {
             let tokenData = try JSONEncoder().encode(token)
             defaults.set(tokenData, forKey: "authToken")
             defaults.set(token.expireDate, forKey: "tokenExpireDate")
-            print("Token und Ablaufdatum gespeichert.")
         } catch {
             print("Fehler beim Speichern des Tokens: \(error)")
         }
@@ -192,27 +192,36 @@ class AuthenticationManager: ObservableObject {
     
     private func isTokenValid() -> Bool {
         guard let token = token else {
-            print("Kein Token vorhanden.")
             return false
         }
         let valid = Date() < token.expireDate
-        print("Token gültig: \(valid)")
         return valid
     }
     
     private func scheduleTokenExpiration() {
         guard let expireDate = UserDefaults.standard.object(forKey: "tokenExpireDate") as? Date else {
-            print("Kein Ablaufdatum gefunden.")
             return
         }
-        
+
         let timeInterval = expireDate.timeIntervalSinceNow
-        print("Token läuft ab in \(timeInterval / 60 / 60) Minuten.")
-        
+        print("Token läuft ab in \(timeInterval) Minuten.")
+
         if timeInterval > 0 {
             tokenTimer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: false) { [weak self] _ in
                 self?.logOut()
                 print("Token abgelaufen. Benutzer wurde abgemeldet.")
+            }
+
+            countdownTimer?.invalidate()
+            countdownTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
+                guard let self = self else { return }
+
+                let remainingTime = expireDate.timeIntervalSinceNow
+                if remainingTime > 0 {
+                    print("Verbleibende Zeit: \(String(format: "%.0f", remainingTime)) Sekunden")
+                } else {
+                    timer.invalidate()
+                }
             }
         } else {
             logOut()

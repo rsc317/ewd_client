@@ -123,6 +123,11 @@ class APIService {
                 throw APIError.invalidResponse
             }
             
+            if 403 == httpResponse.statusCode {
+                AuthenticationManager.shared.logOut()
+                throw APIError.unknown
+            }
+            
             guard let contentType = httpResponse.value(forHTTPHeaderField: "Content-Type") else {
                 throw APIError.unknown
             }

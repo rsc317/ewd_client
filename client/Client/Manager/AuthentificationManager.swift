@@ -42,7 +42,7 @@ class AuthenticationManager: ObservableObject {
         self.isAuthenticated = UserDefaults.standard.bool(forKey: "isLoggedIn")
         self.token = loadToken()
         
-        if let token = self.token, isTokenValid() {
+        if self.token != nil && isTokenValid() {
             scheduleTokenExpiration()
         } else {
             logOut()

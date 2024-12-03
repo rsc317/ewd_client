@@ -26,15 +26,22 @@ struct PictureGalleryView: View {
                     ) {
                         ForEach(imageResponses) { imageResponse in
                             ZStack {
-                                Image(uiImage: imageResponse.uiImage)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 180, height: 180)
-                                    .clipped()
-                                    .overlay(
-                                        isSelecting && selectedImages.contains(imageResponse.id) ?
-                                        Color.black.opacity(0.4) : Color.clear
-                                    )
+                                NavigationLink(
+                                    destination: PictureFullScreenView(image: imageResponse.uiImage),
+                                    label: {
+                                        Image(uiImage: imageResponse.uiImage)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 180, height: 180)
+                                            .clipped()
+                                            .overlay(
+                                                isSelecting && selectedImages.contains(imageResponse.id)
+                                                ? Color.black.opacity(0.4)
+                                                : Color.clear
+                                            )
+                                    }
+                                )
+                                .buttonStyle(PlainButtonStyle())
 
                                 if isSelecting {
                                     VStack {
@@ -195,6 +202,25 @@ struct PictureGalleryPreview: View {
         .buttonStyle(PlainButtonStyle())
     }
 }
+
+struct PictureFullScreenView: View {
+    let image: UIImage
+    @Environment(\.presentationMode) var presentationMode
+
+    var body: some View {
+        ZStack {
+            Color.black
+                .ignoresSafeArea()
+            
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFit()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .toolbarTitleDisplayMode(.inline)
+    }
+}
+
 
 #Preview {
     @Previewable @State var imageResponses: [ImageResponse] = [

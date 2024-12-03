@@ -11,6 +11,7 @@ import PhotosUI
 
 struct PictureGalleryView: View {
     @Binding var imageResponses: [ImageResponse]
+    @State var selectable: Bool
     @State private var isSelecting = false
     @State private var selectedImages = Set<UUID>()
     @State private var showDeleteAlert = false
@@ -25,15 +26,22 @@ struct PictureGalleryView: View {
                     ) {
                         ForEach(imageResponses) { imageResponse in
                             ZStack {
-                                Image(uiImage: imageResponse.uiImage)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 180, height: 180)
-                                    .clipped()
-                                    .overlay(
-                                        isSelecting && selectedImages.contains(imageResponse.id) ?
-                                        Color.black.opacity(0.4) : Color.clear
-                                    )
+                                NavigationLink(
+                                    destination: PictureFullScreenView(image: imageResponse.uiImage),
+                                    label: {
+                                        Image(uiImage: imageResponse.uiImage)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 180, height: 180)
+                                            .clipped()
+                                            .overlay(
+                                                isSelecting && selectedImages.contains(imageResponse.id)
+                                                ? Color.black.opacity(0.4)
+                                                : Color.clear
+                                            )
+                                    }
+                                )
+                                .buttonStyle(PlainButtonStyle())
 
                                 if isSelecting {
                                     VStack {
@@ -90,12 +98,12 @@ struct PictureGalleryView: View {
         .navigationTitle("Bilder")
         .toolbarTitleDisplayMode(.inline)
         .navigationBarItems(trailing:
-            Button(isSelecting ? "Abbrechen" : "Auswählen") {
+            selectable ? Button(isSelecting ? "Abbrechen" : "Auswählen") {
                 isSelecting.toggle()
                 if !isSelecting {
                     selectedImages.removeAll()
                 }
-            }
+            } : nil
         )
         .alert(isPresented: $showDeleteAlert) {
             Alert(
@@ -174,9 +182,10 @@ struct PictureGalleryPickerView: View {
 
 struct PictureGalleryPreview: View {
     @Binding var imageResponses: [ImageResponse]
+    @State var selectable: Bool = false
 
     var body: some View {
-        NavigationLink(destination: PictureGalleryView(imageResponses: $imageResponses)) {
+        NavigationLink(destination: PictureGalleryView(imageResponses: $imageResponses, selectable: selectable)) {
             ScrollView(.horizontal) {
                 LazyHGrid(rows: [GridItem(.adaptive(minimum: 100))]) {
                     ForEach(imageResponses) { imageResponse in
@@ -194,6 +203,25 @@ struct PictureGalleryPreview: View {
     }
 }
 
+struct PictureFullScreenView: View {
+    let image: UIImage
+    @Environment(\.presentationMode) var presentationMode
+
+    var body: some View {
+        ZStack {
+            Color.black
+                .ignoresSafeArea()
+            
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFit()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .toolbarTitleDisplayMode(.inline)
+    }
+}
+
+
 #Preview {
     @Previewable @State var imageResponses: [ImageResponse] = [
         ImageResponse(uiImage: UIImage(imageLiteralResourceName: "default")),
@@ -203,5 +231,5 @@ struct PictureGalleryPreview: View {
         ImageResponse(uiImage: UIImage(imageLiteralResourceName: "default")),
         ImageResponse(uiImage: UIImage(imageLiteralResourceName: "default")),
     ]
-    PictureGalleryView(imageResponses: $imageResponses)
+    PictureGalleryView(imageResponses: $imageResponses, selectable: false)
 }

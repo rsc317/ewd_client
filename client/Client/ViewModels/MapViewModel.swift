@@ -13,7 +13,6 @@ import MapKit
 @Observable
 class MapViewModel {
     private(set) var pinPoints: [PinPoint] = []
-    var selectedPinPoint: PinPoint?
     var isLoading: Bool = false
     var errorMessage: String?
     
@@ -23,7 +22,7 @@ class MapViewModel {
         errorMessage = nil
         
         do {
-            let fetchedPins: [PinPoint] = try await APIService.shared.get(endpoint: "pinpoints", queryParameters: self.getQueryParamsForPintPoint())
+            let fetchedPins: [PinPoint] = try await APIService.shared.get(endpoint: "pinpoints", queryParameters: self.getQueryParamsForPinPoint())
             pinPoints.append(contentsOf: fetchedPins)
         } catch {
             if let apiError = error as? APIError {
@@ -75,14 +74,14 @@ class MapViewModel {
         isLoading = false
     }
     
-    private func getQueryParamsForPintPoint() -> [String: String] {
+    private func getQueryParamsForPinPoint() -> [String:String] {
         guard let latitue = LocationManager.shared.getCurrentLocation()?.coordinate.latitude else {
             return [:]
         }
         guard let longitude = LocationManager.shared.getCurrentLocation()?.coordinate.longitude else {
             return [:]
         }
-        return ["latitude": String(latitue), "longitude": String(longitude), "radius": "100000000000"]
+        return ["latitude": String(latitue), "longitude": String(longitude), "radius": "100000"]
     }
     
     func addMockPinPoint(_ locationCoordinates: CLLocationCoordinate2D) {

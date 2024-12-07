@@ -11,8 +11,7 @@ import SwiftData
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var selectedTab = 2
-//    @Query private var items: [Item]
-
+    
     var body: some View {
         TabView(selection: $selectedTab){
             

@@ -15,7 +15,7 @@ class MapViewModel {
     private(set) var pinPoints: [PinPoint] = []
     var isLoading: Bool = false
     var errorMessage: String?
-    
+
     func fetchAllPinPoints() async throws {
         pinPoints = []
         isLoading = true
@@ -75,13 +75,15 @@ class MapViewModel {
     }
     
     private func getQueryParamsForPinPoint() -> [String:String] {
+        let radiusValue: Double = UserDefaults.standard.double(forKey: "radiusValue")
+
         guard let latitue = LocationManager.shared.getCurrentLocation()?.coordinate.latitude else {
             return [:]
         }
         guard let longitude = LocationManager.shared.getCurrentLocation()?.coordinate.longitude else {
             return [:]
         }
-        return ["latitude": String(latitue), "longitude": String(longitude), "radius": "100000"]
+        return ["latitude": String(latitue), "longitude": String(longitude), "radius": String(radiusValue)]
     }
     
     func addMockPinPoint(_ locationCoordinates: CLLocationCoordinate2D) {

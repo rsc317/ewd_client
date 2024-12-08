@@ -68,7 +68,7 @@ struct PinPoint: Codable, Identifiable {
     }
     
     func getPrettyPrint() -> String {
-        return "\(coordinate.coordinates.latitude) / \(coordinate.coordinates.longitude)"
+        return "\(String(format: "%.6f",coordinate.coordinates.latitude)) / \(String(format: "%.6f", coordinate.coordinates.longitude))"
     }
     
 }

@@ -4,13 +4,12 @@
 //
 //  Created by Emircan Duman on 17.11.24.
 //
-
 import SwiftUI
 import Combine
+import Security
 
 enum AuthenticationError: Error, Identifiable {
     var id: Self { self }
-
     case usernameAlreadyInUse
     case usernameToShort
     case userNotFound
@@ -27,52 +26,63 @@ enum AuthenticationError: Error, Identifiable {
 }
 
 class AuthenticationManager: ObservableObject {
+    @AppStorage("isAuthenticated") var isAuthenticated: Bool = false
+    @AppStorage("stayLoggedIn") var stayLoggedIn: Bool = false
+    @AppStorage("storedUsername") var storedUsername: String = ""
     var token: AuthenticationToken?
-    @Published var isAuthenticated: Bool {
-        didSet {
-            UserDefaults.standard.set(isAuthenticated, forKey: "isLoggedIn")
-        }
-    }
     private var tokenTimer: Timer?
     private var countdownTimer: Timer?
 
     static let shared = AuthenticationManager()
     
     private init() {
-        self.isAuthenticated = UserDefaults.standard.bool(forKey: "isLoggedIn")
-        self.token = loadToken()
-        
-        if self.token != nil && isTokenValid() {
-            scheduleTokenExpiration()
+        self.token = loadTokenFromKeychain()
+
+        if stayLoggedIn {
+            if let token = self.token, isTokenValid(token: token) {
+                scheduleTokenExpiration(token: token)
+            } else if let username = storedUsername.nonEmpty, let password = loadPasswordFromKeychain(for: username) {
+                logIn(username: username, password: password, silentLogin: true)
+            } else {
+                logOut()
+            }
         } else {
             logOut()
         }
     }
 
-    func logIn(username: String, password: String) {
+    func logIn(username: String, password: String, silentLogin: Bool = false) {
         let apiService = APIService.shared
-
         Task {
             do {
                 let credentials = "\(username):\(password)"
                 guard let encodedCredentials = credentials.data(using: .utf8)?.base64EncodedString() else {
                     return
                 }
-                let headerField = "Authorization"
-                let headerValue = "Basic \(encodedCredentials)"
                 let response: AuthenticationToken = try await apiService.getLogin(
                     endpoint: "auth/login",
-                    headers: [headerField:headerValue]
+                    headers: ["Authorization":"Basic \(encodedCredentials)"]
                 )
                 DispatchQueue.main.async {
                     self.tokenTimer?.invalidate()
                     self.token = response
                     self.isAuthenticated = true
-                    self.saveToken(response)
-                    self.scheduleTokenExpiration()
+                    if self.stayLoggedIn {
+                        self.storedUsername = username
+                        self.savePasswordToKeychain(password, for: username)
+                    } else {
+                        self.storedUsername = ""
+                        self.deletePasswordFromKeychain(for: username)
+                    }
+                    self.saveTokenToKeychain(response)
+                    self.scheduleTokenExpiration(token: response)
                 }
             } catch {
-                print("Fehler: \(error)")
+                DispatchQueue.main.async {
+                    if !silentLogin {
+                        self.logOut()
+                    }
+                }
             }
         }
     }
@@ -83,42 +93,37 @@ class AuthenticationManager: ObservableObject {
             self.token = nil
             self.tokenTimer?.invalidate()
             self.countdownTimer?.invalidate()
-            self.clearToken()
+            if let username = self.storedUsername.nonEmpty {
+                self.deletePasswordFromKeychain(for: username)
+            }
+            self.storedUsername = ""
+            self.clearTokenFromKeychain()
         }
     }
-    
+
     func signUp(email: String, username: String, password: String, passwordConfirm: String) -> [AuthenticationError] {
-        let authenticationErrors: [AuthenticationError] = checkForErrors(email: email, username: username, password: password, passwordConfirm: passwordConfirm)
-        
+        let authenticationErrors = checkForErrors(email: email, username: username, password: password, passwordConfirm: passwordConfirm)
         if authenticationErrors.isEmpty {
             let apiService = APIService.shared
-
             Task {
                 do {
                     let requestBody = UserRegistrationRequest(username: username, email: email, password: password)
-                    let _ : String = try await apiService.postSignUp(
-                        endpoint: "auth/signup",
-                        body: requestBody
-                    )
-                } catch {
-                    print("Fehler: \(error)")
-                }
+                    let _: String = try await apiService.postSignUp(endpoint: "auth/signup", body: requestBody)
+                } catch {}
             }
         }
-        
         return authenticationErrors
     }
     
     private func checkForErrors(email: String, username: String, password: String, passwordConfirm: String) -> [AuthenticationError] {
         var authenticationErros: [AuthenticationError] = []
-        
         if isUsernameInUse(username) {
             authenticationErros.append(.usernameAlreadyInUse)
         }
         if isEmailInUse(email) {
             authenticationErros.append(.emailAlreadyInUse)
         }
-        if isValidEmail(email) {
+        if !isValidEmail(email) {
             authenticationErros.append(.emailInvalid)
         }
         if username.isEmpty || username.count < 3 {
@@ -139,92 +144,154 @@ class AuthenticationManager: ObservableObject {
         if password.rangeOfCharacter(from: CharacterSet(charactersIn: "<>'\"\\/;")) != nil {
             authenticationErros.append(.passwordHasInvalidCharacter)
         }
-        
         return authenticationErros
     }
     
     private func isUsernameInUse(_ username: String) -> Bool {
-        //@TODO implement rest call to check if username is in use
         return false
     }
     
-    private func isEmailInUse(_ username: String) -> Bool {
-        //@TODO implement rest call to check if email is in use
+    private func isEmailInUse(_ email: String) -> Bool {
         return false
     }
     
     private func isValidEmail(_ email: String) -> Bool {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
-
         let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
         return emailPred.evaluate(with: email)
     }
     
-    private func saveToken(_ token: AuthenticationToken) {
-        let defaults = UserDefaults.standard
+    private func saveTokenToKeychain(_ token: AuthenticationToken) {
         do {
             let tokenData = try JSONEncoder().encode(token)
-            defaults.set(tokenData, forKey: "authToken")
-            defaults.set(token.expireDate, forKey: "tokenExpireDate")
-        } catch {
-            print("Fehler beim Speichern des Tokens: \(error)")
-        }
+            saveToKeychain(account: "authToken", data: tokenData)
+        } catch {}
     }
     
-    private func loadToken() -> AuthenticationToken? {
-        let defaults = UserDefaults.standard
-        guard let tokenData = defaults.data(forKey: "authToken") else {
-            return nil
-        }
+    private func loadTokenFromKeychain() -> AuthenticationToken? {
+        guard let tokenData = loadFromKeychain(account: "authToken") else { return nil }
         do {
             return try JSONDecoder().decode(AuthenticationToken.self, from: tokenData)
         } catch {
-            print("Fehler beim Laden des Tokens: \(error)")
             return nil
         }
     }
     
-    private func clearToken() {
-        let defaults = UserDefaults.standard
-        defaults.removeObject(forKey: "authToken")
-        defaults.removeObject(forKey: "tokenExpireDate")
+    private func clearTokenFromKeychain() {
+        deleteFromKeychain(account: "authToken")
+    }
+
+    private func savePasswordToKeychain(_ password: String, for username: String) {
+        guard let passwordData = password.data(using: .utf8) else { return }
+        saveToKeychain(account: "password_\(username)", data: passwordData)
+    }
+
+    private func loadPasswordFromKeychain(for username: String) -> String? {
+        guard let data = loadFromKeychain(account: "password_\(username)"),
+              let password = String(data: data, encoding: .utf8) else {
+            return nil
+        }
+        return password
+    }
+
+    private func deletePasswordFromKeychain(for username: String) {
+        deleteFromKeychain(account: "password_\(username)")
+    }
+
+    private func isTokenValid(token: AuthenticationToken) -> Bool {
+        return Date() < token.expireDate
     }
     
-    private func isTokenValid() -> Bool {
-        guard let token = token else {
-            return false
-        }
-        let valid = Date() < token.expireDate
-        return valid
-    }
-    
-    private func scheduleTokenExpiration() {
-        guard let expireDate = UserDefaults.standard.object(forKey: "tokenExpireDate") as? Date else {
-            return
-        }
-
-        let timeInterval = expireDate.timeIntervalSinceNow
-        print("Token läuft ab in \(timeInterval) Minuten.")
-
+    private func scheduleTokenExpiration(token: AuthenticationToken) {
+        let timeInterval = token.expireDate.timeIntervalSinceNow
+        
         if timeInterval > 0 {
             tokenTimer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: false) { [weak self] _ in
-                self?.logOut()
-                print("Token abgelaufen. Benutzer wurde abgemeldet.")
+                self?.attemptReLoginOrLogout()
             }
+            startCountdownTimer(until: token.expireDate)
+        } else {
+            attemptReLoginOrLogout()
+        }
+    }
 
-            countdownTimer?.invalidate()
-            countdownTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
-                guard let self = self else { return }
-
-                let remainingTime = expireDate.timeIntervalSinceNow
-                if remainingTime > 0 {
-                    print("Verbleibende Zeit: \(String(format: "%.0f", remainingTime)) Sekunden")
-                } else {
-                    timer.invalidate()
+    private func attemptReLoginOrLogout() {
+        guard let username = storedUsername.nonEmpty,
+              let password = loadPasswordFromKeychain(for: username) else {
+            logOut()
+            return
+        }
+        
+        Task {
+            do {
+                let newToken = try await performLogin(username: username, password: password)
+                DispatchQueue.main.async {
+                    self.token = newToken
+                    self.isAuthenticated = true
+                    self.saveTokenToKeychain(newToken)
+                    self.scheduleTokenExpiration(token: newToken)
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    self.logOut()
                 }
             }
-        } else {
-            logOut()
         }
+    }
+
+    private func performLogin(username: String, password: String) async throws -> AuthenticationToken {
+        let credentials = "\(username):\(password)"
+        guard let encodedCredentials = credentials.data(using: .utf8)?.base64EncodedString() else {
+            throw AuthenticationError.unknownError
+        }
+        let headers = ["Authorization":"Basic \(encodedCredentials)"]
+        return try await APIService.shared.getLogin(endpoint: "auth/login", headers: headers)
+    }
+
+    private func startCountdownTimer(until date: Date) {
+        countdownTimer?.invalidate()
+        countdownTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
+            guard let self = self else { return }
+            if date.timeIntervalSinceNow <= 0 {
+                timer.invalidate()
+            }
+        }
+    }
+    
+    private func saveToKeychain(account: String, data: Data) {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: account
+        ]
+        SecItemDelete(query as CFDictionary)
+        let attributes: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: account,
+            kSecValueData as String: data
+        ]
+        SecItemAdd(attributes as CFDictionary, nil)
+    }
+    
+    private func loadFromKeychain(account: String) -> Data? {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: account,
+            kSecReturnData as String: true,
+            kSecMatchLimit as String: kSecMatchLimitOne
+        ]
+        var result: AnyObject?
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        guard status == errSecSuccess, let data = result as? Data else {
+            return nil
+        }
+        return data
+    }
+    
+    private func deleteFromKeychain(account: String) {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: account
+        ]
+        SecItemDelete(query as CFDictionary)
     }
 }

@@ -192,7 +192,7 @@ struct PictureGalleryPreview: View {
                         Image(uiImage: imageResponse.uiImage)
                             .resizable()
                             .scaledToFill()
-                            .frame(width: 120, height: 120)
+                            .frame(width: 80, height: 80)
                             .clipped()
                     }
                 }

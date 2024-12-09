@@ -66,4 +66,9 @@ struct PinPoint: Codable, Identifiable {
         try container.encode(comments, forKey: .comments)
         try container.encode(likes, forKey: .likes)
     }
+    
+    func getPrettyPrint() -> String {
+        return "\(coordinate.coordinates.latitude) / \(coordinate.coordinates.longitude)"
+    }
+    
 }

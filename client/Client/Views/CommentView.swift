@@ -18,12 +18,12 @@ struct CommentView: View {
                         Text(comment.username)
                             .font(.headline)
                             .foregroundColor(Color.accent)
-                        Text(comment.timeStamp, style: .time)
+                        Text(comment.createdAt, style: .time)
                             .font(.caption)
                             .foregroundColor(.gray)
                     }
  
-                    Text(comment.message)
+                    Text(comment.content)
                         .font(.body)
 
                 }

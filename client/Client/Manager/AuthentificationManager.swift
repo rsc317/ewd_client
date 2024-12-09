@@ -90,6 +90,7 @@ class AuthenticationManager: ObservableObject {
     func logOut() {
         DispatchQueue.main.async {
             self.isAuthenticated = false
+            self.stayLoggedIn = false
             self.token = nil
             self.tokenTimer?.invalidate()
             self.countdownTimer?.invalidate()

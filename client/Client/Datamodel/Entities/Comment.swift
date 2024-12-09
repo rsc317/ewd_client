@@ -11,32 +11,32 @@ import SwiftData
 
 struct Comment: Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
-        case message
+        case content
         case username
-        case timeStamp
+        case createdAt="created_at"
     }
     
     let id = UUID()
-    var message: String
+    var content: String
     var username: String
-    var timeStamp: Date = Date()
+    var createdAt: Date = Date()
     
-    init (message: String, username: String) {
-        self.message = message
+    init (content: String, username: String) {
+        self.content = content
         self.username = username
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        message = try container.decode(String.self, forKey: .message)
+        content = try container.decode(String.self, forKey: .content)
         username = try container.decode(String.self, forKey: .username)
-        timeStamp = try container.decode(Date.self, forKey: .timeStamp)
+        createdAt = try container.decode(Date.self, forKey: .createdAt)
     }
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(message, forKey: .message)
+        try container.encode(content, forKey: .content)
         try container.encode(username, forKey: .username)
-        try container.encode(timeStamp, forKey: .timeStamp)
+        try container.encode(createdAt, forKey: .createdAt)
     }
 }

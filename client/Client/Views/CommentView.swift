@@ -12,10 +12,10 @@ struct CommentView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            ForEach(viewModel.pinPoint.comments, id: \.id) { comment in
+            ForEach(viewModel.comments, id: \.id) { comment in
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Text(comment.username)
+                        Text(comment.username ?? "unknown")
                             .font(.headline)
                             .foregroundColor(Color.accent)
                         Text(comment.createdAt, style: .time)

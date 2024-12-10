@@ -11,7 +11,7 @@ import SwiftData
 
 struct PinPoint: Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
-        //case id
+        case serverId="id"
         case title
         case description
         case isDeleted = "is_deleted"
@@ -23,7 +23,7 @@ struct PinPoint: Codable, Identifiable {
     }
     
     let id = UUID()
-    //var id: Int = 0
+    var serverId: Int?
     var title: String
     var description: String
     var isDeleted: Bool = false
@@ -43,20 +43,20 @@ struct PinPoint: Codable, Identifiable {
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        //self.id = try container.decode(Int.self, forKey: .id)
+        self.serverId = try container.decode(Int.self, forKey: .serverId)
         self.title = try container.decode(String.self, forKey: .title)
         self.description = try container.decode(String.self, forKey: .description)
         self.isDeleted = try container.decode(Bool.self, forKey: .isDeleted)
         self.duration = try container.decode(Duration.self, forKey: .duration)
         self.coordinate = try container.decode(GeoCoordinate.self, forKey: .coordinate)
-        self.images = try container.decode([ImageResponse].self, forKey: .images)
-        self.comments = try container.decode([Comment].self, forKey: .comments)
-        self.likes = try container.decode([Like].self, forKey: .likes)
+        self.images = try container.decodeIfPresent([ImageResponse].self, forKey: .images) ?? []
+        self.comments = try container.decodeIfPresent([Comment].self, forKey: .comments) ?? []
+        self.likes = try container.decodeIfPresent([Like].self, forKey: .likes) ?? []
     }
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        //try container.encode(id, forKey: .id)
+        try container.encode(serverId, forKey: .serverId)
         try container.encode(title, forKey: .title)
         try container.encode(description, forKey: .description)
         try container.encode(isDeleted, forKey: .isDeleted)
@@ -68,7 +68,7 @@ struct PinPoint: Codable, Identifiable {
     }
     
     func getPrettyPrint() -> String {
-        return "\(coordinate.coordinates.latitude) / \(coordinate.coordinates.longitude)"
+        return "\(String(format: "%.6f",coordinate.coordinates.latitude)) / \(String(format: "%.6f", coordinate.coordinates.longitude))"
     }
     
 }

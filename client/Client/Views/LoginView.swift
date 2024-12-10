@@ -13,6 +13,7 @@ struct LoginView: View {
     @State private var error: [AuthenticationError] = []
     @State private var showError: Bool = false
     @State private var showConfirmRegistrationView: Bool = false
+    @StateObject private var authManager = AuthenticationManager.shared
 
     var body: some View {
         NavigationStack {
@@ -20,6 +21,16 @@ struct LoginView: View {
                 Spacer()
                 ViewElementFactory.createTextfield(label: "Benutzername", text: $username)
                 ViewElementFactory.createPasswordField(label: "Passwort", text: $password)
+                HStack {
+                    Toggle(isOn: $authManager.stayLoggedIn) {
+                        Text("Angemeldet bleiben?")
+                            .font(.subheadline)
+                            .foregroundColor(.interaction)
+                    }
+                    .toggleStyle(.switch)
+                    .tint(Color.interaction)
+                }
+                .padding(.horizontal)
                 ViewElementFactory.createInteractionButton(label: "Anmelden", action: login)
                 ViewElementFactory.createInteractionFooter(
                     footerText: "Noch keinen Account?",

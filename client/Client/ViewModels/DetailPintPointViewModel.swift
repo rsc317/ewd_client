@@ -16,7 +16,9 @@ enum UserReaction {
 @Observable
 class DetailPintPointViewModel {
     private(set) var pinPoint: PinPoint
-    
+    private(set) var comments: [Comment] = []
+    private(set) var likes: [Like] = []
+
     var userReaction: UserReaction = .none
     var newComment: String = ""
     var isLoading: Bool = false
@@ -26,45 +28,92 @@ class DetailPintPointViewModel {
         self.pinPoint = pinPoint
     }
     
-    func fetchLikesAndComments() {
-        //Please remove when endpoints are implemented
-        mockLikesAndComments()
-    }
-    
-    func dislike() {
-        postLike(false)
-        userReaction = .disliked
-    }
-    
-    func like() {
-        postLike(true)
-        userReaction = .liked
+    func fetchLikesAndComments() async throws {
+        isLoading = true
+        errorMessage = nil
+        comments = []
+        likes = []
+        do {
+            guard let pinPointId = pinPoint.serverId else { return }
+            let fetchedComments: [Comment] = try await APIService.shared.get(endpoint: "pinpoints/\(pinPointId)/comments")
+            let fetchedLikes: [Like] = try await APIService.shared.get(endpoint: "pinpoints/\(pinPointId)/likes")
+            comments.append(contentsOf: fetchedComments)
+            likes.append(contentsOf: fetchedLikes)
+        } catch {
+            if let apiError = error as? APIError {
+                self.errorMessage = apiError.localizedDescription
+            } else {
+                self.errorMessage = error.localizedDescription
+            }
+        }
+        isLoading = false
     }
     
     func dislikeCount() -> Int {
-        pinPoint.likes.filter { !$0.isLike }.count
+        likes.filter { !$0.isLike }.count
     }
     
     func likeCount() -> Int {
-        pinPoint.likes.filter { $0.isLike }.count
+        likes.filter { $0.isLike }.count
     }
 
-    func postComment() {
+    func postComment() async throws {
+        isLoading = true
+        errorMessage = nil
         
+        let newComment = Comment(content: newComment)
+        
+        do {
+            guard let pinPointId = pinPoint.serverId else { return }
+            let responseMsg:String = try await APIService.shared.post(endpoint: "pinpoints/\(pinPointId)/comments", body: newComment)
+            print("server msg:\(responseMsg)")
+        } catch {
+            if let apiError = error as? APIError {
+                self.errorMessage = apiError.localizedDescription
+            } else {
+                self.errorMessage = error.localizedDescription
+            }
+            print("posting comment failed:\(self.errorMessage!)")
+        }
+        Task {
+            do {
+                try await self.fetchLikesAndComments()
+            } catch {
+                print("Fehler beim Laden der Daten: \(error)")
+            }
+        }
+        isLoading = false
+        self.newComment = ""
+
     }
     
-    private func postLike(_ liked: Bool) {
+    func postLike(_ like: Bool) async throws {
+        isLoading = true
+        errorMessage = nil
+        userReaction = like ? .liked : .disliked
         
-    }
-    
-    private func mockLikesAndComments() {
-        pinPoint.likes = [Like(isLike: true),Like(isLike: true),Like(isLike: true),Like(isLike: true),Like(isLike: false),Like(isLike: true),Like(isLike: false),Like(isLike: false),Like(isLike: true),Like(isLike: false),Like(isLike: true),Like(isLike: true),]
-        pinPoint.comments = [
-            Comment(message: "Das ist ein großartiger Beitrag!", username: "Max"),
-            Comment(message: "Ich stimme voll und ganz zu.", username: "Julia"),
-            Comment(message: "Vielen Dank für die Information.", username: "Leon"),
-            Comment(message: "Können Sie mehr Details bereitstellen?", username: "Sofia"),
-            Comment(message: "Ich habe eine andere Meinung.", username: "Lukas")
-        ]
+        let newLike = Like(isLike: like)
+        
+        do {
+            guard let pinPointId = pinPoint.serverId else { return }
+
+            let responseMsg:String = try await APIService.shared.post(endpoint: "pinpoints/\(pinPointId)/likes", body: newLike)
+            print("server msg:\(responseMsg)")
+        } catch {
+            if let apiError = error as? APIError {
+                self.errorMessage = apiError.localizedDescription
+            } else {
+                self.errorMessage = error.localizedDescription
+            }
+            print("posting like failed:\(self.errorMessage!)")
+        }
+        Task {
+            do {
+                try await self.fetchLikesAndComments()
+            } catch {
+                print("Fehler beim Laden der Daten: \(error)")
+            }
+        }
+        isLoading = false
     }
 }

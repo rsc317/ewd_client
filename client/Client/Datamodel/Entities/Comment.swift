@@ -11,32 +11,46 @@ import SwiftData
 
 struct Comment: Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
-        case message
+        case content
         case username
-        case timeStamp
+        case createdAt="created_at"
     }
     
     let id = UUID()
-    var message: String
-    var username: String
-    var timeStamp: Date = Date()
+    var content: String
+    var username: String?
+    var createdAt: Date = Date()
     
-    init (message: String, username: String) {
-        self.message = message
-        self.username = username
+    init (content: String) {
+        self.content = content
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        message = try container.decode(String.self, forKey: .message)
+        content = try container.decode(String.self, forKey: .content)
         username = try container.decode(String.self, forKey: .username)
-        timeStamp = try container.decode(Date.self, forKey: .timeStamp)
+        let dateString = try container.decode(String.self, forKey: .createdAt)
+        let formatter = Comment.dateFormatter
+        guard let date = formatter.date(from: dateString) else {
+            throw DecodingError.dataCorruptedError(forKey: .createdAt,
+                                                   in: container,
+                                                   debugDescription: "Invalid date format: \(dateString)")
+        }
+        createdAt = date
     }
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(message, forKey: .message)
+        try container.encode(content, forKey: .content)
         try container.encode(username, forKey: .username)
-        try container.encode(timeStamp, forKey: .timeStamp)
+        try container.encode(Comment.dateFormatter.string(from: createdAt), forKey: .createdAt)
+    }
+    
+    private static var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter
     }
 }

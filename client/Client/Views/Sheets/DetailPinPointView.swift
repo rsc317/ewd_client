@@ -32,6 +32,8 @@ struct DetailPinPointView: View {
                         .padding()
                         PictureGalleryPreview(imageResponses: $imageResponses)
                             .padding()
+                        Divider()
+                            .background(Color.gray)
                         CommentView(viewModel: $viewModel)
                             .padding()
                     }
@@ -42,11 +44,28 @@ struct DetailPinPointView: View {
                 
                 VStack {
                     HStack {
-                        Button(action: viewModel.like) {
+                        Button(action: {
+                            Task {
+                                do {
+                                    try await viewModel.postLike(true)
+                                } catch {
+                                    print("Fehler beim Posten eines Likes: \(error.localizedDescription)")
+                                }
+                            }
+                        }) {
                             Label("\(viewModel.likeCount())", systemImage: "hand.thumbsup.fill")
                                 .foregroundColor(viewModel.userReaction == .liked ? .green : .primary)
                         }
-                        Button(action: viewModel.dislike) {
+
+                        Button(action: {
+                            Task {
+                                do {
+                                    try await viewModel.postLike(false)
+                                } catch {
+                                    print("Fehler beim Posten eines Dislikes: \(error.localizedDescription)")
+                                }
+                            }
+                        }) {
                             Label("\(viewModel.dislikeCount())", systemImage: "hand.thumbsdown.fill")
                                 .foregroundColor(viewModel.userReaction == .disliked ? .red : .primary)
                         }
@@ -61,9 +80,7 @@ struct DetailPinPointView: View {
                                 .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                         )
                     Button(action: {
-                        viewModel.postComment()
-                        viewModel.newComment = ""
-                        isFocused = false
+                        postComment()
                     }) {
                         Text("Posten")
                             .fontWeight(.semibold)
@@ -90,17 +107,39 @@ struct DetailPinPointView: View {
                 }
             }
         }
-        .onAppear(perform: {
-            viewModel.fetchLikesAndComments()
-            self.imageResponses = [
-                ImageResponse(uiImage: UIImage(imageLiteralResourceName: "default")),
-                ImageResponse(uiImage: UIImage(imageLiteralResourceName: "default")),
-                ImageResponse(uiImage: UIImage(imageLiteralResourceName: "default")),
-                ImageResponse(uiImage: UIImage(imageLiteralResourceName: "default")),
-                ImageResponse(uiImage: UIImage(imageLiteralResourceName: "default")),
-                ImageResponse(uiImage: UIImage(imageLiteralResourceName: "default")),
-            ]
-        })
+        .onAppear {
+            fetchLikesAndComments()
+        }
+    }
+    
+    func fetchLikesAndComments() {
+        Task {
+            do {
+                try await viewModel.fetchLikesAndComments()
+            } catch {
+                print("Fehler beim Laden der Daten: \(error)")
+            }
+        }
+    }
+    
+    func postComment() {
+        Task {
+            do {
+                try await viewModel.postComment()
+            } catch {
+                print("Fehler beim Laden der Daten: \(error)")
+            }
+        }
+    }
+    
+    func postLike(_ like: Bool) {
+        Task {
+            do {
+                try await viewModel.postLike(like)
+            } catch {
+                print("Fehler beim Laden der Daten: \(error)")
+            }
+        }
     }
 }
 

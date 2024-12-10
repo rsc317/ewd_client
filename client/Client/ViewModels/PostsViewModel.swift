@@ -22,7 +22,7 @@ class PostsViewModel: ObservableObject {
         errorMessage = nil
         
         do {
-            let fetchedPins: [PinPoint] = try await APIService.shared.get(endpoint: "pinpoints")
+            let fetchedPins: [PinPoint] = try await APIService.shared.get(endpoint: "user/pinpoints")
             pinPoints.append(contentsOf: fetchedPins)
         } catch {
             if let apiError = error as? APIError {

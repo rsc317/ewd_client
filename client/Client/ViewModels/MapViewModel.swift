@@ -53,8 +53,10 @@ class MapViewModel {
         let newPinPoint: PinPoint = PinPoint(title: title, description: description, duration: duration, coordinate: geoCoordinates)
         
         do {
-            let responseMsg:String = try await APIService.shared.post(endpoint: "pinpoints", body: newPinPoint)
-            print("saving pinpoint \(newPinPoint.title) on server)")
+            let returnedPinPoint:PinPoint = try await APIService.shared.post(endpoint: "pinpoints", body: newPinPoint)
+            print("saving pinpoint \(returnedPinPoint.serverId) on server)")
+            guard let serverID = returnedPinPoint.serverId else { throw MapError.nilObject("ServerID is Nil!") }
+            let responseMsg:String = try await APIService.shared.post(endpoint: "pinpoints/\(serverID)/images", body: imagesResponses)
             print("server msg:\(responseMsg)")
         } catch {
             if let apiError = error as? APIError {

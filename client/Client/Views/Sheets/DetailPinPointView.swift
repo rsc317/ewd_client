@@ -9,7 +9,6 @@ import SwiftUI
 
 struct DetailPinPointView: View {
     @State private var viewModel: DetailPintPointViewModel
-    @State private var imageResponses: [ImageResponse] = []
     @Environment(\.dismiss) var dismiss
     @FocusState private var isFocused: Bool
 
@@ -30,7 +29,7 @@ struct DetailPinPointView: View {
                                 .cornerRadius(10)
                         }
                         .padding()
-                        PictureGalleryPreview(imageResponses: $imageResponses)
+                        PictureGalleryPreview(imageResponses: $viewModel.pinPointImages)
                             .padding()
                         Divider()
                             .background(Color.gray)
@@ -116,6 +115,7 @@ struct DetailPinPointView: View {
         Task {
             do {
                 try await viewModel.fetchLikesAndComments()
+                try await viewModel.fetchImages()
             } catch {
                 print("Fehler beim Laden der Daten: \(error)")
             }

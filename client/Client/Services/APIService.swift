@@ -106,19 +106,6 @@ class APIService {
                 throw APIError.invalidResponse
             }
             
-            print("HTTP_STATUS_CODE: \(httpResponse.statusCode)")
-            if let contentType = httpResponse.value(forHTTPHeaderField: "Content-Type") {
-                print("Content-Type: \(contentType)")
-            } else {
-                print("Content-Type: Nicht verfügbar")
-            }
-            
-            if let responseString = String(data: data, encoding: .utf8) {
-                print("Antwortdaten (als String):\n\(responseString)")
-            } else {
-                print("Antwortdaten konnten nicht als String dekodiert werden.")
-            }
-            
             guard 200..<300 ~= httpResponse.statusCode else {
                 throw APIError.invalidResponse
             }

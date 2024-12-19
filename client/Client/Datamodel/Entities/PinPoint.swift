@@ -28,11 +28,7 @@ struct PinPoint: Codable, Identifiable {
     var description: String
     var isDeleted: Bool = false
     var duration: Duration
-    var images: [ImageResponse] = []
     var coordinate: GeoCoordinate
-    var comments: [Comment] = []
-    var likes: [Like] = []
-    
 
     init(title: String, description: String, duration: Duration, coordinate: GeoCoordinate) {
         self.title = title
@@ -49,9 +45,6 @@ struct PinPoint: Codable, Identifiable {
         self.isDeleted = try container.decode(Bool.self, forKey: .isDeleted)
         self.duration = try container.decode(Duration.self, forKey: .duration)
         self.coordinate = try container.decode(GeoCoordinate.self, forKey: .coordinate)
-        self.images = try container.decodeIfPresent([ImageResponse].self, forKey: .images) ?? []
-        self.comments = try container.decodeIfPresent([Comment].self, forKey: .comments) ?? []
-        self.likes = try container.decodeIfPresent([Like].self, forKey: .likes) ?? []
     }
     
     func encode(to encoder: Encoder) throws {
@@ -62,13 +55,9 @@ struct PinPoint: Codable, Identifiable {
         try container.encode(isDeleted, forKey: .isDeleted)
         try container.encode(duration, forKey: .duration)
         try container.encode(coordinate, forKey: .coordinate)
-        try container.encode(images, forKey: .images)
-        try container.encode(comments, forKey: .comments)
-        try container.encode(likes, forKey: .likes)
     }
     
     func getPrettyPrint() -> String {
         return "\(String(format: "%.6f",coordinate.coordinates.latitude)) / \(String(format: "%.6f", coordinate.coordinates.longitude))"
     }
-    
 }

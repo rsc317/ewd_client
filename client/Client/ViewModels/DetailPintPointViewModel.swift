@@ -18,7 +18,8 @@ class DetailPintPointViewModel {
     private(set) var pinPoint: PinPoint
     private(set) var comments: [Comment] = []
     private(set) var likes: [Like] = []
-
+    var pinPointImages: [ImageResponse] = []
+    
     var userReaction: UserReaction = .none
     var newComment: String = ""
     var isLoading: Bool = false
@@ -112,6 +113,25 @@ class DetailPintPointViewModel {
                 try await self.fetchLikesAndComments()
             } catch {
                 print("Fehler beim Laden der Daten: \(error)")
+            }
+        }
+        isLoading = false
+    }
+    
+    func fetchImages() async throws {
+        isLoading = true
+        errorMessage = nil
+        pinPointImages = []
+        
+        do {
+            guard let pinPointId = pinPoint.serverId else { return }
+            let fetchedImages: [ImageResponse] = try await APIService.shared.get(endpoint: "pinpoints/\(pinPointId)/images")
+            pinPointImages.append(contentsOf: fetchedImages)
+        } catch {
+            if let apiError = error as? APIError {
+                self.errorMessage = apiError.localizedDescription
+            } else {
+                self.errorMessage = error.localizedDescription
             }
         }
         isLoading = false

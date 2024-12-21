@@ -106,6 +106,19 @@ class APIService {
                 throw APIError.invalidResponse
             }
             
+            print("HTTP_STATUS_CODE: \(httpResponse.statusCode)")
+            if let contentType = httpResponse.value(forHTTPHeaderField: "Content-Type") {
+                print("Content-Type: \(contentType)")
+            } else {
+                print("Content-Type: Nicht verfügbar")
+            }
+            
+            if let responseString = String(data: data, encoding: .utf8) {
+                print("Antwortdaten (als String):\n\(responseString)")
+            } else {
+                print("Antwortdaten konnten nicht als String dekodiert werden.")
+            }
+            
             guard 200..<300 ~= httpResponse.statusCode else {
                 throw APIError.invalidResponse
             }
@@ -180,6 +193,15 @@ class APIService {
             queryParameters: nil,
             body: body,
             requiresAuth: false
+        )
+    }
+    
+    func getVerification<T: Codable>(endpoint: String, headers: [String: String]? = nil) async throws -> T {
+        return try await request(
+            method: .GET,
+            endpoint: endpoint,
+            body: Optional<Data>.none,
+            requiresAuth: true
         )
     }
 }

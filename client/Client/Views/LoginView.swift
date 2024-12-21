@@ -10,8 +10,8 @@ import SwiftUI
 struct LoginView: View {
     @State private var username: String = ""
     @State private var password: String = ""
-    @State private var error: [AuthenticationError] = []
-    @State private var showError: Bool = false
+    @State private var errors: [AuthenticationError] = []
+    @State private var showAlert: Bool = false
     @State private var showConfirmRegistrationView: Bool = false
     @StateObject private var authManager = AuthenticationManager.shared
 
@@ -38,19 +38,6 @@ struct LoginView: View {
                     view: RegistrationView()
                 )
                 
-                HStack {
-                    Text("Bereits registriert?")
-                        .font(.footnote)
-                    Button {
-                        showConfirmRegistrationView = true
-                    } label: {
-                        Text("Bestätige deinen Account!")
-                            .font(.footnote)
-                            .fontWeight(.bold)
-                            .foregroundColor(.interaction)
-                    }
-                }
-                
                 Spacer()
             }
             .navigationTitle("Login")
@@ -67,10 +54,13 @@ struct LoginView: View {
     
     private func login() {
         if username.isEmpty || password.isEmpty {
-            showError = true
+            showAlert = true
+        } else if errors.contains(.userNotVerifiedError) {
+            showConfirmRegistrationView = true
+            showAlert = true
         } else {
             AuthenticationManager.shared.logIn(username: username, password: password)
-            showError = false
+            showAlert = false
         }
     }
 }

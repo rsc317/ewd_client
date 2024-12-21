@@ -9,7 +9,9 @@ import SwiftUI
 
 struct ConfirmRegistrationView: View {
     var body: some View {
-        Text("Confirm Registration View")
+        VStack {
+            
+        }
     }
 }
 

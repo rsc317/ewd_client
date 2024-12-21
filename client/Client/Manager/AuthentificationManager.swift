@@ -23,12 +23,23 @@ enum AuthenticationError: Error, Identifiable {
     case accountNotConfirmed
     case networkError
     case unknownError
+    case registrationError
+    case loginError
+    case userNotVerifiedError
+    case credentialsError
 }
 
 class AuthenticationManager: ObservableObject {
     @AppStorage("isAuthenticated") var isAuthenticated: Bool = false
     @AppStorage("stayLoggedIn") var stayLoggedIn: Bool = false
     @AppStorage("storedUsername") var storedUsername: String = ""
+    var isUserVerified: Bool {
+        if let token {
+            return token.userVerified
+        } else {
+            return false
+        }
+    }
     var token: AuthenticationToken?
     private var tokenTimer: Timer?
     private var countdownTimer: Timer?
@@ -51,18 +62,24 @@ class AuthenticationManager: ObservableObject {
         }
     }
 
-    func logIn(username: String, password: String, silentLogin: Bool = false) {
+    func logIn(username: String, password: String, silentLogin: Bool = false) -> [AuthenticationError] {
         let apiService = APIService.shared
+        var authenticationErrors: [AuthenticationError] = []
         Task {
             do {
                 let credentials = "\(username):\(password)"
                 guard let encodedCredentials = credentials.data(using: .utf8)?.base64EncodedString() else {
-                    return
+                    return [AuthenticationError.credentialsError]
                 }
                 let response: AuthenticationToken = try await apiService.getLogin(
                     endpoint: "auth/login",
                     headers: ["Authorization":"Basic \(encodedCredentials)"]
                 )
+                
+                if !response.userVerified {
+                    authenticationErrors.append(.userNotVerifiedError)
+                }
+                
                 DispatchQueue.main.async {
                     self.tokenTimer?.invalidate()
                     self.token = response
@@ -84,7 +101,9 @@ class AuthenticationManager: ObservableObject {
                     }
                 }
             }
+            return authenticationErrors
         }
+        return authenticationErrors
     }
 
     func logOut() {
@@ -103,14 +122,18 @@ class AuthenticationManager: ObservableObject {
     }
 
     func signUp(email: String, username: String, password: String, passwordConfirm: String) -> [AuthenticationError] {
-        let authenticationErrors = checkForErrors(email: email, username: username, password: password, passwordConfirm: passwordConfirm)
+        var authenticationErrors = checkForErrors(email: email, username: username, password: password, passwordConfirm: passwordConfirm)
         if authenticationErrors.isEmpty {
             let apiService = APIService.shared
             Task {
                 do {
                     let requestBody = UserRegistrationRequest(username: username, email: email, password: password)
                     let _: String = try await apiService.postSignUp(endpoint: "auth/signup", body: requestBody)
-                } catch {}
+                    self.token = try await self.performLogin(username: username, password: password)
+                    let _: String = try await apiService.getVerification(endpoint: "user/verification")
+                } catch {
+                    authenticationErrors.append(.registrationError)
+                }
             }
         }
         return authenticationErrors
@@ -157,7 +180,9 @@ class AuthenticationManager: ObservableObject {
     }
     
     private func isValidEmail(_ email: String) -> Bool {
-        return true
+        let emailRegex = #"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"#
+        let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
+        return emailPredicate.evaluate(with: email)
     }
     
     private func saveTokenToKeychain(_ token: AuthenticationToken) {

@@ -40,10 +40,8 @@ struct RegistrationView: View {
     }
     
     private func signUp() {
-        self.errors = AuthenticationManager.shared.signUp(email: username, username: username, password: password, passwordConfirm: confirmPassword)
-        if errors.isEmpty {
-            showConfirmRegistrationView = true
-        }
+        errors = AuthenticationManager.shared.signUp(email: email, username: username, password: password, passwordConfirm: confirmPassword)
+        showConfirmRegistrationView = errors.isEmpty
     }
 }
 

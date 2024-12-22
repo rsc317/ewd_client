@@ -27,6 +27,7 @@ enum AuthenticationError: Error, Identifiable {
     case loginError
     case userNotVerifiedError
     case credentialsError
+    case verificationError
 }
 
 class AuthenticationManager: ObservableObject {
@@ -53,7 +54,14 @@ class AuthenticationManager: ObservableObject {
             if let token = self.token, isTokenValid(token: token) {
                 scheduleTokenExpiration(token: token)
             } else if let username = storedUsername.nonEmpty, let password = loadPasswordFromKeychain(for: username) {
-                logIn(username: username, password: password, silentLogin: true)
+                Task {
+                    let errors = await self.logIn(username: username, password: password, silentLogin: true)
+                    if !errors.isEmpty {
+                        DispatchQueue.main.async { [self] in
+                            logOut()
+                        }
+                    }
+                }
             } else {
                 logOut()
             }
@@ -62,46 +70,46 @@ class AuthenticationManager: ObservableObject {
         }
     }
 
-    func logIn(username: String, password: String, silentLogin: Bool = false) -> [AuthenticationError] {
+    func logIn(username: String, password: String, silentLogin: Bool = false) async -> [AuthenticationError] {
         let apiService = APIService.shared
         var authenticationErrors: [AuthenticationError] = []
-        Task {
-            do {
-                let credentials = "\(username):\(password)"
-                guard let encodedCredentials = credentials.data(using: .utf8)?.base64EncodedString() else {
-                    return [AuthenticationError.credentialsError]
+        
+        do {
+            let credentials = "\(username):\(password)"
+            guard let encodedCredentials = credentials.data(using: .utf8)?.base64EncodedString() else {
+                authenticationErrors.append(.credentialsError)
+                return authenticationErrors
+            }
+            
+            let response: AuthenticationToken = try await apiService.getLogin(
+                endpoint: "auth/login",
+                headers: ["Authorization": "Basic \(encodedCredentials)", "Content-Type": "application/json"]
+            )
+            
+            if !response.userVerified {
+                authenticationErrors.append(.userNotVerifiedError)
+            }
+            
+            await MainActor.run {
+                self.tokenTimer?.invalidate()
+                self.token = response
+                self.isAuthenticated = true
+                if self.stayLoggedIn {
+                    self.storedUsername = username
+                    self.savePasswordToKeychain(password, for: username)
+                } else {
+                    self.storedUsername = ""
+                    self.deletePasswordFromKeychain(for: username)
                 }
-                let response: AuthenticationToken = try await apiService.getLogin(
-                    endpoint: "auth/login",
-                    headers: ["Authorization":"Basic \(encodedCredentials)"]
-                )
-                
-                if !response.userVerified {
-                    authenticationErrors.append(.userNotVerifiedError)
-                }
-                
-                DispatchQueue.main.async {
-                    self.tokenTimer?.invalidate()
-                    self.token = response
-                    self.isAuthenticated = true
-                    if self.stayLoggedIn {
-                        self.storedUsername = username
-                        self.savePasswordToKeychain(password, for: username)
-                    } else {
-                        self.storedUsername = ""
-                        self.deletePasswordFromKeychain(for: username)
-                    }
-                    self.saveTokenToKeychain(response)
-                    self.scheduleTokenExpiration(token: response)
-                }
-            } catch {
-                DispatchQueue.main.async {
-                    if !silentLogin {
-                        self.logOut()
-                    }
+                self.saveTokenToKeychain(response)
+                self.scheduleTokenExpiration(token: response)
+            }
+        } catch {
+            await MainActor.run {
+                if !silentLogin {
+                    self.logOut()
                 }
             }
-            return authenticationErrors
         }
         return authenticationErrors
     }
@@ -134,6 +142,18 @@ class AuthenticationManager: ObservableObject {
                 } catch {
                     authenticationErrors.append(.registrationError)
                 }
+            }
+        }
+        return authenticationErrors
+    }
+    
+    func verification(code: String) -> [AuthenticationError] {
+        var authenticationErrors: [AuthenticationError] = []
+        Task {
+            do {
+                let _: String = try await APIService.shared.postVerification(endpoint: "user/verification", body: code)
+            } catch {
+                authenticationErrors.append(.verificationError)
             }
         }
         return authenticationErrors
@@ -268,7 +288,7 @@ class AuthenticationManager: ObservableObject {
         guard let encodedCredentials = credentials.data(using: .utf8)?.base64EncodedString() else {
             throw AuthenticationError.unknownError
         }
-        let headers = ["Authorization":"Basic \(encodedCredentials)"]
+        let headers = ["Authorization":"Basic \(encodedCredentials)","Content-Type":"application/json"]
         return try await APIService.shared.getLogin(endpoint: "auth/login", headers: headers)
     }
 

@@ -53,14 +53,14 @@ struct LoginView: View {
     }
     
     private func login() {
-        if username.isEmpty || password.isEmpty {
-            showAlert = true
-        } else if errors.contains(.userNotVerifiedError) {
-            showConfirmRegistrationView = true
-            showAlert = true
-        } else {
-            AuthenticationManager.shared.logIn(username: username, password: password)
-            showAlert = false
+        if !username.isEmpty && !password.isEmpty {
+            Task {
+                let errors = await AuthenticationManager.shared.logIn(username: username, password: password)
+                DispatchQueue.main.async {
+                    self.errors = errors
+                    self.showConfirmRegistrationView = errors.contains(.userNotVerifiedError)
+                }
+            }
         }
     }
 }

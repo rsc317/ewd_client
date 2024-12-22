@@ -77,7 +77,7 @@ class APIService {
         
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         if requiresAuth {
             guard let token = AuthenticationManager.shared.token?.token else {
@@ -91,11 +91,15 @@ class APIService {
         }
         
         if let body = body {
-            do {
-                let jsonData = try JSONEncoder().encode(body)
-                request.httpBody = jsonData
-            } catch {
-                throw APIError.decodingFailed(error)
+            if let body = body as? String {
+                request.httpBody = body.data(using: .utf8)
+            } else {
+                do {
+                    let jsonData = try JSONEncoder().encode(body)
+                    request.httpBody = jsonData
+                } catch {
+                    throw APIError.decodingFailed(error)
+                }
             }
         }
         
@@ -161,6 +165,7 @@ class APIService {
             method: .GET,
             endpoint: endpoint,
             queryParameters: queryParameters,
+            headers: ["Content-Type":"application/json"],
             body: Optional<Data>.none,
             requiresAuth: true
         )
@@ -171,6 +176,7 @@ class APIService {
             method: .POST,
             endpoint: endpoint,
             queryParameters: nil,
+            headers: ["Content-Type":"application/json"],
             body: body,
             requiresAuth: true
         )
@@ -191,6 +197,7 @@ class APIService {
             method: .POST,
             endpoint: endpoint,
             queryParameters: nil,
+            headers: ["Content-Type":"application/json"],
             body: body,
             requiresAuth: false
         )
@@ -201,6 +208,16 @@ class APIService {
             method: .GET,
             endpoint: endpoint,
             body: Optional<Data>.none,
+            requiresAuth: true
+        )
+    }
+    
+    func postVerification<T: Codable>(endpoint: String, body: String) async throws -> T {
+        return try await request(
+            method: .POST,
+            endpoint: endpoint,
+            headers: ["Content-Type":"text/plain"],
+            body: body,
             requiresAuth: true
         )
     }

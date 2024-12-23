@@ -36,8 +36,12 @@ struct ConfirmRegistrationView: View {
                     Text("Code wurde versendet! Gucke in dein Postfach!")
                         .foregroundStyle(.success)
                         .font(.footnote)
-                } else if showError {
-                    
+                }
+                
+                if showError {
+                    Text("Ein Fehler ist aufgetreten!")
+                        .foregroundStyle(.success)
+                        .font(.footnote)
                 }
 
                 ViewElementFactory.createInteractionButton(label: "Verifizieren", action: verify)
@@ -49,14 +53,24 @@ struct ConfirmRegistrationView: View {
     }
     
     private func verify() {
-        let errors = AuthenticationManager.shared.verification(code: token)
-        
+        showError = false
+        showVerificationSend = false
+        Task {
+            let errors = await AuthenticationManager.shared.verification(code: token)
+            DispatchQueue.main.async {
+                showError = !errors.isEmpty
+            }
+        }
     }
                      
     private func sendVerification() {
+        showVerificationSend = false
+        showError = false
         Task {
             let errors = await AuthenticationManager.shared.verification()
-            showVerificationSend = errors.isEmpty
+            DispatchQueue.main.async {
+                showVerificationSend = errors.isEmpty
+            }
         }
     }
 }

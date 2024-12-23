@@ -147,7 +147,7 @@ class AuthenticationManager: ObservableObject {
         return authenticationErrors
     }
     
-    func verification(code: String) -> [AuthenticationError] {
+    func verification(code: String) async -> [AuthenticationError] {
         var authenticationErrors: [AuthenticationError] = []
         Task {
             do {

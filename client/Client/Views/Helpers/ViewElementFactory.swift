@@ -62,50 +62,61 @@ class ViewElementFactory {
         }
     }
     
+    static func createInteractionFooter(footerText: String, footerButtonText: String, action: @escaping () -> Void) -> some View {
+        VStack(spacing: 8) {
+            HStack {
+                Text(footerText)
+                    .font(.footnote)
+                Button {
+                    action()
+                } label: {
+                    Text(footerButtonText)
+                        .font(.footnote)
+                        .fontWeight(.bold)
+                        .foregroundColor(.interaction)
+                }
+            }
+        }
+    }
+    
     static func createRegistrationErrorView(errors: [AuthenticationError]) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             ForEach(errors, id:\.self) { showError in
                 switch showError {
                 case .usernameAlreadyInUse:
-                    Text("Benutzername wird bereits verwendet!")
-                        .foregroundColor(.red)
-                        .font(.footnote)
+                    errorText("Benutzername wird bereits verwendet!")
                 case .usernameToShort:
-                    Text("Benutzername muss mindestens 4 Zeichen lang sein!")
-                        .foregroundColor(.red)
-                        .font(.footnote)
+                    errorText("Benutzername muss mindestens 4 Zeichen lang sein!")
                 case .passwordToShort:
-                    Text("Password muss mindestens 8 Zeichen lang sein!")
-                        .foregroundColor(.red)
-                        .font(.footnote)
+                    errorText("Password muss mindestens 8 Zeichen lang sein!")
                 case .passwordNoSpecialCharacter:
-                    Text("Password muss mindestens ein Sonderzeichen: @#$%^&*()-_=+{}|:,.<>? enthalten!")
-                        .foregroundColor(.red)
-                        .font(.footnote)
+                    errorText("Password muss mindestens ein Sonderzeichen: @#$%^&*()-_=+{}|:,.<>? enthalten!")
                 case .passwordNoCapitalCharacter:
-                    Text("Password muss mindestens ein Großbuchstabe enthalten!")
-                        .foregroundColor(.red)
-                        .font(.footnote)
+                    errorText("Password muss mindestens ein Großbuchstabe enthalten!")
                 case .passwordHasInvalidCharacter:
-                    Text("Password darf kein Specialzeichen: <>'\"\\/; enthalten!")
-                        .foregroundColor(.red)
-                        .font(.footnote)
+                    errorText("Password darf kein Specialzeichen: <>'\"\\/; enthalten!")
                 case .passwordNotMatch:
-                    Text("Passwörter stimmen nicht überein!")
-                        .foregroundColor(.red)
-                        .font(.footnote)
+                    errorText("Passwörter stimmen nicht überein!")
                 case .emailAlreadyInUse:
-                    Text("E-Mail wird bereits verwendet!")
-                        .foregroundColor(.red)
-                        .font(.footnote)
+                    errorText("E-Mail wird bereits verwendet!")
                 case .emailInvalid:
-                    Text("Keine gültige E-Mail Addresse!")
-                        .foregroundColor(.red)
-                        .font(.footnote)
+                    errorText("Keine gültige E-Mail Addresse!")
                 default:
                     EmptyView()
                 }
             }
         }
+    }
+    
+    static func errorText(_ text: String) -> some View {
+        Text(text)
+            .foregroundColor(Color.error)
+            .font(.footnote)
+    }
+    
+    static func succesText(_ text: String) -> some View {
+        Text(text)
+            .foregroundColor(Color.success)
+            .font(.footnote)
     }
 }

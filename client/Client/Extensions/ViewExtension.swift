@@ -22,6 +22,7 @@ struct NavigationBarTitleColorModifier: ViewModifier {
             .onAppear {
                 let coloredAppearance = UINavigationBarAppearance()
                 coloredAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(color)]
+                coloredAppearance.titleTextAttributes = [.foregroundColor: UIColor(color)]
                 UINavigationBar.appearance().standardAppearance = coloredAppearance
             }
     }

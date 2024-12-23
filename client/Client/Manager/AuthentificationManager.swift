@@ -159,6 +159,18 @@ class AuthenticationManager: ObservableObject {
         return authenticationErrors
     }
     
+    func verification() async -> [AuthenticationError] {
+        var authenticationErrors: [AuthenticationError] = []
+        Task {
+            do {
+                let _: String = try await APIService.shared.getVerification(endpoint: "user/verification")
+            } catch {
+                authenticationErrors.append(.verificationError)
+            }
+        }
+        return authenticationErrors
+    }
+    
     private func checkForErrors(email: String, username: String, password: String, passwordConfirm: String) -> [AuthenticationError] {
         var authenticationErros: [AuthenticationError] = []
         if isUsernameInUse(username) {

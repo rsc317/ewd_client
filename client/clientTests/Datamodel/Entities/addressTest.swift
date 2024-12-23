@@ -5,7 +5,6 @@
 //  Created by Johannes Grothe on 23.12.24.
 //
 
-
 import Testing
 import Foundation
 
@@ -95,5 +94,17 @@ struct addressTests {
         #expect(address.city == "Berlin", "Decoded city should match JSON")
         #expect(address.postcode == "10115", "Decoded postcode should match JSON")
         #expect(address.country == "Germany", "Decoded country should match JSON")
+    }
+    
+    @Test func testAddressEqualityExcludingID() {
+        // Erstelle zwei gleiche Address-Instanzen mit unterschiedlichen IDs
+        let address1 = Address(streetName: "Main Street", streetNumber: "123", city: "Berlin", postcode: "10115", country: "Germany")
+        let address2 = Address(streetName: "Main Street", streetNumber: "123", city: "Berlin", postcode: "10115", country: "Germany")
+        
+        // Die IDs sollten unterschiedlich sein
+        #expect(address1.id != address2.id, "Die IDs der Adressen sollten unterschiedlich sein.")
+        
+        // Der Vergleich ohne die IDs sollte jedoch wahr sein
+        #expect(address1 == address2, "Die Adressen sollten gleich sein, wenn man die ID ignoriert.")
     }
 }

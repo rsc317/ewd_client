@@ -19,8 +19,8 @@ struct LoginView: View {
         NavigationStack {
             VStack(spacing: 20) {
                 Spacer()
-                ViewElementFactory.createTextfield(label: "Benutzername", text: $username)
-                ViewElementFactory.createPasswordField(label: "Passwort", text: $password)
+                ViewElementFactory.createTextfield(label: "Benutzername", text: $username, accessibilityIdentifier: accessibility_USERNAME_FIELD)
+                ViewElementFactory.createPasswordField(label: "Passwort", text: $password, accessibilityIdentifier: accessibility_PASSWORD_FIELD)
                 HStack {
                     Toggle(isOn: $authManager.stayLoggedIn) {
                         Text("Angemeldet bleiben?")
@@ -31,16 +31,17 @@ struct LoginView: View {
                     .tint(Color.interaction)
                 }
                 .padding(.horizontal)
-                ViewElementFactory.createInteractionButton(label: "Anmelden", action: login)
+                ViewElementFactory.createInteractionButton(label: "Anmelden", action: login, accessibilityIdentifier: accessibility_LOGIN_BTN)
                 ViewElementFactory.createInteractionFooter(
                     footerText: "Noch keinen Account?",
-                    footerButtonText: "Registrieren!",
-                    view: RegistrationView()
+                    footerButtonText: "Registrieren",
+                    view: RegistrationView(),
+                    accessibilityIdentifier: accessibility_SIGNUP_BTN
                 )
                 
                 Spacer()
             }
-            .navigationTitle("Login")
+            .navigationTitle("Anmelden")
             .modifier(NavigationBarTitleColorModifier(color: .icon))
             .cornerRadius(12)
             .padding(25)

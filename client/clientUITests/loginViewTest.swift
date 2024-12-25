@@ -18,8 +18,29 @@ final class loginViewTest: XCTestCase {
     }
 
     @MainActor
-    func testStaticElements() throws {
-        let titleLabel = app.staticTexts["Einloggen"]
-        XCTAssertTrue(titleLabel.exists, "Der Titel sollte 'Einloggen' auf der Bildschirmansicht anzeigen.")
+    func testTitle() throws {
+        let titleLabel = app.navigationBars.staticTexts["Anmelden"]
+        XCTAssertTrue(titleLabel.exists)
+    }
+    
+    @MainActor
+    func testSignupButton() throws {
+        let button = app.buttons[accessibility_SIGNUP_BTN]
+        XCTAssertTrue(button.exists)
+    }
+    
+    @MainActor
+    func testLoginButton() throws {
+        let button = app.buttons[accessibility_LOGIN_BTN]
+        XCTAssertTrue(button.exists)
+    }
+    
+    @MainActor
+    func testCredentialsTextfields() throws {
+        let textField = app.textFields[accessibility_USERNAME_FIELD]
+        XCTAssertTrue(textField.exists)
+        
+        let secureTextField = app.secureTextFields[accessibility_PASSWORD_FIELD]
+        XCTAssertTrue(secureTextField.exists)
     }
 }

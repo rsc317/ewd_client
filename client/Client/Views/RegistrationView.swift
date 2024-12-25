@@ -19,12 +19,12 @@ struct RegistrationView: View {
         NavigationStack {
             VStack(spacing: 20) {
                 Spacer()
-                ViewElementFactory.createTextfield(label: "E-Mail", text: $email)
-                ViewElementFactory.createTextfield(label: "Benutzername", text: $username)
-                ViewElementFactory.createPasswordField(label: "Passwort", text: $password)
-                ViewElementFactory.createPasswordField(label: "Passwort bestätigen", text: $confirmPassword)
+                ViewElementFactory.createTextfield(label: "E-Mail", text: $email, accessibilityIdentifier: accessibility_EMAIL_FIELD)
+                ViewElementFactory.createTextfield(label: "Benutzername", text: $username, accessibilityIdentifier: accessibility_USERNAME_FIELD)
+                ViewElementFactory.createPasswordField(label: "Passwort", text: $password, accessibilityIdentifier: accessibility_PASSWORD_FIELD)
+                ViewElementFactory.createPasswordField(label: "Passwort bestätigen", text: $confirmPassword, accessibilityIdentifier: accessibility_PASSWORD_REPEAT_FIELD)
                 ViewElementFactory.createRegistrationErrorView(errors: errors)
-                ViewElementFactory.createInteractionButton(label: "Registrieren", action: signUp)
+                ViewElementFactory.createInteractionButton(label: "Registrieren", action: signUp, accessibilityIdentifier: accessibility_SIGNUP_BTN)
                 Spacer()
             }
             .navigationTitle("Registrieren")

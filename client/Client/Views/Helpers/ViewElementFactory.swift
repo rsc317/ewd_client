@@ -8,7 +8,7 @@
 import SwiftUI
 
 class ViewElementFactory {
-    static func createInteractionButton(label: String, action: @escaping () -> Void) -> some View {
+    static func createInteractionButton(label: String, action: @escaping () -> Void, accessibilityIdentifier: String) -> some View {
         Button(action: {
             action()
         }) {
@@ -19,9 +19,10 @@ class ViewElementFactory {
                 .foregroundColor(.white)
                 .cornerRadius(12)
         }
+        .accessibilityIdentifier(accessibilityIdentifier)
     }
     
-    static func createTextfield(label: String, text: Binding<String>) -> some View {
+    static func createTextfield(label: String, text: Binding<String>, accessibilityIdentifier: String) -> some View {
         TextField(label, text: text)
             .padding()
             .background(Color(UIColor.systemGray6))
@@ -32,9 +33,10 @@ class ViewElementFactory {
             )
             .autocapitalization(.none)
             .disableAutocorrection(true)
+            .accessibilityIdentifier(accessibilityIdentifier)
     }
     
-    static func createPasswordField(label: String, text: Binding<String>) -> some View {
+    static func createPasswordField(label: String, text: Binding<String>, accessibilityIdentifier: String) -> some View {
         SecureField(label, text: text)
             .padding()
             .background(Color(UIColor.systemGray6))
@@ -43,9 +45,10 @@ class ViewElementFactory {
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(.accent, lineWidth: 1)
             )
+            .accessibilityIdentifier(accessibilityIdentifier)
     }
     
-    static func createInteractionFooter(footerText: String, footerButtonText: String, view: some View) -> some View {
+    static func createInteractionFooter(footerText: String, footerButtonText: String, view: some View, accessibilityIdentifier: String) -> some View {
         VStack(spacing: 8) {
             HStack {
                 Text(footerText)
@@ -58,6 +61,7 @@ class ViewElementFactory {
                         .fontWeight(.bold)
                         .foregroundColor(.interaction)
                 }
+                .accessibilityIdentifier(accessibilityIdentifier)
             }
         }
     }

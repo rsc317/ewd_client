@@ -19,15 +19,15 @@ struct RegistrationView: View {
         NavigationStack {
             VStack(spacing: 20) {
                 Spacer()
-                ViewElementFactory.createTextfield(label: "E-Mail", text: $email, accessibilityIdentifier: accessibility_EMAIL_FIELD)
-                ViewElementFactory.createTextfield(label: "Benutzername", text: $username, accessibilityIdentifier: accessibility_USERNAME_FIELD)
-                ViewElementFactory.createPasswordField(label: "Passwort", text: $password, accessibilityIdentifier: accessibility_PASSWORD_FIELD)
-                ViewElementFactory.createPasswordField(label: "Passwort bestätigen", text: $confirmPassword, accessibilityIdentifier: accessibility_PASSWORD_REPEAT_FIELD)
+                ViewElementFactory.createTextfield(label: "E-Mail", text: $email, accessibilityIdentifier: accessibilityIdentifiers.EMAIL_FIELD)
+                ViewElementFactory.createTextfield(label: "Benutzername", text: $username, accessibilityIdentifier: accessibilityIdentifiers.USERNAME_FIELD)
+                ViewElementFactory.createPasswordField(label: "Passwort", text: $password, accessibilityIdentifier: accessibilityIdentifiers.PASSWORD_FIELD)
+                ViewElementFactory.createPasswordField(label: "Passwort bestätigen", text: $confirmPassword, accessibilityIdentifier: accessibilityIdentifiers.PASSWORD_REPEAT_FIELD)
                 ViewElementFactory.createRegistrationErrorView(errors: errors)
-                ViewElementFactory.createInteractionButton(label: "Registrieren", action: signUp, accessibilityIdentifier: accessibility_SIGNUP_BTN)
+                ViewElementFactory.createInteractionButton(label: "Registrieren", action: signUp, accessibilityIdentifier: accessibilityIdentifiers.LOGIN_BTN)
                 Spacer()
             }
-            .navigationTitle("Registrieren")
+            .navigationTitle(String(localized: localizationIdentifiers.SIGNUP_TITLE))
             .modifier(NavigationBarTitleColorModifier(color: .icon))
             .cornerRadius(12)
             .padding(25)

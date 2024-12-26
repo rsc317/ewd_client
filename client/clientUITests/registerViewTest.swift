@@ -7,41 +7,28 @@
 
 import XCTest
 
-final class registerViewTest: XCTestCase {
-    
-    private var app: XCUIApplication = XCUIApplication()
+final class registerViewTest: ClientUiTestCase {
 
     override func setUpWithError() throws {
-        continueAfterFailure = false
-
-        app.launch()
-        app.buttons[accessibility_SIGNUP_BTN].tap()
+        try super.setUpWithError()
+        app.buttons[accessibilityIdentifiers.SIGNUP_BTN].tap()
     }
 
     @MainActor
     func testTitle() throws {
-        let titleLabel = app.navigationBars.staticTexts["Registrieren"]
-        XCTAssertTrue(titleLabel.exists)
+        checkTitle(localizationIdentifiers.SIGNUP_TITLE)
     }
     
     @MainActor
     func testRegistrationButton() throws {
-        let button = app.buttons[accessibility_SIGNUP_BTN]
-        XCTAssertTrue(button.exists)
+        checkButton(accessibilityIdentifier: accessibilityIdentifiers.SIGNUP_BTN)
     }
     
     @MainActor
     func testRegistrationTextfields() throws {
-        let mail = app.textFields[accessibility_EMAIL_FIELD]
-        XCTAssertTrue(mail.exists)
-        
-        let username = app.textFields[accessibility_USERNAME_FIELD]
-        XCTAssertTrue(username.exists)
-        
-        let password = app.secureTextFields[accessibility_PASSWORD_FIELD]
-        XCTAssertTrue(password.exists)
-        
-        let password_repeat = app.secureTextFields[accessibility_PASSWORD_REPEAT_FIELD]
-        XCTAssertTrue(password_repeat.exists)
+        checkTextfield(accessibilityIdentifier: accessibilityIdentifiers.EMAIL_FIELD)
+        checkTextfield(accessibilityIdentifier: accessibilityIdentifiers.USERNAME_FIELD)
+        checkSecureTextfield(accessibilityIdentifier: accessibilityIdentifiers.PASSWORD_FIELD)
+        checkSecureTextfield(accessibilityIdentifier: accessibilityIdentifiers.PASSWORD_REPEAT_FIELD)
     }
 }

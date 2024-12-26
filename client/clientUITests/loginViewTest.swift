@@ -7,40 +7,30 @@
 
 import XCTest
 
-final class loginViewTest: XCTestCase {
-    
-    private var app: XCUIApplication = XCUIApplication()
+final class loginViewTest: ClientUiTestCase {
 
     override func setUpWithError() throws {
-        continueAfterFailure = false
-
-        app.launch()
+        try super.setUpWithError()
     }
 
     @MainActor
     func testTitle() throws {
-        let titleLabel = app.navigationBars.staticTexts["Anmelden"]
-        XCTAssertTrue(titleLabel.exists)
+        checkTitle(localizationIdentifiers.LOGIN_TITLE)
     }
     
     @MainActor
     func testSignupButton() throws {
-        let button = app.buttons[accessibility_SIGNUP_BTN]
-        XCTAssertTrue(button.exists)
+        checkButton(accessibilityIdentifier: accessibilityIdentifiers.SIGNUP_BTN)
     }
     
     @MainActor
     func testLoginButton() throws {
-        let button = app.buttons[accessibility_LOGIN_BTN]
-        XCTAssertTrue(button.exists)
+        checkButton(accessibilityIdentifier: accessibilityIdentifiers.LOGIN_BTN)
     }
     
     @MainActor
     func testCredentialsTextfields() throws {
-        let textField = app.textFields[accessibility_USERNAME_FIELD]
-        XCTAssertTrue(textField.exists)
-        
-        let secureTextField = app.secureTextFields[accessibility_PASSWORD_FIELD]
-        XCTAssertTrue(secureTextField.exists)
+        checkTextfield(accessibilityIdentifier: accessibilityIdentifiers.USERNAME_FIELD)
+        checkSecureTextfield(accessibilityIdentifier: accessibilityIdentifiers.PASSWORD_FIELD)
     }
 }

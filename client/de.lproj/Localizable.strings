@@ -8,3 +8,7 @@
 "map" = "Karte";
 "settings"  = "Einstellungen";
 "my_posts" = "My Posts";
+
+"SIGNUP_TITLE" = "Registrieren";
+
+"LOGIN_TITLE" = "Anmelden";

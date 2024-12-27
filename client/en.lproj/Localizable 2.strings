@@ -6,6 +6,18 @@
   
 */
 
-"SIGNUP_TITLE" = "Sign Up";
+// Generic
+"SIGNUP" = "Sign Up";
+"LOGIN" = "Log In";
+"USERNAME" = "Username";
+"PASSWORD" = "Password";
 
+// Login View
 "LOGIN_TITLE" = "Log In";
+"STAY_LOGGED_IN" = "Stay logged in";
+"NOT_SIGNED_UP_YET" = "Not a user yet?";
+
+// Signup View
+"SIGNUP_TITLE" = "Sign Up";
+"EMAIL" = "Mail";
+"PASSWORD_REPEAT" = "Repeat Password";

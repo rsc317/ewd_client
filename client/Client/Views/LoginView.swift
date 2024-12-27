@@ -19,11 +19,15 @@ struct LoginView: View {
         NavigationStack {
             VStack(spacing: 20) {
                 Spacer()
-                ViewElementFactory.createTextfield(label: "Benutzername", text: $username, accessibilityIdentifier: accessibilityIdentifiers.USERNAME_FIELD)
-                ViewElementFactory.createPasswordField(label: "Passwort", text: $password, accessibilityIdentifier: accessibilityIdentifiers.PASSWORD_FIELD)
+                ViewElementFactory.createTextfield(label: localizationIdentifiers.USERNAME,
+                                                   text: $username,
+                                                   accessibilityId: accessibilityIdentifiers.USERNAME_FIELD)
+                ViewElementFactory.createPasswordField(label: localizationIdentifiers.PASSWORD,
+                                                       text: $password,
+                                                       accessibilityId: accessibilityIdentifiers.PASSWORD_FIELD)
                 HStack {
                     Toggle(isOn: $authManager.stayLoggedIn) {
-                        Text("Angemeldet bleiben?")
+                        Text(localizationIdentifiers.STAY_LOGGED_IN.localized)
                             .font(.subheadline)
                             .foregroundColor(.interaction)
                     }
@@ -31,17 +35,19 @@ struct LoginView: View {
                     .tint(Color.interaction)
                 }
                 .padding(.horizontal)
-                ViewElementFactory.createInteractionButton(label: "Anmelden", action: login, accessibilityIdentifier: accessibilityIdentifiers.LOGIN_BTN)
+                ViewElementFactory.createInteractionButton(label: localizationIdentifiers.LOGIN,
+                                                           action: login,
+                                                           accessibilityId: accessibilityIdentifiers.LOGIN_BTN)
                 ViewElementFactory.createInteractionFooter(
-                    footerText: "Noch keinen Account?",
-                    footerButtonText: "Registrieren",
+                    footerText: localizationIdentifiers.NOT_SIGNED_UP_YET,
+                    footerButtonText: localizationIdentifiers.SIGNUP,
                     view: RegistrationView(),
-                    accessibilityIdentifier: accessibilityIdentifiers.SIGNUP_BTN
+                    accessibilityId: accessibilityIdentifiers.SIGNUP_BTN
                 )
                 
                 Spacer()
             }
-            .navigationTitle(String(localized: localizationIdentifiers.LOGIN_TITLE))
+            .navigationTitle(localizationIdentifiers.LOGIN_TITLE.localized)
             .modifier(NavigationBarTitleColorModifier(color: .icon))
             .cornerRadius(12)
             .padding(25)

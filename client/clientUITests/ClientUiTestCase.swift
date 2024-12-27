@@ -31,8 +31,8 @@ class ClientUiTestCase: XCTestCase {
         return localizedString
     }
     
-    func checkTitle(_ localizeIdentifier: String.LocalizationValue) {
-        guard let title = localizedString(forKey: localizeIdentifier) else {
+    func checkTitle(_ localizeId: String.LocalizationValue) {
+        guard let title = localizedString(forKey: localizeId) else {
             XCTFail()
             return
         }
@@ -40,18 +40,21 @@ class ClientUiTestCase: XCTestCase {
         XCTAssertTrue(titleLabel.exists)
     }
     
-    func checkButton(accessibilityIdentifier: String) {
-        let button = app.buttons[accessibilityIdentifier]
+    func checkButton(accessibilityId: String, localizedId: String.LocalizationValue) {
+        let button = app.buttons[accessibilityId]
         XCTAssertTrue(button.exists)
+//        XCTAssert(button.title == localizedString(forKey: localizedId))
     }
     
-    func checkTextfield(accessibilityIdentifier: String) {
-        let textField = app.textFields[accessibilityIdentifier]
+    func checkTextfield(accessibilityId: String, localizedId: String.LocalizationValue) {
+        let textField = app.textFields[accessibilityId]
         XCTAssertTrue(textField.exists)
+//        XCTAssert(textField.title == localizedString(forKey: localizedId))
     }
     
-    func checkSecureTextfield(accessibilityIdentifier: String) {
-        let textField = app.secureTextFields[accessibilityIdentifier]
+    func checkSecureTextfield(accessibilityId: String, localizedId: String.LocalizationValue) {
+        let textField = app.secureTextFields[accessibilityId]
         XCTAssertTrue(textField.exists)
+//        XCTAssert(textField.title == localizedString(forKey: localizedId))
     }
 }

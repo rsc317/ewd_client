@@ -21,14 +21,19 @@ final class registerViewTest: ClientUiTestCase {
     
     @MainActor
     func testRegistrationButton() throws {
-        checkButton(accessibilityIdentifier: accessibilityIdentifiers.SIGNUP_BTN)
+        checkButton(accessibilityId: accessibilityIdentifiers.SIGNUP_BTN,
+                    localizedId: localizationIdentifiers.SIGNUP)
     }
     
     @MainActor
     func testRegistrationTextfields() throws {
-        checkTextfield(accessibilityIdentifier: accessibilityIdentifiers.EMAIL_FIELD)
-        checkTextfield(accessibilityIdentifier: accessibilityIdentifiers.USERNAME_FIELD)
-        checkSecureTextfield(accessibilityIdentifier: accessibilityIdentifiers.PASSWORD_FIELD)
-        checkSecureTextfield(accessibilityIdentifier: accessibilityIdentifiers.PASSWORD_REPEAT_FIELD)
+        checkTextfield(accessibilityId: accessibilityIdentifiers.EMAIL_FIELD,
+                       localizedId: localizationIdentifiers.EMAIL)
+        checkTextfield(accessibilityId: accessibilityIdentifiers.USERNAME_FIELD,
+                       localizedId: localizationIdentifiers.USERNAME)
+        checkSecureTextfield(accessibilityId: accessibilityIdentifiers.PASSWORD_FIELD,
+                             localizedId: localizationIdentifiers.PASSWORD)
+        checkSecureTextfield(accessibilityId: accessibilityIdentifiers.PASSWORD_REPEAT_FIELD,
+                             localizedId: localizationIdentifiers.PASSWORD_REPEAT)
     }
 }

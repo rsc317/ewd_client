@@ -9,6 +9,18 @@
 "settings"  = "Einstellungen";
 "my_posts" = "My Posts";
 
-"SIGNUP_TITLE" = "Registrieren";
+// Generic
+"SIGNUP" = "Registrieren";
+"LOGIN" = "Anmelden";
+"USERNAME" = "Benutzername";
+"PASSWORD" = "Passwort";
 
+// Login View
 "LOGIN_TITLE" = "Anmelden";
+"STAY_LOGGED_IN" = "Angemeldet bleiben";
+"NOT_SIGNED_UP_YET" = "Du hast noch keinen Account?";
+
+// Signup View
+"SIGNUP_TITLE" = "Registrieren";
+"EMAIL" = "E-Mail";
+"PASSWORD_REPEAT" = "Passwort wiederholen";

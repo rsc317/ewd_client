@@ -20,17 +20,21 @@ final class loginViewTest: ClientUiTestCase {
     
     @MainActor
     func testSignupButton() throws {
-        checkButton(accessibilityIdentifier: accessibilityIdentifiers.SIGNUP_BTN)
+        checkButton(accessibilityId: accessibilityIdentifiers.SIGNUP_BTN,
+                    localizedId: localizationIdentifiers.SIGNUP)
     }
     
     @MainActor
     func testLoginButton() throws {
-        checkButton(accessibilityIdentifier: accessibilityIdentifiers.LOGIN_BTN)
+        checkButton(accessibilityId: accessibilityIdentifiers.LOGIN_BTN,
+                    localizedId: localizationIdentifiers.LOGIN)
     }
     
     @MainActor
     func testCredentialsTextfields() throws {
-        checkTextfield(accessibilityIdentifier: accessibilityIdentifiers.USERNAME_FIELD)
-        checkSecureTextfield(accessibilityIdentifier: accessibilityIdentifiers.PASSWORD_FIELD)
+        checkTextfield(accessibilityId: accessibilityIdentifiers.USERNAME_FIELD,
+                       localizedId: localizationIdentifiers.USERNAME)
+        checkSecureTextfield(accessibilityId: accessibilityIdentifiers.PASSWORD_FIELD,
+                             localizedId: localizationIdentifiers.PASSWORD)
     }
 }

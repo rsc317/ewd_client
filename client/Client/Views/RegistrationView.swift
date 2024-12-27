@@ -19,12 +19,22 @@ struct RegistrationView: View {
         NavigationStack {
             VStack(spacing: 20) {
                 Spacer()
-                ViewElementFactory.createTextfield(label: "E-Mail", text: $email, accessibilityIdentifier: accessibilityIdentifiers.EMAIL_FIELD)
-                ViewElementFactory.createTextfield(label: "Benutzername", text: $username, accessibilityIdentifier: accessibilityIdentifiers.USERNAME_FIELD)
-                ViewElementFactory.createPasswordField(label: "Passwort", text: $password, accessibilityIdentifier: accessibilityIdentifiers.PASSWORD_FIELD)
-                ViewElementFactory.createPasswordField(label: "Passwort bestätigen", text: $confirmPassword, accessibilityIdentifier: accessibilityIdentifiers.PASSWORD_REPEAT_FIELD)
+                ViewElementFactory.createTextfield(label: localizationIdentifiers.EMAIL,
+                                                   text: $email,
+                                                   accessibilityId: accessibilityIdentifiers.EMAIL_FIELD)
+                ViewElementFactory.createTextfield(label: localizationIdentifiers.USERNAME,
+                                                   text: $username,
+                                                   accessibilityId: accessibilityIdentifiers.USERNAME_FIELD)
+                ViewElementFactory.createPasswordField(label: localizationIdentifiers.PASSWORD,
+                                                       text: $password,
+                                                       accessibilityId: accessibilityIdentifiers.PASSWORD_FIELD)
+                ViewElementFactory.createPasswordField(label: localizationIdentifiers.PASSWORD_REPEAT,
+                                                       text: $confirmPassword,
+                                                       accessibilityId: accessibilityIdentifiers.PASSWORD_REPEAT_FIELD)
                 ViewElementFactory.createRegistrationErrorView(errors: errors)
-                ViewElementFactory.createInteractionButton(label: "Registrieren", action: signUp, accessibilityIdentifier: accessibilityIdentifiers.LOGIN_BTN)
+                ViewElementFactory.createInteractionButton(label: localizationIdentifiers.SIGNUP,
+                                                           action: signUp,
+                                                           accessibilityId: accessibilityIdentifiers.LOGIN_BTN)
                 Spacer()
             }
             .navigationTitle(String(localized: localizationIdentifiers.SIGNUP_TITLE))

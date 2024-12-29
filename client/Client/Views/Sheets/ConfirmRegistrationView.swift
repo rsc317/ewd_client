@@ -12,7 +12,8 @@ struct ConfirmRegistrationView: View {
     @State var errors: [AuthenticationError] = []
     @State var showVerificationSend: Bool = false
     @State var showError: Bool = false
-    
+    @Environment(\.dismiss) var dismiss
+
     var body: some View {
         VStack {
             VStack(spacing: 20) {
@@ -58,7 +59,11 @@ struct ConfirmRegistrationView: View {
         Task {
             let errors = await AuthenticationManager.shared.verification(code: token)
             DispatchQueue.main.async {
-                showError = !errors.isEmpty
+                if !errors.isEmpty {
+                    showError = true
+                } else {
+                    dismiss
+                }
             }
         }
     }

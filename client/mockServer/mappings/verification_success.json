@@ -1,0 +1,11 @@
+{
+    "priority": 2,
+    "request": {
+        "method": "POST",
+        "url": "/user/verification"
+    },
+    "response": {
+        "status": 200,
+        "body": "[Mock] Verification Successful"
+    }
+}

@@ -16,6 +16,9 @@
 		EB6B56872D1CC50000F9A1CC /* localizationIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6B56832D1CC4B500F9A1CC /* localizationIdentifiers.swift */; };
 		EB6B56882D1CC50000F9A1CC /* localizationIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6B56832D1CC4B500F9A1CC /* localizationIdentifiers.swift */; };
 		EB6B56F62D1CD4B000F9A1CC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4E529C9B2CE14EC00056CE5D /* Localizable.strings */; };
+		EB86FD762D20097400FA2739 /* Inflo.plist in Resources */ = {isa = PBXBuildFile; fileRef = EB86FD752D20097400FA2739 /* Inflo.plist */; };
+		EB86FD772D20097400FA2739 /* Inflo.plist in Resources */ = {isa = PBXBuildFile; fileRef = EB86FD752D20097400FA2739 /* Inflo.plist */; };
+		EB86FD782D20097400FA2739 /* Inflo.plist in Resources */ = {isa = PBXBuildFile; fileRef = EB86FD752D20097400FA2739 /* Inflo.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +46,7 @@
 		EB6B566D2D1A1FEF00F9A1CC /* clientUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = clientUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB6B567C2D1CB66700F9A1CC /* accessibilityIdentifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = accessibilityIdentifiers.swift; sourceTree = "<group>"; };
 		EB6B56832D1CC4B500F9A1CC /* localizationIdentifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = localizationIdentifiers.swift; sourceTree = "<group>"; };
+		EB86FD752D20097400FA2739 /* Inflo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Inflo.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -59,6 +63,11 @@
 		EB6B566E2D1A1FF000F9A1CC /* clientUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = clientUITests;
+			sourceTree = "<group>";
+		};
+		EB86FD792D200C3A00FA2739 /* mockServer */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = mockServer;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -91,10 +100,12 @@
 		4EEC7A932CDBC12B005E2466 = {
 			isa = PBXGroup;
 			children = (
+				EB86FD752D20097400FA2739 /* Inflo.plist */,
 				EB6B56832D1CC4B500F9A1CC /* localizationIdentifiers.swift */,
 				EB6B567C2D1CB66700F9A1CC /* accessibilityIdentifiers.swift */,
 				4E529C9B2CE14EC00056CE5D /* Localizable.strings */,
 				4E529CA22CE14F650056CE5D /* Localizable.strings */,
+				EB86FD792D200C3A00FA2739 /* mockServer */,
 				4EEC7A9E2CDBC12B005E2466 /* client */,
 				EB6B56482D1A071600F9A1CC /* clientTests */,
 				EB6B566E2D1A1FF000F9A1CC /* clientUITests */,
@@ -129,6 +140,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				4EEC7A9E2CDBC12B005E2466 /* client */,
+				EB86FD792D200C3A00FA2739 /* mockServer */,
 			);
 			name = client;
 			packageProductDependencies = (
@@ -152,6 +164,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				EB6B56482D1A071600F9A1CC /* clientTests */,
+				EB86FD792D200C3A00FA2739 /* mockServer */,
 			);
 			name = clientTests;
 			packageProductDependencies = (
@@ -175,6 +188,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				EB6B566E2D1A1FF000F9A1CC /* clientUITests */,
+				EB86FD792D200C3A00FA2739 /* mockServer */,
 			);
 			name = clientUITests;
 			packageProductDependencies = (
@@ -235,6 +249,7 @@
 			files = (
 				4E529CA32CE14F650056CE5D /* Localizable.strings in Resources */,
 				4E529C9D2CE14EC00056CE5D /* Localizable.strings in Resources */,
+				EB86FD772D20097400FA2739 /* Inflo.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -242,6 +257,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB86FD762D20097400FA2739 /* Inflo.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -250,6 +266,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB6B56F62D1CD4B000F9A1CC /* Localizable.strings in Resources */,
+				EB86FD782D20097400FA2739 /* Inflo.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -555,6 +572,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.beuth.ewd.client.clientUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=*]" = NO_HTTPS;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

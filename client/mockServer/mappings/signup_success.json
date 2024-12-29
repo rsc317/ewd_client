@@ -1,0 +1,11 @@
+{
+    "priority": 2,
+    "request": {
+        "method": "POST",
+        "url": "/auth/signup"
+    },
+    "response": {
+        "status": 201,
+      	"body": "[Mock] Success"
+    }
+}

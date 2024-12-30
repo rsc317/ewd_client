@@ -26,7 +26,7 @@ struct ClientApp: App {
 
     var body: some Scene {
         WindowGroup {
-            if authenticator.isAuthenticated {
+            if authenticator.isAuthenticated && authenticator.isUserVerified {
                 ContentView()
             } else {
                 LoginView()

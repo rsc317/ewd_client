@@ -26,6 +26,8 @@ class ClientUiTestCase: XCTestCase {
             return true
         }
         
+        resetWiremockScenarios()
+        
         app.launch()
     }
     
@@ -86,5 +88,37 @@ class ClientUiTestCase: XCTestCase {
         let button = app.buttons[accessibilityId]
         XCTAssertTrue(button.exists)
         button.tap()
+    }
+    
+    func resetWiremockScenarios() {
+        guard let url = URL(string: "http://localhost:8443/__admin/scenarios/reset") else {
+            print("Ungültige URL")
+            XCTFail()
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+
+        let session = URLSession.shared
+        let task = session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Fehler beim Senden des Requests: \(error)")
+                XCTFail()
+                return
+            }
+
+            if let httpResponse = response as? HTTPURLResponse {
+                let statusCode = httpResponse.statusCode
+                print("HTTP-Statuscode: \(statusCode)")
+                if statusCode != 200 {
+                    print("Scenarios could not be reset properly, got \(statusCode)")
+                    XCTFail()
+                    return
+                }
+            }
+        }
+
+        task.resume()
     }
 }

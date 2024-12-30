@@ -24,7 +24,9 @@ struct ConfirmRegistrationView: View {
                     .font(.callout)
                     .fontWeight(.bold)
                     .foregroundStyle(.icon)
-                ViewElementFactory.createTextfield(label: "Code", text: $token)
+                ViewElementFactory.createTextfield(label: "Code",
+                                                   text: $token,
+                                                   accessibilityId: accessibilityIdentifiers.VERIFICATION_TOKEN_FIELD)
                     .padding(.horizontal, 10)
                 
                 ViewElementFactory.createInteractionFooter(
@@ -45,7 +47,9 @@ struct ConfirmRegistrationView: View {
                         .font(.footnote)
                 }
 
-                ViewElementFactory.createInteractionButton(label: "Verifizieren", action: verify)
+                ViewElementFactory.createInteractionButton(label: "Verifizieren",
+                                                           action: verify,
+                                                           accessibilityId: accessibilityIdentifiers.VERIFICATION_BUTTON)
                     .padding(.horizontal, 10)
             }
             .cornerRadius(12)
@@ -57,17 +61,17 @@ struct ConfirmRegistrationView: View {
         showError = false
         showVerificationSend = false
         Task {
-            let errors = await AuthenticationManager.shared.verification(code: token)
+            let errors = try await AuthenticationManager.shared.verification(code: token)
             DispatchQueue.main.async {
                 if !errors.isEmpty {
                     showError = true
                 } else {
-                    dismiss
+                    dismiss()
                 }
             }
         }
     }
-                     
+
     private func sendVerification() {
         showVerificationSend = false
         showError = false

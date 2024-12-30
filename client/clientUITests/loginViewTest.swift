@@ -19,22 +19,64 @@ final class loginViewTest: ClientUiTestCase {
     }
     
     @MainActor
-    func testSignupButton() throws {
-        checkButton(accessibilityId: accessibilityIdentifiers.SIGNUP_BTN,
-                    localizedId: localizationIdentifiers.SIGNUP)
+    func testFailedLogin() throws {
+        let username = "UITest"
+        let password = "wrong_password"
+        
+        enterValueIntoTextfield(accessibilityId: accessibilityIdentifiers.USERNAME_FIELD,
+                                value: username)
+        enterValueIntoSecureTextfield(accessibilityId: accessibilityIdentifiers.PASSWORD_FIELD,
+                                      value: password)
+        
+        tapButton(accessibilityId: accessibilityIdentifiers.LOGIN_BTN)
+        
+        /// TODO: this test needs to check the error message when https://github.com/rsc317/ewd_client/issues/34 is implemented
+
+        sleep(3)
+        
+        let map = app.otherElements[accessibilityIdentifiers.MAP]
+        XCTAssert(!map.exists)
     }
     
     @MainActor
-    func testLoginButton() throws {
-        checkButton(accessibilityId: accessibilityIdentifiers.LOGIN_BTN,
-                    localizedId: localizationIdentifiers.LOGIN)
+    func testSuccessfullLoginWithVerifiedUser() throws {
+        let username = "UITest"
+        let password = "UI_test123"
+        
+        enterValueIntoTextfield(accessibilityId: accessibilityIdentifiers.USERNAME_FIELD,
+                                value: username)
+        enterValueIntoSecureTextfield(accessibilityId: accessibilityIdentifiers.PASSWORD_FIELD,
+                                      value: password)
+        
+        tapButton(accessibilityId: accessibilityIdentifiers.LOGIN_BTN)
+        
+        sleep(3)
+        
+        let map = app.otherElements[accessibilityIdentifiers.MAP]
+        XCTAssert(map.exists)
     }
     
     @MainActor
-    func testCredentialsTextfields() throws {
-        checkTextfield(accessibilityId: accessibilityIdentifiers.USERNAME_FIELD,
-                       localizedId: localizationIdentifiers.USERNAME)
-        checkSecureTextfield(accessibilityId: accessibilityIdentifiers.PASSWORD_FIELD,
-                             localizedId: localizationIdentifiers.PASSWORD)
+    func testSuccessfullLoginWithUnverifiedUser() throws {
+        let username = "UITest2"
+        let password = "UI_test124"
+        let wrong_token = "illegal_token"
+        let correct_token = "correct_token"
+        
+        enterValueIntoTextfield(accessibilityId: accessibilityIdentifiers.USERNAME_FIELD,
+                                value: username)
+        enterValueIntoSecureTextfield(accessibilityId: accessibilityIdentifiers.PASSWORD_FIELD,
+                                      value: password)
+        
+        tapButton(accessibilityId: accessibilityIdentifiers.LOGIN_BTN)
+        
+        sleep(1)
+        
+        enterValueIntoTextfield(accessibilityId: accessibilityIdentifiers.VERIFICATION_TOKEN_FIELD,
+                                value: correct_token)
+        
+        tapButton(accessibilityId: accessibilityIdentifiers.VERIFICATION_BUTTON)
+        
+        checkButton(accessibilityId: accessibilityIdentifiers.LOGIN_BTN)
     }
 }

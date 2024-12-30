@@ -217,6 +217,7 @@ class APIService {
     }
     
     func postVerification<T: Codable>(endpoint: String, body: String) async throws -> T {
+        print("posting verification to '\(endpoint)': \(body)")
         return try await request(
             method: .POST,
             endpoint: endpoint,

@@ -6,6 +6,9 @@
     },
     "response": {
         "status": 401,
+        "headers": {
+            "Content-Type": "plain/text"
+        },
       	"body": "[Mock] Failure"
     }
 }

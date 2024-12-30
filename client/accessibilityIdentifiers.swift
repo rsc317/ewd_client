@@ -6,11 +6,15 @@
 //
 
 struct accessibilityIdentifiers {
-    static let LOGIN_BTN:    String = "LOGIN_BTN"
-    static let SIGNUP_BTN:   String = "SIGNUP_BTN"
+    static let LOGIN_BTN: String = "LOGIN_BTN"
+    static let SIGNUP_BTN: String = "SIGNUP_BTN"
+    static let VERIFICATION_BUTTON: String = "VERIFICATION_BUTTON"
 
-    static let USERNAME_FIELD:   String = "USERNAME_FIELD"
-    static let PASSWORD_FIELD:   String = "PASSWORD_FIELD"
-    static let PASSWORD_REPEAT_FIELD:   String = "PASSWORD_REPEAT_FIELD"
-    static let EMAIL_FIELD:   String = "EMAIL_FIELD"
+    static let USERNAME_FIELD: String = "USERNAME_FIELD"
+    static let PASSWORD_FIELD: String = "PASSWORD_FIELD"
+    static let PASSWORD_REPEAT_FIELD: String = "PASSWORD_REPEAT_FIELD"
+    static let EMAIL_FIELD: String = "EMAIL_FIELD"
+    static let VERIFICATION_TOKEN_FIELD: String = "VERIFICATION_TOKEN_FIELD"
+    
+    static let MAP: String = "MAP"
 }

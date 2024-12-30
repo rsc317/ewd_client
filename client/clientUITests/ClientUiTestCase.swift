@@ -14,6 +14,18 @@ class ClientUiTestCase: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         app.launchArguments += ["-AppleLanguages", "(de)", "-AppleLocale", "de_DE"]
+        
+        // ensure app is currently authorised.  If the first install is to
+        // happen then the settings won't exist yet but that's ok, the test
+        // will handle the Location Services prompt and allow.
+        app.resetAuthorizationStatus(for: .location)
+
+        let _ = addUIInterruptionMonitor(withDescription: "Darf \"client\" deinen Standort verwenden?") { (alertElement) -> Bool in
+            alertElement.buttons["Beim Verwenden der App erlauben"].tap()
+            print("ALLOWING LOCATION ACCESS")
+            return true
+        }
+        
         app.launch()
     }
     
@@ -40,21 +52,39 @@ class ClientUiTestCase: XCTestCase {
         XCTAssertTrue(titleLabel.exists)
     }
     
-    func checkButton(accessibilityId: String, localizedId: String.LocalizationValue) {
+    func checkButton(accessibilityId: String) {
         let button = app.buttons[accessibilityId]
         XCTAssertTrue(button.exists)
-//        XCTAssert(button.title == localizedString(forKey: localizedId))
     }
     
-    func checkTextfield(accessibilityId: String, localizedId: String.LocalizationValue) {
+    func checkTextfield(accessibilityId: String) {
         let textField = app.textFields[accessibilityId]
         XCTAssertTrue(textField.exists)
-//        XCTAssert(textField.title == localizedString(forKey: localizedId))
     }
     
-    func checkSecureTextfield(accessibilityId: String, localizedId: String.LocalizationValue) {
+    func checkSecureTextfield(accessibilityId: String) {
         let textField = app.secureTextFields[accessibilityId]
         XCTAssertTrue(textField.exists)
-//        XCTAssert(textField.title == localizedString(forKey: localizedId))
+    }
+    
+    func enterValueIntoTextfield(accessibilityId: String, value: String) {
+        let textField = app.textFields[accessibilityId]
+        XCTAssertTrue(textField.exists)
+        textField.tap()
+        textField.typeText(value)
+        XCTAssertEqual(textField.value as! String, value, "Text field value is not correct")
+    }
+    
+    func enterValueIntoSecureTextfield(accessibilityId: String, value: String) {
+        let textField = app.secureTextFields[accessibilityId]
+        XCTAssertTrue(textField.exists)
+        textField.tap()
+        textField.typeText(value)
+    }
+    
+    func tapButton(accessibilityId: String) {
+        let button = app.buttons[accessibilityId]
+        XCTAssertTrue(button.exists)
+        button.tap()
     }
 }

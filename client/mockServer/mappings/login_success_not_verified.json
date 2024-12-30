@@ -1,0 +1,18 @@
+{
+    "priority": 1,
+    "request": {
+        "method": "GET",
+        "url": "/auth/login",
+        "basicAuthCredentials": {
+            "username": "UITest2",
+            "password": "UI_test124"
+        }
+    },
+    "response": {
+        "status": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "bodyFileName": "login_response_not_verified.json"
+    }
+}

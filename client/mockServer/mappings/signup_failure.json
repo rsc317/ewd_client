@@ -9,6 +9,9 @@
     },
     "response": {
         "status": 209,
+        "headers": {
+            "Content-Type": "plain/text"
+        },
       	"body": "[Mock] Failure"
     }
 }

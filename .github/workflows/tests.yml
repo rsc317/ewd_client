@@ -1,0 +1,30 @@
+name: Tests
+
+on: [ pull_request ]
+
+jobs:
+
+  unit_tests:
+    name: Run Unit-Tests
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Run Unit-Tests
+        run: xcodebuild test -project "client.xcodeproj" -scheme "clientTests"
+
+  ui_tests:
+    name: Run UI-Tests
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Start WireMock Server
+        run: cd client/mockServer/ & nohup ./runServer.sh &
+
+      - name: Run UI-Tests
+        run: cd client & xcodebuild test -project "client.xcodeproj" -scheme "clientUITests" -sdk=iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 16 Pro'

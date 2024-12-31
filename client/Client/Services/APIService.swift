@@ -44,11 +44,11 @@ class APIService {
     private init() {}
     
     /// Basis-URL des Backends
-//    #if NO_HTTPS
+    #if NO_HTTPS
     private let baseURL = "http://localhost:8443/"
-//    #else
-//    private let baseURL = "https://localhost:8443/"
-//    #endif
+    #else
+    private let baseURL = "https://localhost:8443/"
+    #endif
     
     /// Generische Anfrage-Methode
     /// - Parameters:

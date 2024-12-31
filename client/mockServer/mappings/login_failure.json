@@ -2,7 +2,7 @@
     "priority": 2,
     "request": {
         "method": "GET",
-        "url": "/auth/login"
+        "url": "/auth/login/xxx"
     },
     "response": {
         "status": 401,

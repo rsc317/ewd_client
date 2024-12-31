@@ -57,12 +57,13 @@ final class loginViewTest: ClientUiTestCase {
     }
     
     @MainActor
-    func testSuccessfullLoginWithUnverifiedUser() throws {
-        let username = "UITest2"
-        let password = "UI_test124"
-        let wrong_token = "illegal_token"
-        let correct_token = "correct_token"
+    func testVerifyUnverifiedUser() throws {
+        let username = "UITest_Unverified"
+        let password = "testerinski"
+        let wrong_token = "verify_unverified_user_failure"
+        let correct_token = "verify_unverified_user_success"
         
+        /// Login to User
         enterValueIntoTextfield(accessibilityId: accessibilityIdentifiers.USERNAME_FIELD,
                                 value: username)
         enterValueIntoSecureTextfield(accessibilityId: accessibilityIdentifiers.PASSWORD_FIELD,
@@ -72,11 +73,29 @@ final class loginViewTest: ClientUiTestCase {
         
         sleep(1)
         
+        /// Enter wrong code into popup field
+        enterValueIntoTextfield(accessibilityId: accessibilityIdentifiers.VERIFICATION_TOKEN_FIELD,
+                                value: wrong_token)
+        
+        tapButton(accessibilityId: accessibilityIdentifiers.VERIFICATION_BUTTON)
+        
+        /// Login again
+        tapButton(accessibilityId: accessibilityIdentifiers.LOGIN_BTN)
+        
+        sleep(1)
+        
+        /// Enter correct  code into popup field this time
         enterValueIntoTextfield(accessibilityId: accessibilityIdentifiers.VERIFICATION_TOKEN_FIELD,
                                 value: correct_token)
         
         tapButton(accessibilityId: accessibilityIdentifiers.VERIFICATION_BUTTON)
         
-        checkButton(accessibilityId: accessibilityIdentifiers.LOGIN_BTN)
+        /// Login again
+        tapButton(accessibilityId: accessibilityIdentifiers.LOGIN_BTN)
+        
+        sleep(1)
+        
+        let map = app.otherElements[accessibilityIdentifiers.MAP]
+        XCTAssert(map.exists)
     }
 }

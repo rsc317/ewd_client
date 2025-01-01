@@ -55,8 +55,8 @@ class AuthenticationManager: ObservableObject {
                 scheduleTokenExpiration(token: token)
             } else if let username = storedUsername.nonEmpty, let password = loadPasswordFromKeychain(for: username) {
                 Task {
-                    let errors = await self.logIn(username: username, password: password, silentLogin: true)
-                    if !errors.isEmpty {
+                    let error = await self.logIn(username: username, password: password, silentLogin: true)
+                    if error != nil {
                         DispatchQueue.main.async { [self] in
                             logOut()
                         }
@@ -70,15 +70,16 @@ class AuthenticationManager: ObservableObject {
         }
     }
 
-    func logIn(username: String, password: String, silentLogin: Bool = false) async -> [AuthenticationError] {
+    func logIn(username: String, password: String, silentLogin: Bool = false) async -> AuthenticationError? {
         let apiService = APIService.shared
-        var authenticationErrors: [AuthenticationError] = []
+//        var authenticationErrors: [AuthenticationError] = []
         
         do {
             let credentials = "\(username):\(password)"
             guard let encodedCredentials = credentials.data(using: .utf8)?.base64EncodedString() else {
-                authenticationErrors.append(.credentialsError)
-                return authenticationErrors
+                return .credentialsError
+//                authenticationErrors.append(.credentialsError)
+//                return authenticationErrors
             }
             
             let response: AuthenticationToken = try await apiService.getLogin(
@@ -87,7 +88,8 @@ class AuthenticationManager: ObservableObject {
             )
             
             if !response.userVerified {
-                authenticationErrors.append(.userNotVerifiedError)
+                return .userNotVerifiedError
+//                authenticationErrors.append(.userNotVerifiedError)
             }
             
             await MainActor.run {
@@ -105,13 +107,16 @@ class AuthenticationManager: ObservableObject {
                 self.scheduleTokenExpiration(token: response)
             }
         } catch {
+            print("CATCH")
+            
             await MainActor.run {
                 if !silentLogin {
                     self.logOut()
                 }
             }
+            return .credentialsError
         }
-        return authenticationErrors
+        return nil
     }
 
     func logOut() {

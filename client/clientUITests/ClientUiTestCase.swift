@@ -54,6 +54,24 @@ class ClientUiTestCase: XCTestCase {
         XCTAssertTrue(titleLabel.exists)
     }
     
+    func checkStaticTextExists(_ localizeId: String.LocalizationValue) {
+        guard let text = localizedString(forKey: localizeId) else {
+            XCTFail()
+            return
+        }
+        let label = app.staticTexts[text]
+        XCTAssertTrue(label.exists)
+    }
+    
+    func checkStaticTextDoesNotExist(_ localizeId: String.LocalizationValue) {
+        guard let text = localizedString(forKey: localizeId) else {
+            XCTFail()
+            return
+        }
+        let label = app.staticTexts[text]
+        XCTAssertFalse(label.exists)
+    }
+    
     func checkButton(accessibilityId: String) {
         let button = app.buttons[accessibilityId]
         XCTAssertTrue(button.exists)
@@ -69,17 +87,41 @@ class ClientUiTestCase: XCTestCase {
         XCTAssertTrue(textField.exists)
     }
     
+    func clearTextfield(accessibilityId: String) {
+        let textField = app.textFields[accessibilityId]
+        XCTAssertTrue(textField.exists)
+        textField.tap()
+        
+        // Simulate "Select All" and then delete
+        textField.press(forDuration: 1.0)
+        XCUIApplication().menuItems["Alles"].tap()
+        textField.typeText("\u{8}") // Backspace
+    }
+    
     func enterValueIntoTextfield(accessibilityId: String, value: String) {
         let textField = app.textFields[accessibilityId]
         XCTAssertTrue(textField.exists)
+        
         textField.tap()
         textField.typeText(value)
         XCTAssertEqual(textField.value as! String, value, "Text field value is not correct")
     }
     
+    func clearSecureTextfield(accessibilityId: String) {
+        let textField = app.secureTextFields[accessibilityId]
+        XCTAssertTrue(textField.exists)
+        textField.tap()
+        
+        // Simulate "Select All" and then delete
+        textField.press(forDuration: 1.0)
+        XCUIApplication().menuItems["Alles"].tap()
+        textField.typeText("\u{8}") // Backspace
+    }
+    
     func enterValueIntoSecureTextfield(accessibilityId: String, value: String) {
         let textField = app.secureTextFields[accessibilityId]
         XCTAssertTrue(textField.exists)
+        
         textField.tap()
         textField.typeText(value)
     }

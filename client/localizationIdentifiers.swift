@@ -19,6 +19,7 @@ struct localizationIdentifiers {
     static let LOGIN_TITLE: String.LocalizationValue = "LOGIN_TITLE"
     static let STAY_LOGGED_IN: String.LocalizationValue = "STAY_LOGGED_IN"
     static let NOT_SIGNED_UP_YET: String.LocalizationValue = "NOT_SIGNED_UP_YET"
+    static let WRONG_CREDENTIALS: String.LocalizationValue = "WRONG_CREDENTIALS"
     
     // Signup View
     static let SIGNUP_TITLE: String.LocalizationValue = "SIGNUP_TITLE"

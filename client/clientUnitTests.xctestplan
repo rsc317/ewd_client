@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "6C0FC9A5-3228-437F-8ECB-C38951763006",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:client.xcodeproj",
+        "identifier" : "EB6B56462D1A071500F9A1CC",
+        "name" : "clientTests"
+      }
+    }
+  ],
+  "version" : 1
+}

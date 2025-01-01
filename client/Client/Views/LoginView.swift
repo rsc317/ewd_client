@@ -10,7 +10,7 @@ import SwiftUI
 struct LoginView: View {
     @State private var username: String = ""
     @State private var password: String = ""
-    @State private var errors: [AuthenticationError] = []
+    @State private var error: AuthenticationError? = nil
     @State private var showAlert: Bool = false
     @State private var showConfirmRegistrationView: Bool = false
     @StateObject private var authManager = AuthenticationManager.shared
@@ -35,6 +35,10 @@ struct LoginView: View {
                     .tint(Color.interaction)
                 }
                 .padding(.horizontal)
+                if self.error == .credentialsError {
+                    Text(localizationIdentifiers.WRONG_CREDENTIALS.localized)
+                        .font(.footnote)
+                }
                 ViewElementFactory.createInteractionButton(label: localizationIdentifiers.LOGIN,
                                                            action: login,
                                                            accessibilityId: accessibilityIdentifiers.LOGIN_BTN)
@@ -62,10 +66,9 @@ struct LoginView: View {
     private func login() {
         if !username.isEmpty && !password.isEmpty {
             Task {
-                let errors = await AuthenticationManager.shared.logIn(username: username, password: password)
+                self.error = await AuthenticationManager.shared.logIn(username: username, password: password)
                 DispatchQueue.main.async {
-                    self.errors = errors
-                    self.showConfirmRegistrationView = errors.contains(.userNotVerifiedError)
+                    self.showConfirmRegistrationView = (self.error == .userNotVerifiedError)
                 }
             }
         }

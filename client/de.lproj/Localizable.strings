@@ -19,6 +19,7 @@
 "LOGIN_TITLE" = "Anmelden";
 "STAY_LOGGED_IN" = "Angemeldet bleiben";
 "NOT_SIGNED_UP_YET" = "Du hast noch keinen Account?";
+"WRONG_CREDENTIALS" = "Nutzername oder Password sind inkorrekt";
 
 // Signup View
 "SIGNUP_TITLE" = "Registrieren";

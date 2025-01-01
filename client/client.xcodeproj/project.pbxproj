@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		4E529C9D2CE14EC00056CE5D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4E529C9B2CE14EC00056CE5D /* Localizable.strings */; };
 		4E529CA32CE14F650056CE5D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4E529CA22CE14F650056CE5D /* Localizable.strings */; };
+		EB3B35802D25AF67006095E6 /* runUITests.sh in Resources */ = {isa = PBXBuildFile; fileRef = EB3B357F2D25AF5F006095E6 /* runUITests.sh */; };
+		EB3B35812D25AF67006095E6 /* runUITests.sh in Resources */ = {isa = PBXBuildFile; fileRef = EB3B357F2D25AF5F006095E6 /* runUITests.sh */; };
+		EB3B35822D25AF67006095E6 /* runUITests.sh in Resources */ = {isa = PBXBuildFile; fileRef = EB3B357F2D25AF5F006095E6 /* runUITests.sh */; };
 		EB6B567D2D1CB67100F9A1CC /* accessibilityIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6B567C2D1CB66700F9A1CC /* accessibilityIdentifiers.swift */; };
 		EB6B567E2D1CB68D00F9A1CC /* accessibilityIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6B567C2D1CB66700F9A1CC /* accessibilityIdentifiers.swift */; };
 		EB6B567F2D1CB68D00F9A1CC /* accessibilityIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6B567C2D1CB66700F9A1CC /* accessibilityIdentifiers.swift */; };
@@ -43,11 +46,13 @@
 		4E529CA42CE14F690056CE5D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = "en.lproj/Localizable 2.strings"; sourceTree = "<group>"; };
 		4EEC7A9C2CDBC12B005E2466 /* client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = client.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB3B35602D2426EF006095E6 /* clientUITests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = clientUITests.xctestplan; sourceTree = "<group>"; };
+		EB3B357F2D25AF5F006095E6 /* runUITests.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = runUITests.sh; sourceTree = "<group>"; };
 		EB6B56472D1A071500F9A1CC /* clientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = clientTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB6B566D2D1A1FEF00F9A1CC /* clientUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = clientUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB6B567C2D1CB66700F9A1CC /* accessibilityIdentifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = accessibilityIdentifiers.swift; sourceTree = "<group>"; };
 		EB6B56832D1CC4B500F9A1CC /* localizationIdentifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = localizationIdentifiers.swift; sourceTree = "<group>"; };
 		EB86FD752D20097400FA2739 /* Inflo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Inflo.plist; sourceTree = "<group>"; };
+		EBBCE2DC2D25E933004C6AD7 /* clientUnitTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = clientUnitTests.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -101,6 +106,8 @@
 		4EEC7A932CDBC12B005E2466 = {
 			isa = PBXGroup;
 			children = (
+				EBBCE2DC2D25E933004C6AD7 /* clientUnitTests.xctestplan */,
+				EB3B357F2D25AF5F006095E6 /* runUITests.sh */,
 				EB3B35602D2426EF006095E6 /* clientUITests.xctestplan */,
 				EB86FD752D20097400FA2739 /* Inflo.plist */,
 				EB6B56832D1CC4B500F9A1CC /* localizationIdentifiers.swift */,
@@ -251,6 +258,7 @@
 			files = (
 				4E529CA32CE14F650056CE5D /* Localizable.strings in Resources */,
 				4E529C9D2CE14EC00056CE5D /* Localizable.strings in Resources */,
+				EB3B35812D25AF67006095E6 /* runUITests.sh in Resources */,
 				EB86FD772D20097400FA2739 /* Inflo.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -260,6 +268,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB86FD762D20097400FA2739 /* Inflo.plist in Resources */,
+				EB3B35822D25AF67006095E6 /* runUITests.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -268,6 +277,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB6B56F62D1CD4B000F9A1CC /* Localizable.strings in Resources */,
+				EB3B35802D25AF67006095E6 /* runUITests.sh in Resources */,
 				EB86FD782D20097400FA2739 /* Inflo.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

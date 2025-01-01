@@ -16,6 +16,7 @@
 "LOGIN_TITLE" = "Log In";
 "STAY_LOGGED_IN" = "Stay logged in";
 "NOT_SIGNED_UP_YET" = "Not a user yet?";
+"WRONG_CREDENTIALS" = "Wrong Username or Password";
 
 // Signup View
 "SIGNUP_TITLE" = "Sign Up";

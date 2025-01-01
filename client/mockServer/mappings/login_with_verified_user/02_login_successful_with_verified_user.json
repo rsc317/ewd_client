@@ -1,5 +1,7 @@
 {
     "priority": 1,
+    "scenarioName": "Login with Verified User",
+    "requiredScenarioState": "Started",
     "request": {
         "method": "GET",
         "url": "/auth/login",

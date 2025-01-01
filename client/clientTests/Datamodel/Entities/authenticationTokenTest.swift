@@ -34,7 +34,7 @@ struct AuthenticationTokenTests {
         {
             "token": "decodedToken123",
             "expires_in": 120000,
-            "userVerified": true
+            "user_verified": true
         }
         """.data(using: .utf8)!
         let decoder = JSONDecoder()
@@ -63,7 +63,7 @@ struct AuthenticationTokenTests {
         
         // Assert
         #expect(jsonString.contains("\"token\" : \"\(token)\""), "JSON should contain correct token")
-        #expect(jsonString.contains("\"userVerified\" : \(userVerified)"), "JSON should contain correct userVerified status")
+        #expect(jsonString.contains("\"user_verified\" : \(userVerified)"), "JSON should contain correct userVerified status")
         #expect(jsonString.contains("\"expires_in\""), "JSON should contain expires_in field")
     }
     

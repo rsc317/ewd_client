@@ -66,7 +66,7 @@ class ViewElementFactory {
         }
     }
     
-    static func createInteractionFooter(footerText: String, footerButtonText: String, action: @escaping () -> Void) -> some View {
+    static func createInteractionFooter(footerText: String, footerButtonText: String, action: @escaping () -> Void, accessibilityId: String) -> some View {
         VStack(spacing: 8) {
             HStack {
                 Text(footerText)
@@ -79,6 +79,7 @@ class ViewElementFactory {
                         .fontWeight(.bold)
                         .foregroundColor(.interaction)
                 }
+                .accessibilityIdentifier(accessibilityId)
             }
         }
     }

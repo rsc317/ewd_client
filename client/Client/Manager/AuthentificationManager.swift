@@ -72,25 +72,17 @@ class AuthenticationManager: ObservableObject {
 
     func logIn(username: String, password: String, silentLogin: Bool = false) async -> AuthenticationError? {
         let apiService = APIService.shared
-//        var authenticationErrors: [AuthenticationError] = []
         
         do {
             let credentials = "\(username):\(password)"
             guard let encodedCredentials = credentials.data(using: .utf8)?.base64EncodedString() else {
                 return .credentialsError
-//                authenticationErrors.append(.credentialsError)
-//                return authenticationErrors
             }
             
             let response: AuthenticationToken = try await apiService.getLogin(
                 endpoint: "auth/login",
                 headers: ["Authorization": "Basic \(encodedCredentials)", "Content-Type": "application/json"]
             )
-            
-            if !response.userVerified {
-                return .userNotVerifiedError
-//                authenticationErrors.append(.userNotVerifiedError)
-            }
             
             await MainActor.run {
                 self.tokenTimer?.invalidate()
@@ -106,6 +98,11 @@ class AuthenticationManager: ObservableObject {
                 self.saveTokenToKeychain(response)
                 self.scheduleTokenExpiration(token: response)
             }
+            
+            if !response.userVerified {
+                return .userNotVerifiedError
+            }
+
         } catch {
             print("CATCH")
             
@@ -152,28 +149,26 @@ class AuthenticationManager: ObservableObject {
         return authenticationErrors
     }
     
-    func verification(code: String) async -> [AuthenticationError] {
-        var authenticationErrors: [AuthenticationError] = []
-        Task {
-            do {
-                let _: String = try await APIService.shared.postVerification(endpoint: "user/verification", body: code)
-            } catch {
-                authenticationErrors.append(.verificationError)
-            }
+    func verification(code: String) async -> AuthenticationError? {
+        do {
+            let _: String = try await APIService.shared.postVerification(endpoint: "user/verification", body: code)
+            return nil
+        } catch {
+            print("VERIFICATION ERROR 1")
+            return AuthenticationError.verificationError
         }
-        return authenticationErrors
+        return nil
     }
     
-    func verification() async -> [AuthenticationError] {
-        var authenticationErrors: [AuthenticationError] = []
-        Task {
-            do {
-                let _: String = try await APIService.shared.getVerification(endpoint: "user/verification")
-            } catch {
-                authenticationErrors.append(.verificationError)
-            }
+    func verification() async -> AuthenticationError? {
+        do {
+            let _: String = try await APIService.shared.getVerification(endpoint: "user/verification")
+            return nil
+        } catch {
+            print("VERIFICATION ERROR 2")
+            return AuthenticationError.verificationError
         }
-        return authenticationErrors
+        return nil
     }
     
     private func checkForErrors(email: String, username: String, password: String, passwordConfirm: String) -> [AuthenticationError] {

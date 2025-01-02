@@ -9,6 +9,7 @@ struct accessibilityIdentifiers {
     static let LOGIN_BTN: String = "LOGIN_BTN"
     static let SIGNUP_BTN: String = "SIGNUP_BTN"
     static let VERIFICATION_BUTTON: String = "VERIFICATION_BUTTON"
+    static let SEND_VERIFICATION_CODE_BUTTON: String = "SEND_VERIFICATION_CODE_BUTTON"
 
     static let USERNAME_FIELD: String = "USERNAME_FIELD"
     static let PASSWORD_FIELD: String = "PASSWORD_FIELD"

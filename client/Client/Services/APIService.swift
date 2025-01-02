@@ -160,6 +160,7 @@ class APIService {
             }
             
         } catch let requestError {
+            print("RECEIVED ERROR FROM NETWORK: \(requestError)")
             throw APIError.requestFailed(requestError)
         }
     }

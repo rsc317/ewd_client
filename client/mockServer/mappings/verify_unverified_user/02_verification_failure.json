@@ -12,7 +12,7 @@
     "response": {
         "status": 400,
         "headers": {
-            "Content-Type": "plain/text"
+            "Content-Type": "text/plain"
         },
         "body": "[Mock, Scenario] Verification Failed"
     }

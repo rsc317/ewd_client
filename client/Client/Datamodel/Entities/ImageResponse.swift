@@ -11,7 +11,7 @@ import SwiftUI
 struct ImageResponse: Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
         case filename
-        case fileType
+        case fileType = "file_type"
         case data
     }
     

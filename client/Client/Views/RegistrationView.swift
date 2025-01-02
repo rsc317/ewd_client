@@ -8,32 +8,27 @@
 import SwiftUI
 
 struct RegistrationView: View {
-    @State private var email: String = ""
-    @State private var username: String = ""
-    @State private var password: String = ""
-    @State private var confirmPassword: String = ""
-    @State private var showConfirmRegistrationView: Bool = false
-    @State private var errors: [AuthenticationError] = []
+    @Binding var viewModel: AuthViewModel
     
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
                 Spacer()
                 ViewElementFactory.createTextfield(label: localizationIdentifiers.EMAIL,
-                                                   text: $email,
+                                                   text: $viewModel.email,
                                                    accessibilityId: accessibilityIdentifiers.EMAIL_FIELD)
                 ViewElementFactory.createTextfield(label: localizationIdentifiers.USERNAME,
-                                                   text: $username,
+                                                   text: $viewModel.username,
                                                    accessibilityId: accessibilityIdentifiers.USERNAME_FIELD)
                 ViewElementFactory.createPasswordField(label: localizationIdentifiers.PASSWORD,
-                                                       text: $password,
+                                                       text: $viewModel.password,
                                                        accessibilityId: accessibilityIdentifiers.PASSWORD_FIELD)
                 ViewElementFactory.createPasswordField(label: localizationIdentifiers.PASSWORD_REPEAT,
-                                                       text: $confirmPassword,
+                                                       text: $viewModel.confirmPassword,
                                                        accessibilityId: accessibilityIdentifiers.PASSWORD_REPEAT_FIELD)
-                ViewElementFactory.createRegistrationErrorView(errors: errors)
+                ViewElementFactory.createRegistrationErrorView(errors: viewModel.validationErrors)
                 ViewElementFactory.createInteractionButton(label: localizationIdentifiers.SIGNUP,
-                                                           action: signUp,
+                                                           action: viewModel.registrate,
                                                            accessibilityId: accessibilityIdentifiers.LOGIN_BTN)
                 Spacer()
             }
@@ -42,19 +37,15 @@ struct RegistrationView: View {
             .cornerRadius(12)
             .padding(25)
         }
-        .sheet(isPresented: $showConfirmRegistrationView) {
-            ConfirmRegistrationView()
+        .sheet(isPresented: $viewModel.showConfirmRegistrationView) {
+            ConfirmRegistrationView(viewModel: $viewModel)
                 .presentationDragIndicator(.visible)
                 .presentationDetents([.medium])
         }
     }
-    
-    private func signUp() {
-        errors = AuthenticationManager.shared.signUp(email: email, username: username, password: password, passwordConfirm: confirmPassword)
-        showConfirmRegistrationView = errors.isEmpty
-    }
 }
 
 #Preview {
-    RegistrationView()
+    @Previewable @State var viewModel = AuthViewModel()
+    RegistrationView(viewModel: $viewModel)
 }

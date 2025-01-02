@@ -8,23 +8,21 @@
 import SwiftUI
 
 struct LoginView: View {
-    @State private var username: String = ""
-    @State private var password: String = ""
-    @State private var locationManager = LocationManager.shared
-    @State private var error: AuthenticationError? = nil
     @State private var showAlert: Bool = false
-    @State private var showConfirmRegistrationView: Bool = false
+    @State private var viewModel = AuthViewModel()
     @StateObject private var authManager = AuthenticationManager.shared
+    @State private var locationManager = LocationManager.shared
 
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
                 Spacer()
                 ViewElementFactory.createTextfield(label: localizationIdentifiers.USERNAME,
-                                                   text: $username,
+                                                   text: $viewModel.username,
                                                    accessibilityId: accessibilityIdentifiers.USERNAME_FIELD)
                 ViewElementFactory.createPasswordField(label: localizationIdentifiers.PASSWORD,
-                                                       text: $password,
+                                                       text: $viewModel.password,
                                                        accessibilityId: accessibilityIdentifiers.PASSWORD_FIELD)
                 HStack {
                     Toggle(isOn: $authManager.stayLoggedIn) {
@@ -36,17 +34,13 @@ struct LoginView: View {
                     .tint(Color.interaction)
                 }
                 .padding(.horizontal)
-                if self.error == .credentialsError {
-                    Text(localizationIdentifiers.WRONG_CREDENTIALS.localized)
-                        .font(.footnote)
-                }
                 ViewElementFactory.createInteractionButton(label: localizationIdentifiers.LOGIN,
-                                                           action: login,
+                                                           action: viewModel.login,
                                                            accessibilityId: accessibilityIdentifiers.LOGIN_BTN)
                 ViewElementFactory.createInteractionFooter(
                     footerText: localizationIdentifiers.NOT_SIGNED_UP_YET,
                     footerButtonText: localizationIdentifiers.SIGNUP,
-                    view: RegistrationView(),
+                    view: RegistrationView(viewModel: $viewModel),
                     accessibilityId: accessibilityIdentifiers.SIGNUP_BTN
                 )
                 
@@ -57,24 +51,14 @@ struct LoginView: View {
             .cornerRadius(12)
             .padding(25)
         }
-        .sheet(isPresented: $showConfirmRegistrationView) {
-            ConfirmRegistrationView()
+        .navigationViewStyle(StackNavigationViewStyle())
+        .sheet(isPresented: $viewModel.showConfirmRegistrationView) {
+            ConfirmRegistrationView(viewModel: $viewModel)
                 .presentationDragIndicator(.visible)
                 .presentationDetents([.medium])
         }
         .onAppear() {
             locationManager.requestLocation()
-        }
-    }
-    
-    private func login() {
-        if !username.isEmpty && !password.isEmpty {
-            Task {
-                self.error = await AuthenticationManager.shared.logIn(username: username, password: password)
-                DispatchQueue.main.async {
-                    self.showConfirmRegistrationView = (self.error == .userNotVerifiedError)
-                }
-            }
         }
     }
 }

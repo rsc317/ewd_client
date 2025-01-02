@@ -18,7 +18,7 @@
                BlueprintIdentifier = "4EEC7A9B2CDBC12B005E2466"
                BuildableName = "client.app"
                BlueprintName = "client"
-               ReferencedContainer = "container:client.xcodeproj">
+               ReferencedContainer = "container:Client.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -38,7 +38,7 @@
                BlueprintIdentifier = "EB6B56462D1A071500F9A1CC"
                BuildableName = "clientTests.xctest"
                BlueprintName = "clientTests"
-               ReferencedContainer = "container:client.xcodeproj">
+               ReferencedContainer = "container:Client.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -49,7 +49,7 @@
                BlueprintIdentifier = "EB6B566C2D1A1FEF00F9A1CC"
                BuildableName = "clientUITests.xctest"
                BlueprintName = "clientUITests"
-               ReferencedContainer = "container:client.xcodeproj">
+               ReferencedContainer = "container:Client.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -71,7 +71,7 @@
             BlueprintIdentifier = "4EEC7A9B2CDBC12B005E2466"
             BuildableName = "client.app"
             BlueprintName = "client"
-            ReferencedContainer = "container:client.xcodeproj">
+            ReferencedContainer = "container:Client.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -88,7 +88,7 @@
             BlueprintIdentifier = "4EEC7A9B2CDBC12B005E2466"
             BuildableName = "client.app"
             BlueprintName = "client"
-            ReferencedContainer = "container:client.xcodeproj">
+            ReferencedContainer = "container:Client.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

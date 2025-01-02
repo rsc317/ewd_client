@@ -33,8 +33,11 @@ xcodebuild test \
     -sdk iphonesimulator \
     -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
     -testPlan clientUITests \
-    -parallel-testing-enabled NO | xcpretty
+    -parallel-testing-enabled NO
 TEST_EXIT_CODE=$?
+
+echo "Tests returned exit code $TEST_EXIT_CODE"
+
 killall Simulator || true
 
 # Close WireMock-Server

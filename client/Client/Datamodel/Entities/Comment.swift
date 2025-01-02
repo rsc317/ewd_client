@@ -46,7 +46,7 @@ struct Comment: Codable, Identifiable {
         try container.encode(Comment.dateFormatter.string(from: createdAt), forKey: .createdAt)
     }
     
-    private static var dateFormatter: DateFormatter {
+    public static var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
         formatter.locale = Locale(identifier: "en_US_POSIX")

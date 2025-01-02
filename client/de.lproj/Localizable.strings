@@ -8,3 +8,24 @@
 "map" = "Karte";
 "settings"  = "Einstellungen";
 "my_posts" = "My Posts";
+
+// Generic
+"SIGNUP" = "Registrieren";
+"LOGIN" = "Anmelden";
+"USERNAME" = "Benutzername";
+"PASSWORD" = "Passwort";
+
+// Login View
+"LOGIN_TITLE" = "Anmelden";
+"STAY_LOGGED_IN" = "Angemeldet bleiben";
+"NOT_SIGNED_UP_YET" = "Du hast noch keinen Account?";
+"WRONG_CREDENTIALS" = "Nutzername oder Password sind inkorrekt";
+
+// Confirm Registration View
+"CODE_WAS_SENT" = "Code wurde versendet! Gucke in dein Postfach!";
+"WRONG_CODE" = "Falscher Code, bitte überprüfe ihn noch einmal.";
+
+// Signup View
+"SIGNUP_TITLE" = "Registrieren";
+"EMAIL" = "E-Mail";
+"PASSWORD_REPEAT" = "Passwort wiederholen";

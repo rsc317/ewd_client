@@ -1,0 +1,16 @@
+{
+    "priority": 2,
+    "scenarioName": "Login with Verified User",
+    "requiredScenarioState": "Started",
+    "request": {
+        "method": "GET",
+        "url": "/auth/login"
+    },
+    "response": {
+        "status": 401,
+        "headers": {
+            "Content-Type": "text/plain"
+        },
+        "body": "Bad Credentials"
+    }
+}

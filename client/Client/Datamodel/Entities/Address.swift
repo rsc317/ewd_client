@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 
-struct Address: Codable, Identifiable {
+struct Address: Codable, Identifiable, Equatable {
     enum CodingKeys: String, CodingKey {
         case streetName = "street_name"
         case streetNumber = "street_number"
@@ -54,4 +54,13 @@ struct Address: Codable, Identifiable {
         try container.encode(country, forKey: .country)
         try container.encode(postcode, forKey: .postcode)
     }
+    
+    static func ==(lhs: Address, rhs: Address) -> Bool {
+        return lhs.streetName == rhs.streetName &&
+               lhs.streetNumber == rhs.streetNumber &&
+               lhs.postcode == rhs.postcode &&
+               lhs.city == rhs.city &&
+               lhs.country == rhs.country
+    }
+
 }

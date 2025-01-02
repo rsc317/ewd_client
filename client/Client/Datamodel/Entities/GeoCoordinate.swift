@@ -18,8 +18,8 @@ struct GeoCoordinate: Codable, Identifiable {
     }
     
     let id = UUID()
-    private var latitude: Double
-    private var longitude: Double
+    let latitude: Double
+    let longitude: Double
     var address: Address?
     
     var coordinates: CLLocationCoordinate2D {

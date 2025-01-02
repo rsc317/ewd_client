@@ -5,3 +5,24 @@
   Created by Emircan Duman on 10.11.24.
   
 */
+
+// Generic
+"SIGNUP" = "Sign Up";
+"LOGIN" = "Log In";
+"USERNAME" = "Username";
+"PASSWORD" = "Password";
+
+// Login View
+"LOGIN_TITLE" = "Log In";
+"STAY_LOGGED_IN" = "Stay logged in";
+"NOT_SIGNED_UP_YET" = "Not a user yet?";
+"WRONG_CREDENTIALS" = "Wrong Username or Password";
+
+// Confirm Registration View
+"CODE_WAS_SENT" = "Code was sent, please check your inbox.";
+"WRONG_CODE" = "Wrong code, please try again.";
+
+// Signup View
+"SIGNUP_TITLE" = "Sign Up";
+"EMAIL" = "Mail";
+"PASSWORD_REPEAT" = "Repeat Password";

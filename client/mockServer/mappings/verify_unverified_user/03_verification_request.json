@@ -1,0 +1,16 @@
+{
+    "priority": 1,
+    "scenarioName": "Verify Unverified User",
+    "requiredScenarioState": "Started",
+    "request": {
+        "method": "GET",
+        "url": "/user/verification"
+    },
+    "response": {
+        "status": 200,
+        "headers": {
+            "Content-Type": "text/plain"
+        },
+        "body": "[Mock, Scenario] Code Sent"
+    }
+}

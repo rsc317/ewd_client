@@ -24,8 +24,6 @@ struct LikeTests {
         
         // Assert
         #expect(dislike.isLike == false, "isLike should match the provided value")
-        
-        #expect(Bool(false))
     }
     
     @Test func testDecodingFromJSON() async throws {

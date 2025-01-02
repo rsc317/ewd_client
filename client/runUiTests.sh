@@ -18,17 +18,22 @@ echo "WireMock-Server gestartet mit PID $WIREMOCK_PID"
 
 cd ..
 
+echo "Stopping and erasing all Eimulators"
 killall Simulator || true
 xcrun simctl shutdown all
 xcrun simctl erase all
 xcrun simctl boot "iPhone 16 Pro"
+
+echo "Checking available Simulators"
+xcrun simctl list devices
+
 xcodebuild test \
     -project "client.xcodeproj" \
     -scheme "clientUITests" \
     -sdk iphonesimulator \
     -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
     -testPlan clientUITests \
-    -parallel-testing-enabled NO
+    -parallel-testing-enabled NO | xcpretty
 TEST_EXIT_CODE=$?
 killall Simulator || true
 

@@ -110,9 +110,9 @@
 		4EEC7A932CDBC12B005E2466 = {
 			isa = PBXGroup;
 			children = (
-				EBBCE2DC2D25E933004C6AD7 /* clientUnitTests.xctestplan */,
 				EB3B357F2D25AF5F006095E6 /* runUiTests.sh */,
 				EBBCE2DD2D2601CD004C6AD7 /* runUnitTests.sh */,
+				EBBCE2DC2D25E933004C6AD7 /* clientUnitTests.xctestplan */,
 				EB3B35602D2426EF006095E6 /* clientUITests.xctestplan */,
 				EB86FD752D20097400FA2739 /* Inflo.plist */,
 				EB6B56832D1CC4B500F9A1CC /* localizationIdentifiers.swift */,

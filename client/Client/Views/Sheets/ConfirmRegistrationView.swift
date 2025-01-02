@@ -9,8 +9,9 @@ import SwiftUI
 
 struct ConfirmRegistrationView: View {
     @State var token: String = ""
-    @State var error: AuthenticationError? = nil
+    @State var errors: [AuthenticationError] = []
     @State var showVerificationSend: Bool = false
+    @State var showError: Bool = false
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
@@ -23,33 +24,28 @@ struct ConfirmRegistrationView: View {
                     .font(.callout)
                     .fontWeight(.bold)
                     .foregroundStyle(.icon)
-                ViewElementFactory.createTextfield(label: "Code",
-                                                   text: $token,
-                                                   accessibilityId: accessibilityIdentifiers.VERIFICATION_TOKEN_FIELD)
+                ViewElementFactory.createTextfield(label: "Code", text: $token)
                     .padding(.horizontal, 10)
                 
                 ViewElementFactory.createInteractionFooter(
                     footerText: "Bitte überprüfen Sie ihre Emails!",
                     footerButtonText: "Nochmal senden?",
-                    action: sendVerification,
-                    accessibilityId: accessibilityIdentifiers.SEND_VERIFICATION_CODE_BUTTON
+                    action: sendVerification
                 )
                 
                 if showVerificationSend {
-                    Text(localizationIdentifiers.CODE_WAS_SENT.localized)
+                    Text("Code wurde versendet! Gucke in dein Postfach!")
                         .foregroundStyle(.success)
                         .font(.footnote)
                 }
                 
-                if error != nil {
-                    Text(localizationIdentifiers.WRONG_CODE.localized)
+                if showError {
+                    Text("Ein Fehler ist aufgetreten!")
                         .foregroundStyle(.success)
                         .font(.footnote)
                 }
 
-                ViewElementFactory.createInteractionButton(label: "Verifizieren",
-                                                           action: verify,
-                                                           accessibilityId: accessibilityIdentifiers.VERIFICATION_BUTTON)
+                ViewElementFactory.createInteractionButton(label: "Verifizieren", action: verify)
                     .padding(.horizontal, 10)
             }
             .cornerRadius(12)
@@ -58,23 +54,27 @@ struct ConfirmRegistrationView: View {
     }
     
     private func verify() {
+        showError = false
         showVerificationSend = false
         Task {
-            error = try await AuthenticationManager.shared.verification(code: token)
+            let errors = await AuthenticationManager.shared.verification(code: token)
             DispatchQueue.main.async {
-                if error == nil {
-                    dismiss()
+                if !errors.isEmpty {
+                    showError = true
+                } else {
+                    dismiss
                 }
             }
         }
     }
-
+                     
     private func sendVerification() {
         showVerificationSend = false
+        showError = false
         Task {
-            error = await AuthenticationManager.shared.verification()
+            let errors = await AuthenticationManager.shared.verification()
             DispatchQueue.main.async {
-                showVerificationSend = (error == nil)
+                showVerificationSend = errors.isEmpty
             }
         }
     }

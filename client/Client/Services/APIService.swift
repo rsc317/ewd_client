@@ -44,11 +44,7 @@ class APIService {
     private init() {}
     
     /// Basis-URL des Backends
-    #if NO_HTTPS
-    private let baseURL = "http://localhost:8443/"
-    #else
     private let baseURL = "https://localhost:8443/"
-    #endif
     
     /// Generische Anfrage-Methode
     /// - Parameters:
@@ -160,7 +156,6 @@ class APIService {
             }
             
         } catch let requestError {
-            print("RECEIVED ERROR FROM NETWORK: \(requestError)")
             throw APIError.requestFailed(requestError)
         }
     }
@@ -218,7 +213,6 @@ class APIService {
     }
     
     func postVerification<T: Codable>(endpoint: String, body: String) async throws -> T {
-        print("posting verification to '\(endpoint)': \(body)")
         return try await request(
             method: .POST,
             endpoint: endpoint,

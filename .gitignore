@@ -73,6 +73,3 @@ Dependencies/
 # Temporary files
 *.swp
 *~.
-*.jar
-client/TestReports
-client/fastlane/report.xml

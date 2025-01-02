@@ -14,7 +14,7 @@ struct AuthenticationToken: Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
         case token
         case expiresIn = "expires_in"
-        case userVerified = "user_verified"
+        case userVerified
     }
     
     var id: UUID = UUID()

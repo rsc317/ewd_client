@@ -61,7 +61,6 @@ struct MapView: View {
                 )
             }
         }
-        .accessibilityIdentifier(accessibilityIdentifiers.MAP)
         .sheet(isPresented: $showCreatePinPointSheet) {
             CreatePinPointSheetView(mapViewModel: $mapViewModel, pinLocation: $pinLocation)
                 .presentationDragIndicator(.visible)

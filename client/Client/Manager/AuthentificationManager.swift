@@ -55,8 +55,8 @@ class AuthenticationManager: ObservableObject {
                 scheduleTokenExpiration(token: token)
             } else if let username = storedUsername.nonEmpty, let password = loadPasswordFromKeychain(for: username) {
                 Task {
-                    let error = await self.logIn(username: username, password: password, silentLogin: true)
-                    if error != nil {
+                    let errors = await self.logIn(username: username, password: password, silentLogin: true)
+                    if !errors.isEmpty {
                         DispatchQueue.main.async { [self] in
                             logOut()
                         }
@@ -70,19 +70,25 @@ class AuthenticationManager: ObservableObject {
         }
     }
 
-    func logIn(username: String, password: String, silentLogin: Bool = false) async -> AuthenticationError? {
+    func logIn(username: String, password: String, silentLogin: Bool = false) async -> [AuthenticationError] {
         let apiService = APIService.shared
+        var authenticationErrors: [AuthenticationError] = []
         
         do {
             let credentials = "\(username):\(password)"
             guard let encodedCredentials = credentials.data(using: .utf8)?.base64EncodedString() else {
-                return .credentialsError
+                authenticationErrors.append(.credentialsError)
+                return authenticationErrors
             }
             
             let response: AuthenticationToken = try await apiService.getLogin(
                 endpoint: "auth/login",
                 headers: ["Authorization": "Basic \(encodedCredentials)", "Content-Type": "application/json"]
             )
+            
+            if !response.userVerified {
+                authenticationErrors.append(.userNotVerifiedError)
+            }
             
             await MainActor.run {
                 self.tokenTimer?.invalidate()
@@ -98,22 +104,14 @@ class AuthenticationManager: ObservableObject {
                 self.saveTokenToKeychain(response)
                 self.scheduleTokenExpiration(token: response)
             }
-            
-            if !response.userVerified {
-                return .userNotVerifiedError
-            }
-
         } catch {
-            print("CATCH")
-            
             await MainActor.run {
                 if !silentLogin {
                     self.logOut()
                 }
             }
-            return .credentialsError
         }
-        return nil
+        return authenticationErrors
     }
 
     func logOut() {
@@ -149,26 +147,28 @@ class AuthenticationManager: ObservableObject {
         return authenticationErrors
     }
     
-    func verification(code: String) async -> AuthenticationError? {
-        do {
-            let _: String = try await APIService.shared.postVerification(endpoint: "user/verification", body: code)
-            return nil
-        } catch {
-            print("VERIFICATION ERROR 1")
-            return AuthenticationError.verificationError
+    func verification(code: String) async -> [AuthenticationError] {
+        var authenticationErrors: [AuthenticationError] = []
+        Task {
+            do {
+                let _: String = try await APIService.shared.postVerification(endpoint: "user/verification", body: code)
+            } catch {
+                authenticationErrors.append(.verificationError)
+            }
         }
-        return nil
+        return authenticationErrors
     }
     
-    func verification() async -> AuthenticationError? {
-        do {
-            let _: String = try await APIService.shared.getVerification(endpoint: "user/verification")
-            return nil
-        } catch {
-            print("VERIFICATION ERROR 2")
-            return AuthenticationError.verificationError
+    func verification() async -> [AuthenticationError] {
+        var authenticationErrors: [AuthenticationError] = []
+        Task {
+            do {
+                let _: String = try await APIService.shared.getVerification(endpoint: "user/verification")
+            } catch {
+                authenticationErrors.append(.verificationError)
+            }
         }
-        return nil
+        return authenticationErrors
     }
     
     private func checkForErrors(email: String, username: String, password: String, passwordConfirm: String) -> [AuthenticationError] {

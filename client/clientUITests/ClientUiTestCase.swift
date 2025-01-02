@@ -12,6 +12,8 @@ class ClientUiTestCase: XCTestCase {
     var app: XCUIApplication = XCUIApplication()
 
     override func setUpWithError() throws {
+        app = XCUIApplication()
+
         continueAfterFailure = false
         app.launchArguments += ["-AppleLanguages", "(de)", "-AppleLocale", "de_DE"]
         
@@ -29,6 +31,16 @@ class ClientUiTestCase: XCTestCase {
         resetWiremockScenarios()
         
         app.launch()
+        
+        awaitLocationRequestDialog()
+    }
+    
+    override func tearDownWithError() throws {
+        app.terminate()
+
+        // Clear UserDefaults
+        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+        UserDefaults.standard.synchronize()
     }
     
     func localizedString(forKey key: String.LocalizationValue) -> String? {
@@ -90,12 +102,16 @@ class ClientUiTestCase: XCTestCase {
     func clearTextfield(accessibilityId: String) {
         let textField = app.textFields[accessibilityId]
         XCTAssertTrue(textField.exists)
-        textField.tap()
+        if !textField.isEnabled {
+            textField.tap()
+        }
         
-        // Simulate "Select All" and then delete
-        textField.press(forDuration: 1.0)
-        XCUIApplication().menuItems["Alles"].tap()
-        textField.typeText("\u{8}") // Backspace
+        guard let stringValue = textField.value as? String else {
+            XCTFail("Tried to clear and enter text into a non string value")
+            return
+        }
+        let deleteString = String(repeating: XCUIKeyboardKey.delete.rawValue, count: stringValue.count)
+        textField.typeText(deleteString)
     }
     
     func enterValueIntoTextfield(accessibilityId: String, value: String) {
@@ -110,12 +126,16 @@ class ClientUiTestCase: XCTestCase {
     func clearSecureTextfield(accessibilityId: String) {
         let textField = app.secureTextFields[accessibilityId]
         XCTAssertTrue(textField.exists)
-        textField.tap()
+        if !textField.isEnabled {
+            textField.tap()
+        }
         
-        // Simulate "Select All" and then delete
-        textField.press(forDuration: 1.0)
-        XCUIApplication().menuItems["Alles"].tap()
-        textField.typeText("\u{8}") // Backspace
+        guard let stringValue = textField.value as? String else {
+            XCTFail("Tried to clear and enter text into a non string value")
+            return
+        }
+        let deleteString = String(repeating: XCUIKeyboardKey.delete.rawValue, count: stringValue.count)
+        textField.typeText(deleteString)
     }
     
     func enterValueIntoSecureTextfield(accessibilityId: String, value: String) {
@@ -130,6 +150,15 @@ class ClientUiTestCase: XCTestCase {
         let button = app.buttons[accessibilityId]
         XCTAssertTrue(button.exists)
         button.tap()
+    }
+    
+    func awaitLocationRequestDialog() {
+        // Wait for the location permission alert to appear
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let locationAlert = springboard.alerts.firstMatch
+
+        let exists = locationAlert.waitForExistence(timeout: 6) // Adjust timeout as needed
+        XCTAssertTrue(exists, "Location permission alert did not appear")
     }
     
     func resetWiremockScenarios() {

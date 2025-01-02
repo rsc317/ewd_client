@@ -40,8 +40,8 @@ final class loginViewTest: ClientUiTestCase {
                                       value: correct_password)
         
         tapButton(accessibilityId: accessibilityIdentifiers.LOGIN_BTN)
-        
-        sleep(15)
+
+        sleep(6)
         
         map = app.otherElements[accessibilityIdentifiers.MAP]
         XCTAssert(map.exists)
@@ -93,7 +93,7 @@ final class loginViewTest: ClientUiTestCase {
         /// Login again
         tapButton(accessibilityId: accessibilityIdentifiers.LOGIN_BTN)
         
-        sleep(15)
+        sleep(6)
         
         let map = app.otherElements[accessibilityIdentifiers.MAP]
         XCTAssert(map.exists)

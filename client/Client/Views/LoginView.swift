@@ -10,6 +10,7 @@ import SwiftUI
 struct LoginView: View {
     @State private var username: String = ""
     @State private var password: String = ""
+    @State private var locationManager = LocationManager.shared
     @State private var error: AuthenticationError? = nil
     @State private var showAlert: Bool = false
     @State private var showConfirmRegistrationView: Bool = false
@@ -60,6 +61,9 @@ struct LoginView: View {
             ConfirmRegistrationView()
                 .presentationDragIndicator(.visible)
                 .presentationDetents([.medium])
+        }
+        .onAppear() {
+            locationManager.requestLocation()
         }
     }
     

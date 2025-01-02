@@ -17,4 +17,9 @@ xcodebuild test \
     -sdk iphonesimulator \
     -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
     -testPlan clientUnitTests | xcpretty
+TEST_EXIT_CODE=$?
+    
 killall Simulator || true
+
+# Exit with exit-code from test execution
+exit $TEST_EXIT_CODE

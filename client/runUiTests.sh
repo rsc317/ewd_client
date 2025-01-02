@@ -37,12 +37,12 @@ xcodebuild test \
 TEST_EXIT_CODE=$?
 killall Simulator || true
 
-# Beende den WireMock-Server
+# Close WireMock-Server
 echo "Beende WireMock-Server mit PID $WIREMOCK_PID"
 kill $WIREMOCK_PID
 
-# Optional: Sicherstellen, dass der Prozess beendet wurde
+# OMake sure, the process was terminated
 wait $WIREMOCK_PID 2>/dev/null
 
-# Exit mit dem Exit-Code der Tests
+# Exit with exit-code from test execution
 exit $TEST_EXIT_CODE

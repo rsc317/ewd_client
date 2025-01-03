@@ -22,6 +22,11 @@ class AuthViewModel {
         case emailInvalid
     }
     
+    enum LoginError: Error, Identifiable {
+        var id: Self { self }
+        case badCredentials
+    }
+    
     private(set) var validationErrors: [ValidationError] = []
     private var authManager = AuthenticationManager.shared
     
@@ -41,7 +46,7 @@ class AuthViewModel {
                     let _: String = try await apiService.postSignUp(body: body)
                     try await authManager.logIn(username: username, password: password)
                     let _: String = try await apiService.getVerification()
-                    login()
+                    try await login()
                 } catch {
                     
                 }
@@ -49,16 +54,14 @@ class AuthViewModel {
         }
     }
     
-    func login() {
-        Task {
-            do {
-                try await authManager.logIn(username: username, password: password)
-                await MainActor.run {
-                    showConfirmRegistrationView = !authManager.isUserVerified
-                }
-            } catch {
-
+    func login() async throws(LoginError) {
+        do {
+            try await authManager.logIn(username: username, password: password)
+            await MainActor.run {
+                showConfirmRegistrationView = !authManager.isUserVerified
             }
+        } catch {
+            throw LoginError.badCredentials
         }
     }
     
@@ -93,4 +96,3 @@ class AuthViewModel {
         return emailPredicate.evaluate(with: email)
     }
 }
-

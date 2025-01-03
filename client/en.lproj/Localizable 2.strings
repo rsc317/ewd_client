@@ -21,6 +21,7 @@
 // Confirm Registration View
 "CODE_WAS_SENT" = "Code was sent, please check your inbox.";
 "WRONG_CODE" = "Wrong code, please try again.";
+"CODE_NOT_SENT" = "Error trying to send verification code";
 
 // Signup View
 "SIGNUP_TITLE" = "Sign Up";

@@ -9,10 +9,8 @@ import SwiftUI
 
 struct ConfirmRegistrationView: View {
     @Binding var viewModel: AuthViewModel
-    
+    @State var statusMsg: String? = nil
     @State var code: String = ""
-    @State var showVerificationSend: Bool = false
-    @State var showError: Bool = false
     @Environment(\.dismiss) var dismiss
     
     
@@ -38,14 +36,8 @@ struct ConfirmRegistrationView: View {
                     accessibilityId: accessibilityIdentifiers.SEND_VERIFICATION_CODE_BUTTON
                 )
                 
-                if showVerificationSend {
-                    Text(localizationIdentifiers.CODE_WAS_SENT.localized)
-                        .foregroundStyle(.success)
-                        .font(.footnote)
-                }
-                
-                if showError {
-                    Text("Ein Fehler ist aufgetreten!")
+                if let statusMsg = statusMsg {
+                    Text(statusMsg)
                         .foregroundStyle(.error)
                         .font(.footnote)
                 }
@@ -65,11 +57,11 @@ struct ConfirmRegistrationView: View {
             do {
                 let _: String = try await APIService.shared.getVerification()
                 await MainActor.run {
-                    showVerificationSend = true
+                    statusMsg = localizationIdentifiers.CODE_WAS_SENT.localized
                 }
             } catch {
                 await MainActor.run {
-                    showError = true
+                    statusMsg = localizationIdentifiers.CODE_NOT_SENT.localized
                 }
             }
         }
@@ -79,13 +71,14 @@ struct ConfirmRegistrationView: View {
         Task {
             do {
                 let _: String = try await APIService.shared.postVerification(body: code)
+                try await viewModel.login()
+
                 await MainActor.run {
                     dismiss()
-                    viewModel.login()
                 }
             } catch {
                 await MainActor.run {
-                    showError = true
+                    statusMsg = localizationIdentifiers.WRONG_CODE.localized
                 }
             }
         }

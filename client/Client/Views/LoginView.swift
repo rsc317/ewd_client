@@ -12,6 +12,7 @@ struct LoginView: View {
     @State private var viewModel = AuthViewModel()
     @StateObject private var authManager = AuthenticationManager.shared
     @State private var locationManager = LocationManager.shared
+    @State var errorMsg: String? = nil
 
     
     var body: some View {
@@ -34,8 +35,15 @@ struct LoginView: View {
                     .tint(Color.interaction)
                 }
                 .padding(.horizontal)
+                
+                if let errorMsg = errorMsg {
+                    Text(errorMsg)
+                        .foregroundStyle(.error)
+                        .font(.footnote)
+                }
+                
                 ViewElementFactory.createInteractionButton(label: localizationIdentifiers.LOGIN,
-                                                           action: viewModel.login,
+                                                           action: login,
                                                            accessibilityId: accessibilityIdentifiers.LOGIN_BTN)
                 ViewElementFactory.createInteractionFooter(
                     footerText: localizationIdentifiers.NOT_SIGNED_UP_YET,
@@ -59,6 +67,19 @@ struct LoginView: View {
         }
         .onAppear() {
             locationManager.requestLocation()
+        }
+    }
+    
+    func login() {
+        Task {
+            do {
+                try await viewModel.login()
+                errorMsg = nil
+            } catch AuthViewModel.LoginError.badCredentials {
+                errorMsg = localizationIdentifiers.WRONG_CREDENTIALS.localized
+            } catch {
+                errorMsg = "Unknown Error"
+            }
         }
     }
 }

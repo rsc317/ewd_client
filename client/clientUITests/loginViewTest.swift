@@ -90,9 +90,6 @@ final class loginViewTest: ClientUiTestCase {
                                 value: correct_token)
         tapButton(accessibilityId: accessibilityIdentifiers.VERIFICATION_BUTTON)
         
-        /// Login again
-        tapButton(accessibilityId: accessibilityIdentifiers.LOGIN_BTN)
-        
         sleep(6)
         
         let map = app.otherElements[accessibilityIdentifiers.MAP]

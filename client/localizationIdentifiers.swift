@@ -24,6 +24,7 @@ struct localizationIdentifiers {
     // Confirm Registration View
     static let CODE_WAS_SENT: String.LocalizationValue = "CODE_WAS_SENT"
     static let WRONG_CODE: String.LocalizationValue = "WRONG_CODE"
+    static let CODE_NOT_SENT: String.LocalizationValue = "CODE_NOT_SENT"
     
     // Signup View
     static let SIGNUP_TITLE: String.LocalizationValue = "SIGNUP_TITLE"

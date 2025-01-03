@@ -14,6 +14,8 @@ enum APIError: Error, LocalizedError {
     case unknown
     case missingToken
     case authFailed(Error)
+    case unauthorized
+    case noContentType
     
     var errorDescription: String? {
         switch self {
@@ -28,9 +30,13 @@ enum APIError: Error, LocalizedError {
         case .authFailed(let error):
             return "Fehler beim Authentifizieren: \(error.localizedDescription)"
         case .missingToken:
-            return "Kein Token gefunden."
+            return "Kein Authentifizierungs Token vorhanden."
         case .unknown:
             return "Ein unbekannter Fehler ist aufgetreten."
+        case .unauthorized:
+            return "Zugriff auf die Ressource ist verweigert."
+        case .noContentType:
+            return "Kein Content-Type vorhanden."
         }
     }
 }
@@ -42,6 +48,7 @@ enum HTTPMethod: String {
 class APIService {
     static let shared = APIService()
     private init() {}
+    private var maxReloginAttempts: Int = 1
     
     /// Basis-URL des Backends
     #if NO_HTTPS
@@ -81,7 +88,6 @@ class APIService {
         
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
-//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         if requiresAuth {
             guard let token = AuthenticationManager.shared.token?.token else {
@@ -132,8 +138,12 @@ class APIService {
             }
             
             if 403 == httpResponse.statusCode {
-                AuthenticationManager.shared.logOut()
-                throw APIError.unknown
+                if maxReloginAttempts > 0 {
+                    AuthenticationManager.shared.attemptReLoginOrLogout()
+                    maxReloginAttempts -= 1
+                }
+                
+                throw APIError.unauthorized
             }
             
             guard let contentType = httpResponse.value(forHTTPHeaderField: "Content-Type") else {
@@ -187,7 +197,7 @@ class APIService {
         )
     }
     
-    func getLogin<T: Codable>(endpoint: String, headers: [String: String]? = nil) async throws -> T {        
+    func getLogin<T: Codable>(endpoint: String = "auth/login", headers: [String: String]? = nil) async throws -> T {
         return try await request(
             method: .GET,
             endpoint: endpoint,
@@ -197,7 +207,7 @@ class APIService {
         )
     }
     
-    func postSignUp<T: Codable, U: Codable>(endpoint: String, body: T) async throws -> U {
+    func postSignUp<T: Codable, U: Codable>(endpoint: String = "auth/signup", body: T) async throws -> U {
         return try await request(
             method: .POST,
             endpoint: endpoint,
@@ -208,7 +218,7 @@ class APIService {
         )
     }
     
-    func getVerification<T: Codable>(endpoint: String, headers: [String: String]? = nil) async throws -> T {
+    func getVerification<T: Codable>(endpoint: String = "user/verification") async throws -> T {
         return try await request(
             method: .GET,
             endpoint: endpoint,
@@ -217,7 +227,7 @@ class APIService {
         )
     }
     
-    func postVerification<T: Codable>(endpoint: String, body: String) async throws -> T {
+    func postVerification<T: Codable>(endpoint: String = "user/verification", body: String) async throws -> T {
         print("posting verification to '\(endpoint)': \(body)")
         return try await request(
             method: .POST,

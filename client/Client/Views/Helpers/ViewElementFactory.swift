@@ -83,13 +83,11 @@ class ViewElementFactory {
             }
         }
     }
-    
-    static func createRegistrationErrorView(errors: [AuthenticationError]) -> some View {
+
+    static func createRegistrationErrorView(errors: [AuthViewModel.ValidationError]) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            ForEach(errors, id:\.self) { showError in
+            ForEach(errors, id: \.self) { showError in
                 switch showError {
-                case .usernameAlreadyInUse:
-                    errorText("Benutzername wird bereits verwendet!")
                 case .usernameToShort:
                     errorText("Benutzername muss mindestens 4 Zeichen lang sein!")
                 case .passwordToShort:
@@ -102,12 +100,8 @@ class ViewElementFactory {
                     errorText("Password darf kein Specialzeichen: <>'\"\\/; enthalten!")
                 case .passwordNotMatch:
                     errorText("Passwörter stimmen nicht überein!")
-                case .emailAlreadyInUse:
-                    errorText("E-Mail wird bereits verwendet!")
                 case .emailInvalid:
                     errorText("Keine gültige E-Mail Addresse!")
-                default:
-                    EmptyView()
                 }
             }
         }

@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct ConfirmRegistrationView: View {
-    @State var token: String = ""
-    @State var error: AuthenticationError? = nil
-    @State var showVerificationSend: Bool = false
+    @Binding var viewModel: AuthViewModel
+    @State var statusMsg: String? = nil
+    @State var code: String = ""
     @Environment(\.dismiss) var dismiss
-
+    
+    
     var body: some View {
         VStack {
             VStack(spacing: 20) {
@@ -24,62 +25,67 @@ struct ConfirmRegistrationView: View {
                     .fontWeight(.bold)
                     .foregroundStyle(.icon)
                 ViewElementFactory.createTextfield(label: "Code",
-                                                   text: $token,
+                                                   text: $code,
                                                    accessibilityId: accessibilityIdentifiers.VERIFICATION_TOKEN_FIELD)
-                    .padding(.horizontal, 10)
+                .padding(.horizontal, 10)
                 
                 ViewElementFactory.createInteractionFooter(
                     footerText: "Bitte überprüfen Sie ihre Emails!",
                     footerButtonText: "Nochmal senden?",
-                    action: sendVerification,
+                    action: getVerificationCode,
                     accessibilityId: accessibilityIdentifiers.SEND_VERIFICATION_CODE_BUTTON
                 )
                 
-                if showVerificationSend {
-                    Text(localizationIdentifiers.CODE_WAS_SENT.localized)
-                        .foregroundStyle(.success)
+                if let statusMsg = statusMsg {
+                    Text(statusMsg)
+                        .foregroundStyle(.error)
                         .font(.footnote)
                 }
                 
-                if error != nil {
-                    Text(localizationIdentifiers.WRONG_CODE.localized)
-                        .foregroundStyle(.success)
-                        .font(.footnote)
-                }
-
-                ViewElementFactory.createInteractionButton(label: "Verifizieren",
-                                                           action: verify,
+                ViewElementFactory.createInteractionButton(label: "Verifizieren", action: postVerificationCode,
                                                            accessibilityId: accessibilityIdentifiers.VERIFICATION_BUTTON)
-                    .padding(.horizontal, 10)
+                
+                .padding(.horizontal, 10)
             }
             .cornerRadius(12)
             .padding(25)
         }
     }
     
-    private func verify() {
-        showVerificationSend = false
+    func getVerificationCode() {
         Task {
-            error = try await AuthenticationManager.shared.verification(code: token)
-            DispatchQueue.main.async {
-                if error == nil {
-                    dismiss()
+            do {
+                let _: String = try await APIService.shared.getVerification()
+                await MainActor.run {
+                    statusMsg = localizationIdentifiers.CODE_WAS_SENT.localized
+                }
+            } catch {
+                await MainActor.run {
+                    statusMsg = localizationIdentifiers.CODE_NOT_SENT.localized
                 }
             }
         }
     }
-
-    private func sendVerification() {
-        showVerificationSend = false
+    
+    func postVerificationCode() {
         Task {
-            error = await AuthenticationManager.shared.verification()
-            DispatchQueue.main.async {
-                showVerificationSend = (error == nil)
+            do {
+                let _: String = try await APIService.shared.postVerification(body: code)
+                try await viewModel.login()
+
+                await MainActor.run {
+                    dismiss()
+                }
+            } catch {
+                await MainActor.run {
+                    statusMsg = localizationIdentifiers.WRONG_CODE.localized
+                }
             }
         }
     }
 }
 
 #Preview {
-    ConfirmRegistrationView()
+    @Previewable @State var viewModel = AuthViewModel()
+    ConfirmRegistrationView(viewModel: $viewModel)
 }

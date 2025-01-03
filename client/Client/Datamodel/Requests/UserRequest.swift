@@ -7,33 +7,6 @@
 
 import Foundation
 
-struct UserLoginRequest: Codable {
-    enum CodingKeys: String, CodingKey {
-        case username
-        case password
-    }
-    
-    private let username: String
-    private let password: String
-    
-    init(username: String, password: String) {
-        self.username = username
-        self.password = password
-    }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        username = try container.decode(String.self, forKey: .username)
-        password = try container.decode(String.self, forKey: .password)
-    }
-    
-    func encode(to encoder: any Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(username, forKey: .username)
-        try container.encode(password, forKey: .password)
-    }
-}
-
 struct UserRegistrationRequest: Codable {
     enum CodingKeys: String, CodingKey {
         case username

@@ -24,6 +24,7 @@
 // Confirm Registration View
 "CODE_WAS_SENT" = "Code wurde versendet! Gucke in dein Postfach!";
 "WRONG_CODE" = "Falscher Code, bitte überprüfe ihn noch einmal.";
+"CODE_NOT_SENT" = "Fehler beim versenden des Verifizierungscodes!";
 
 // Signup View
 "SIGNUP_TITLE" = "Registrieren";

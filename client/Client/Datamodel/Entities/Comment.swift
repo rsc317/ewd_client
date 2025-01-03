@@ -15,7 +15,7 @@ struct Comment: Codable, Identifiable {
         case username
         case createdAt="created_at"
     }
-    
+
     let id = UUID()
     var content: String
     var username: String?

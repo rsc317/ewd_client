@@ -8,21 +8,22 @@
 import SwiftUI
 
 class ViewElementFactory {
-    static func createInteractionButton(label: String, action: @escaping () -> Void) -> some View {
+    static func createInteractionButton(label: String.LocalizationValue, action: @escaping () -> Void, accessibilityId: String) -> some View {
         Button(action: {
             action()
         }) {
-            Text(label)
+            Text(label.localized)
                 .fontWeight(.semibold)
                 .frame(maxWidth: .infinity, minHeight: 50)
                 .background(Color.interaction)
                 .foregroundColor(.white)
                 .cornerRadius(12)
         }
+        .accessibilityIdentifier(accessibilityId)
     }
     
-    static func createTextfield(label: String, text: Binding<String>) -> some View {
-        TextField(label, text: text)
+    static func createTextfield(label: String.LocalizationValue, text: Binding<String>, accessibilityId: String) -> some View {
+        TextField(label.localized, text: text)
             .padding()
             .background(Color(UIColor.systemGray6))
             .cornerRadius(12)
@@ -32,10 +33,11 @@ class ViewElementFactory {
             )
             .autocapitalization(.none)
             .disableAutocorrection(true)
+            .accessibilityIdentifier(accessibilityId)
     }
     
-    static func createPasswordField(label: String, text: Binding<String>) -> some View {
-        SecureField(label, text: text)
+    static func createPasswordField(label: String.LocalizationValue, text: Binding<String>, accessibilityId: String) -> some View {
+        SecureField(label.localized, text: text)
             .padding()
             .background(Color(UIColor.systemGray6))
             .cornerRadius(12)
@@ -43,26 +45,28 @@ class ViewElementFactory {
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(.accent, lineWidth: 1)
             )
+            .accessibilityIdentifier(accessibilityId)
     }
     
-    static func createInteractionFooter(footerText: String, footerButtonText: String, view: some View) -> some View {
+    static func createInteractionFooter(footerText: String.LocalizationValue, footerButtonText: String.LocalizationValue, view: some View, accessibilityId: String) -> some View {
         VStack(spacing: 8) {
             HStack {
-                Text(footerText)
+                Text(footerText.localized)
                     .font(.footnote)
                 NavigationLink {
                     view
                 } label: {
-                    Text(footerButtonText)
+                    Text(footerButtonText.localized)
                         .font(.footnote)
                         .fontWeight(.bold)
                         .foregroundColor(.interaction)
                 }
+                .accessibilityIdentifier(accessibilityId)
             }
         }
     }
     
-    static func createInteractionFooter(footerText: String, footerButtonText: String, action: @escaping () -> Void) -> some View {
+    static func createInteractionFooter(footerText: String, footerButtonText: String, action: @escaping () -> Void, accessibilityId: String) -> some View {
         VStack(spacing: 8) {
             HStack {
                 Text(footerText)
@@ -75,6 +79,7 @@ class ViewElementFactory {
                         .fontWeight(.bold)
                         .foregroundColor(.interaction)
                 }
+                .accessibilityIdentifier(accessibilityId)
             }
         }
     }

@@ -1,0 +1,20 @@
+{
+    "priority": 1,
+    "scenarioName": "Verify Unverified User",
+    "requiredScenarioState": "Started",
+    "request": {
+        "method": "GET",
+        "url": "/auth/login",
+        "basicAuthCredentials": {
+            "username": "UITest_Unverified",
+            "password": "testerinski"
+        }
+    },
+    "response": {
+        "status": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "bodyFileName": "login_response_not_verified.json"
+    }
+}

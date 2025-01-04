@@ -41,6 +41,7 @@ class ViewElementFactory {
             .padding()
             .background(Color(UIColor.systemGray6))
             .cornerRadius(12)
+            .textContentType(.oneTimeCode)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(.accent, lineWidth: 1)

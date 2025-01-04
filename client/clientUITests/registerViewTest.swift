@@ -30,6 +30,7 @@ final class registerViewTest: ClientUiTestCase {
         enterValueIntoSecureTextfield(accessibilityId: accessibilityIdentifiers.PASSWORD_REPEAT_FIELD,
                                       value: mismatched_password)
         tapButton(accessibilityId: accessibilityIdentifiers.SIGNUP_BTN)
+        sleep(1)
         checkStaticTextExists(localizationIdentifiers.PASSWORDS_DONT_MATCH)
         
         /// Clear textfield
@@ -39,6 +40,7 @@ final class registerViewTest: ClientUiTestCase {
         enterValueIntoSecureTextfield(accessibilityId: accessibilityIdentifiers.PASSWORD_REPEAT_FIELD,
                                       value: correct_password)
         tapButton(accessibilityId: accessibilityIdentifiers.SIGNUP_BTN)
+        sleep(1)
         checkStaticTextDoesNotExist(localizationIdentifiers.PASSWORDS_DONT_MATCH)
     }
     
@@ -181,11 +183,12 @@ final class registerViewTest: ClientUiTestCase {
                                 value: password)
         
         tapButton(accessibilityId: accessibilityIdentifiers.SIGNUP_BTN)
+        sleep(1)
         
         /// Enter correct verification code into textfield and tap send
         enterValueIntoTextfield(accessibilityId: accessibilityIdentifiers.VERIFICATION_TOKEN_FIELD,
                                 value: verification_token)
-        tapButton(accessibilityId: accessibilityIdentifiers.SEND_VERIFICATION_CODE_BUTTON)
+        tapButton(accessibilityId: accessibilityIdentifiers.VERIFICATION_BUTTON)
         
         sleep(2)
         

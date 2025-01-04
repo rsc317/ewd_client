@@ -18,7 +18,7 @@
                BlueprintIdentifier = "4EEC7A9B2CDBC12B005E2466"
                BuildableName = "client.app"
                BlueprintName = "client"
-               ReferencedContainer = "container:Client.xcodeproj">
+               ReferencedContainer = "container:client.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,9 +47,13 @@
             BlueprintIdentifier = "4EEC7A9B2CDBC12B005E2466"
             BuildableName = "client.app"
             BlueprintName = "client"
-            ReferencedContainer = "container:Client.xcodeproj">
+            ReferencedContainer = "container:client.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <LocationScenarioReference
+         identifier = "Berlin, Germany"
+         referenceType = "1">
+      </LocationScenarioReference>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -64,7 +68,7 @@
             BlueprintIdentifier = "4EEC7A9B2CDBC12B005E2466"
             BuildableName = "client.app"
             BlueprintName = "client"
-            ReferencedContainer = "container:Client.xcodeproj">
+            ReferencedContainer = "container:client.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -30,4 +30,12 @@ struct localizationIdentifiers {
     static let SIGNUP_TITLE: String.LocalizationValue = "SIGNUP_TITLE"
     static let EMAIL: String.LocalizationValue = "EMAIL"
     static let PASSWORD_REPEAT: String.LocalizationValue = "PASSWORD_REPEAT"
+    
+    static let ILLEGAL_MAIL: String.LocalizationValue = "ILLEGAL_MAIL"
+    static let PASSWORDS_DONT_MATCH: String.LocalizationValue = "PASSWORDS_DONT_MATCH"
+    static let USERNAME_TOO_SHORT: String.LocalizationValue = "USERNAME_TOO_SHORT"
+    static let PASSWORD_TOO_SHORT: String.LocalizationValue = "PASSWORD_TOO_SHORT"
+    static let PASSWORD_NO_SPECIAL_CHARACTER: String.LocalizationValue = "PASSWORD_NO_SPECIAL_CHARACTER"
+    static let PASSWORD_NO_CAPITAL_CHARACTER: String.LocalizationValue = "PASSWORD_NO_CAPITAL_CHARACTER"
+    static let PASSWORD_HAS_INVALID_CHARACTER: String.LocalizationValue = "PASSWORD_HAS_INVALID_CHARACTER"
 }

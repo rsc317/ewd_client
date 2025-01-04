@@ -30,3 +30,12 @@
 "SIGNUP_TITLE" = "Registrieren";
 "EMAIL" = "E-Mail";
 "PASSWORD_REPEAT" = "Passwort wiederholen";
+
+"USERNAME_TOO_SHORT" = "Benutzername muss mindestens 4 Zeichen lang sein.";
+"PASSWORD_TOO_SHORT" = "Password muss mindestens 8 Zeichen lang sein.";
+"PASSWORD_NO_SPECIAL_CHARACTER" = "Password muss mindestens ein Sonderzeichen: @#$%^&*()-_=+{}|:,.<>? enthalten.";
+"PASSWORD_NO_CAPITAL_CHARACTER" = "Password muss mindestens ein Großbuchstabe enthalten.";
+"PASSWORD_HAS_INVALID_CHARACTER" = "Password darf kein Specialzeichen: <>'\"\\/; enthalten.";
+"PASSWORDS_DONT_MATCH" = "Passwörter stimmen nicht überein.";
+"ILLEGAL_MAIL" = "Ungültige E-Mail-Adresse!";
+

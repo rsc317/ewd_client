@@ -1,0 +1,20 @@
+{
+    "priority": 1,
+    "scenarioName": "Signup",
+    "requiredScenarioState": "UserVerified",
+    "request": {
+        "method": "GET",
+        "url": "/auth/login",
+        "basicAuthCredentials": {
+            "username": "UITest_Signup",
+            "password": "Testerinski_01"
+        }
+    },
+    "response": {
+        "status": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "bodyFileName": "login_response_verified.json"
+    }
+}

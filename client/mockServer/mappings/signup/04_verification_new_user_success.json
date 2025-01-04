@@ -1,0 +1,20 @@
+{
+    "priority": 1,
+    "scenarioName": "Signup",
+    "requiredScenarioState": "UserCreated",
+    "newScenarioState": "UserVerified",
+    "request": {
+        "method": "POST",
+        "url": "/user/verification",
+        "bodyPatterns" : [ {
+            "matches": ".*verify_new_user_success.*"
+        } ]
+    },
+    "response": {
+        "status": 200,
+        "headers": {
+            "Content-Type": "text/plain"
+        },
+        "body": "[Mock, Scenario] Verification Successful"
+    }
+}

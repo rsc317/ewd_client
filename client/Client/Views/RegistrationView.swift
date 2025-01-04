@@ -17,19 +17,24 @@ struct RegistrationView: View {
                 ViewElementFactory.createTextfield(label: localizationIdentifiers.EMAIL,
                                                    text: $viewModel.email,
                                                    accessibilityId: accessibilityIdentifiers.EMAIL_FIELD)
+                
                 ViewElementFactory.createTextfield(label: localizationIdentifiers.USERNAME,
                                                    text: $viewModel.username,
                                                    accessibilityId: accessibilityIdentifiers.USERNAME_FIELD)
+                
                 ViewElementFactory.createPasswordField(label: localizationIdentifiers.PASSWORD,
                                                        text: $viewModel.password,
                                                        accessibilityId: accessibilityIdentifiers.PASSWORD_FIELD)
+                
                 ViewElementFactory.createPasswordField(label: localizationIdentifiers.PASSWORD_REPEAT,
                                                        text: $viewModel.confirmPassword,
                                                        accessibilityId: accessibilityIdentifiers.PASSWORD_REPEAT_FIELD)
+                
                 ViewElementFactory.createRegistrationErrorView(errors: viewModel.validationErrors)
+                
                 ViewElementFactory.createInteractionButton(label: localizationIdentifiers.SIGNUP,
                                                            action: viewModel.registrate,
-                                                           accessibilityId: accessibilityIdentifiers.LOGIN_BTN)
+                                                           accessibilityId: accessibilityIdentifiers.SIGNUP_BTN)
                 Spacer()
             }
             .navigationTitle(String(localized: localizationIdentifiers.SIGNUP_TITLE))

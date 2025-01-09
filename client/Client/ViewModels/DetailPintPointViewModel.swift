@@ -136,4 +136,16 @@ class DetailPintPointViewModel {
         }
         isLoading = false
     }
+    
+    func hasAddress() -> Bool {
+        if let address = pinPoint.coordinate.address {
+            return !address.isEmpty()
+        }
+        
+        return false
+    }
+    
+    func getAddress() -> Address? {
+        return pinPoint.coordinate.address
+    }
 }

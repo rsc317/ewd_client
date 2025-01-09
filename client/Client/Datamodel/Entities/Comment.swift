@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 
-struct Comment: Codable, Identifiable {
+struct Comment: Codable, Identifiable, Equatable {
     enum CodingKeys: String, CodingKey {
         case content
         case username

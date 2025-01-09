@@ -10,7 +10,7 @@ import SwiftData
 import MapKit
 
 
-struct GeoCoordinate: Codable, Identifiable {
+struct GeoCoordinate: Codable, Identifiable, Equatable {
     enum CodingKeys: String, CodingKey {
         case latitude
         case longitude
@@ -52,5 +52,9 @@ struct GeoCoordinate: Codable, Identifiable {
     
     static func mock(latitude: Double = 52.5200, longitude: Double = 13.4050) -> GeoCoordinate {
         return GeoCoordinate(latitude: latitude, longitude: longitude)
+    }
+    
+    static func == (lhs: GeoCoordinate, rhs: GeoCoordinate) -> Bool {
+        return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
     }
 }

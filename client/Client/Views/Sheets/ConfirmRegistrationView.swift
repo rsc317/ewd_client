@@ -10,6 +10,7 @@ import SwiftUI
 struct ConfirmRegistrationView: View {
     @Binding var viewModel: AuthViewModel
     @State var statusMsg: String? = nil
+    @State var isError: Bool = false
     @State var code: String = ""
     @Environment(\.dismiss) var dismiss
     
@@ -38,7 +39,7 @@ struct ConfirmRegistrationView: View {
                 
                 if let statusMsg = statusMsg {
                     Text(statusMsg)
-                        .foregroundStyle(.error)
+                        .foregroundStyle(isError ? .error : .success)
                         .font(.footnote)
                 }
                 
@@ -58,10 +59,12 @@ struct ConfirmRegistrationView: View {
                 let _: String = try await APIService.shared.getVerification()
                 await MainActor.run {
                     statusMsg = localizationIdentifiers.CODE_WAS_SENT.localized
+                    isError = false
                 }
             } catch {
                 await MainActor.run {
                     statusMsg = localizationIdentifiers.CODE_NOT_SENT.localized
+                    isError = true
                 }
             }
         }
@@ -79,6 +82,7 @@ struct ConfirmRegistrationView: View {
             } catch {
                 await MainActor.run {
                     statusMsg = localizationIdentifiers.WRONG_CODE.localized
+                    isError = true
                 }
             }
         }

@@ -31,7 +31,7 @@ struct GeoCoordinateTests {
         // Arrange
         let latitude: Double = 52.5200
         let longitude: Double = 13.4050
-        let address = Address(streetName: "Test Street", streetNumber: "123", city: "Berlin", postcode: "10115", country: "Germany")
+        let address = Address(streetName: "Test Street", streetNumber: "123", city: "Berlin", postcode: "10115", state: "", country: "Germany")
         
         // Act
         let geoCoordinate = GeoCoordinate(latitude: latitude, longitude: longitude, address: address)
@@ -86,7 +86,7 @@ struct GeoCoordinateTests {
         // Arrange
         let latitude: Double = 52.5200
         let longitude: Double = 13.4050
-        let address = Address(streetName: "Test Street", streetNumber: "123", city: "Berlin", postcode: "10115", country: "Germany")
+        let address = Address(streetName: "Test Street", streetNumber: "123", city: "Berlin", postcode: "10115", state: "", country: "Germany")
         let geoCoordinate = GeoCoordinate(latitude: latitude, longitude: longitude, address: address)
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
@@ -98,7 +98,7 @@ struct GeoCoordinateTests {
         // Assert
         #expect(jsonString.contains("\"latitude\" : \(latitude)"), "JSON should contain correct latitude")
         #expect(jsonString.contains("\"longitude\" : \(longitude)"), "JSON should contain correct longitude")
-        #expect(jsonString.contains("\"street_name\" : \"Test Street\""), "JSON should contain correct street name")
+        #expect(jsonString.contains("\"street\" : \"Test Street\""), "JSON should contain correct street name")
         #expect(jsonString.contains("\"city\" : \"Berlin\""), "JSON should contain correct city")
     }
 }

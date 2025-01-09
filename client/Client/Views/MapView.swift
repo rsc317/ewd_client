@@ -62,13 +62,12 @@ struct MapView: View {
             }
         }
         .accessibilityIdentifier(accessibilityIdentifiers.MAP)
-        .sheet(isPresented: $showCreatePinPointSheet) {
+        .fullScreenCover(isPresented: $showCreatePinPointSheet) {
             CreatePinPointSheetView(mapViewModel: $mapViewModel, pinLocation: $pinLocation)
                 .presentationDragIndicator(.visible)
         }
-        .sheet(item: $selectedPinPoint) { pinPoint in
+        .fullScreenCover(item: $selectedPinPoint) { pinPoint in
             DetailPinPointView(pinPoint: pinPoint)
-                .presentationDragIndicator(.visible)
         }
         .onChange(of: locationManager.authorizationDenied) { _ , newValue in
             showSettingsAlert = newValue

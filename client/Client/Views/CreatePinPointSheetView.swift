@@ -75,7 +75,6 @@ struct CreatePinPointSheetView: View {
                         }
                     }
                 }
-
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {

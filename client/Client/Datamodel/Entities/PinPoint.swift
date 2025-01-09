@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 
-struct PinPoint: Codable, Identifiable {
+struct PinPoint: Codable, Identifiable, Equatable {
     enum CodingKeys: String, CodingKey {
         case serverId="id"
         case title
@@ -59,5 +59,9 @@ struct PinPoint: Codable, Identifiable {
     
     func getPrettyPrint() -> String {
         return "\(String(format: "%.6f",coordinate.coordinates.latitude)) / \(String(format: "%.6f", coordinate.coordinates.longitude))"
+    }
+    
+    static func == (lhs: PinPoint, rhs: PinPoint) -> Bool {
+        return lhs.serverId == rhs.serverId
     }
 }

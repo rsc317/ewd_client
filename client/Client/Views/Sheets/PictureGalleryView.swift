@@ -187,7 +187,7 @@ struct PictureGalleryPreview: View {
     var body: some View {
         NavigationLink(destination: PictureGalleryView(imageResponses: $imageResponses, selectable: selectable)) {
             ScrollView(.horizontal) {
-                LazyHGrid(rows: [GridItem(.adaptive(minimum: 100))]) {
+                LazyHGrid(rows: [GridItem(.fixed(100))]) {
                     ForEach(imageResponses) { imageResponse in
                         Image(uiImage: imageResponse.uiImage)
                             .resizable()

@@ -21,7 +21,7 @@ struct addressTests {
         let country = "Germany"
         
         // Act
-        let address = Address(streetName: streetName, streetNumber: streetNumber, city: city, postcode: postcode, country: country)
+        let address = Address(streetName: streetName, streetNumber: streetNumber, city: city, postcode: postcode, state: "", country: country)
         
         // Assert
         #expect(address.streetName == streetName, "Street name should match")
@@ -41,7 +41,7 @@ struct addressTests {
         let country = "Germany"
         
         // Act
-        let address = Address(streetName: streetName, streetNumber: streetNumber, city: city, postcode: invalidPostcode, country: country)
+        let address = Address(streetName: streetName, streetNumber: streetNumber, city: city, postcode: invalidPostcode, state:"", country: country)
         
         // Assert
         #expect(address.postcode == "00000", "Invalid postcode should default to '00000'")
@@ -54,7 +54,7 @@ struct addressTests {
         let city = "Berlin"
         let postcode = "10115"
         let country = "Germany"
-        let address = Address(streetName: streetName, streetNumber: streetNumber, city: city, postcode: postcode, country: country)
+        let address = Address(streetName: streetName, streetNumber: streetNumber, city: city, postcode: postcode, state: "", country: country)
         
         let encoder = JSONEncoder()
         let decoder = JSONDecoder()
@@ -98,8 +98,8 @@ struct addressTests {
     
     @Test func testAddressEqualityExcludingID() {
         // Erstelle zwei gleiche Address-Instanzen mit unterschiedlichen IDs
-        let address1 = Address(streetName: "Main Street", streetNumber: "123", city: "Berlin", postcode: "10115", country: "Germany")
-        let address2 = Address(streetName: "Main Street", streetNumber: "123", city: "Berlin", postcode: "10115", country: "Germany")
+        let address1 = Address(streetName: "Main Street", streetNumber: "123", city: "Berlin", postcode: "10115", state: "", country: "Germany")
+        let address2 = Address(streetName: "Main Street", streetNumber: "123", city: "Berlin", postcode: "10115", state: "", country: "Germany")
         
         // Die IDs sollten unterschiedlich sein
         #expect(address1.id != address2.id, "Die IDs der Adressen sollten unterschiedlich sein.")

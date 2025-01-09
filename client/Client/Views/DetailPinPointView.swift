@@ -11,10 +11,6 @@ struct DetailPinPointView: View {
     @State private var viewModel: DetailPintPointViewModel
     @Environment(\.dismiss) var dismiss
     @FocusState private var isFocused: Bool
-    var windows: [UIWindow] { get {
-        let scenes = UIApplication.shared.connectedScenes.first as? UIWindowScene
-        return scenes?.windows ?? []
-    } }
     
     init (pinPoint: PinPoint) {
         viewModel = DetailPintPointViewModel(pinPoint: pinPoint)

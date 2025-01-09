@@ -75,10 +75,11 @@ struct addressTests {
         // Arrange
         let json = """
     {
-        "street_name": "Main Street",
+        "street": "Main Street",
         "street_number": "123",
         "postcode": "10115",
         "city": "Berlin",
+        "state": "",
         "country": "Germany"
     }
     """.data(using: .utf8)!

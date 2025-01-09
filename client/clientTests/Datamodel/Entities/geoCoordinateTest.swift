@@ -98,7 +98,7 @@ struct GeoCoordinateTests {
         // Assert
         #expect(jsonString.contains("\"latitude\" : \(latitude)"), "JSON should contain correct latitude")
         #expect(jsonString.contains("\"longitude\" : \(longitude)"), "JSON should contain correct longitude")
-        #expect(jsonString.contains("\"street_name\" : \"Test Street\""), "JSON should contain correct street name")
+        #expect(jsonString.contains("\"street\" : \"Test Street\""), "JSON should contain correct street name")
         #expect(jsonString.contains("\"city\" : \"Berlin\""), "JSON should contain correct city")
     }
 }

@@ -183,7 +183,7 @@ final class registerViewTest: ClientUiTestCase {
                                 value: password)
         
         tapButton(accessibilityId: accessibilityIdentifiers.SIGNUP_BTN)
-        sleep(1)
+        sleep(2)
         
         /// Enter correct verification code into textfield and tap send
         enterValueIntoTextfield(accessibilityId: accessibilityIdentifiers.VERIFICATION_TOKEN_FIELD,

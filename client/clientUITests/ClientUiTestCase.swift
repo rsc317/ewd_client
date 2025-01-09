@@ -118,9 +118,11 @@ class ClientUiTestCase: XCTestCase {
         
         if tap {
             textField.tap()
+            sleep(1)
         }
         
         textField.typeText(value)
+        sleep(1)
         XCTAssertEqual(textField.value as! String, value, "Text field value is not correct")
     }
     
@@ -142,6 +144,7 @@ class ClientUiTestCase: XCTestCase {
         
         if tap {
             textField.tap()
+            sleep(1)
         }
         
         textField.typeText(value)

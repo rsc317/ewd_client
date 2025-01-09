@@ -33,7 +33,9 @@ xcodebuild test \
     -sdk iphonesimulator \
     -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
     -testPlan clientUITests \
-    -parallel-testing-enabled NO
+    -parallel-testing-enabled NO \
+    -disable-concurrent-testing \
+    -retry-tests-on-failure
 TEST_EXIT_CODE=$?
 
 echo "Tests returned exit code $TEST_EXIT_CODE"

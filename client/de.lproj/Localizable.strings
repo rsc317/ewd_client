@@ -39,3 +39,8 @@
 "PASSWORDS_DONT_MATCH" = "Passwörter stimmen nicht überein.";
 "ILLEGAL_MAIL" = "Ungültige E-Mail-Adresse!";
 
+//PasswordForgot View
+"PASSWORD_FORGET_TITLE" = "Passwort Ändern";
+"PASSWORD_FORGOT_BTN_TITLE" = "Jetzt ändern";
+"PASSWORD_FORGET_TEXT" = "Passwort vergessen?";
+"PASSWORD_FORGET" = "Zurücksetzen";

@@ -10,7 +10,8 @@ import SwiftUI
 struct DetailPinPointInfoView: View {
     @Environment(\.dismiss) private var dismiss
     @Binding var viewModel: DetailPintPointViewModel
-    
+    let onDismiss: () -> Void
+
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 20) {
@@ -20,7 +21,6 @@ struct DetailPinPointInfoView: View {
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .topLeading)
                         .cornerRadius(10)
-                        .foregroundStyle(.black)
                 }
                 .padding()
                 
@@ -58,7 +58,7 @@ struct DetailPinPointInfoView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     VStack{
                         Button(action: {
-                            dismiss()
+                            onDismiss()
                         }) {
                             Image(systemName: "xmark.circle.fill")
                                 .font(.system(size: 18, weight: .light))
@@ -84,5 +84,5 @@ struct DetailPinPointInfoView: View {
 
 #Preview {
     @Previewable @State var viewModel = DetailPintPointViewModel(pinPoint: PinPoint(title: "String", description: "String", duration: Duration(hours: 30, minutes: 30), coordinate: GeoCoordinate(latitude: 0, longitude: 0)))
-    DetailPinPointInfoView(viewModel: $viewModel)
+    DetailPinPointInfoView(viewModel: $viewModel, onDismiss: {})
 }

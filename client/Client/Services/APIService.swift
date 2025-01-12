@@ -222,13 +222,32 @@ class APIService {
     }
     
     func postVerification<T: Codable>(endpoint: String = "user/verification", body: String) async throws -> T {
-        print("posting verification to '\(endpoint)': \(body)")
         return try await request(
             method: .POST,
             endpoint: endpoint,
             headers: ["Content-Type":"text/plain"],
             body: body,
             requiresAuth: true
+        )
+    }
+    
+    func postPasswordRequest<T: Codable, U: Codable>(endpoint: String = "auth/forgot-password", body: T) async throws -> U {
+        return try await request(
+            method: .POST,
+            endpoint: endpoint,
+            headers: ["Content-Type":"application/json"],
+            body: body,
+            requiresAuth: false
+        )
+    }
+    
+    func postPasswordResetConfirm<T: Codable, U: Codable>(endpoint: String = "auth/change-password", body: T) async throws -> U {
+        return try await request(
+            method: .POST,
+            endpoint: endpoint,
+            headers: ["Content-Type":"application/json"],
+            body: body,
+            requiresAuth: false
         )
     }
 }

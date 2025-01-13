@@ -20,6 +20,7 @@ class ClientUiTestCase: XCTestCase {
         // ensure app is currently authorised.  If the first install is to
         // happen then the settings won't exist yet but that's ok, the test
         // will handle the Location Services prompt and allow.
+        
         app.resetAuthorizationStatus(for: .location)
 
         let _ = addUIInterruptionMonitor(withDescription: "Darf \"client\" deinen Standort verwenden?") { (alertElement) -> Bool in
@@ -102,9 +103,6 @@ class ClientUiTestCase: XCTestCase {
     func clearTextfield(accessibilityId: String) {
         let textField = app.textFields[accessibilityId]
         XCTAssertTrue(textField.exists)
-        if !textField.isEnabled {
-            textField.tap()
-        }
         
         guard let stringValue = textField.value as? String else {
             XCTFail("Tried to clear and enter text into a non string value")
@@ -114,21 +112,23 @@ class ClientUiTestCase: XCTestCase {
         textField.typeText(deleteString)
     }
     
-    func enterValueIntoTextfield(accessibilityId: String, value: String) {
+    func enterValueIntoTextfield(accessibilityId: String, value: String, tap: Bool = true) {
         let textField = app.textFields[accessibilityId]
         XCTAssertTrue(textField.exists)
         
-        textField.tap()
+        if tap {
+            textField.tap()
+            sleep(1)
+        }
+        
         textField.typeText(value)
+        sleep(1)
         XCTAssertEqual(textField.value as! String, value, "Text field value is not correct")
     }
     
     func clearSecureTextfield(accessibilityId: String) {
         let textField = app.secureTextFields[accessibilityId]
         XCTAssertTrue(textField.exists)
-        if !textField.isEnabled {
-            textField.tap()
-        }
         
         guard let stringValue = textField.value as? String else {
             XCTFail("Tried to clear and enter text into a non string value")
@@ -138,11 +138,15 @@ class ClientUiTestCase: XCTestCase {
         textField.typeText(deleteString)
     }
     
-    func enterValueIntoSecureTextfield(accessibilityId: String, value: String) {
+    func enterValueIntoSecureTextfield(accessibilityId: String, value: String, tap: Bool = true) {
         let textField = app.secureTextFields[accessibilityId]
         XCTAssertTrue(textField.exists)
         
-        textField.tap()
+        if tap {
+            textField.tap()
+            sleep(1)
+        }
+        
         textField.typeText(value)
     }
     

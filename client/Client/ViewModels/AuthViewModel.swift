@@ -70,7 +70,7 @@ class AuthViewModel {
         if !isValidEmail(email) {
             validationErrors.append(.emailInvalid)
         }
-        if username.isEmpty || username.count < 3 {
+        if username.isEmpty || username.count < 4 {
             validationErrors.append(.usernameToShort)
         }
         if password != confirmPassword {

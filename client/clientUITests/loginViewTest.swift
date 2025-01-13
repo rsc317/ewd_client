@@ -11,8 +11,11 @@ final class loginViewTest: ClientUiTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
+        app.buttons[accessibilityIdentifiers.SIGNUP_BTN].tap()
+        sleep(2)
+        app.navigationBars.buttons["Anmelden"].tap()
     }
-    
+      
     @MainActor
     func testLoginWithVerifiedUser() throws {
         let username = "UITest"
@@ -41,7 +44,7 @@ final class loginViewTest: ClientUiTestCase {
         
         tapButton(accessibilityId: accessibilityIdentifiers.LOGIN_BTN)
 
-        sleep(6)
+        sleep(2)
         
         map = app.otherElements[accessibilityIdentifiers.MAP]
         XCTAssert(map.exists)
@@ -68,7 +71,7 @@ final class loginViewTest: ClientUiTestCase {
         checkStaticTextDoesNotExist(localizationIdentifiers.WRONG_CODE)
         checkStaticTextDoesNotExist(localizationIdentifiers.CODE_WAS_SENT)
         
-        /// Enter wrong code into popup field
+        /// Enter wrong code into popup field and send it
         enterValueIntoTextfield(accessibilityId: accessibilityIdentifiers.VERIFICATION_TOKEN_FIELD,
                                 value: wrong_token)
         tapButton(accessibilityId: accessibilityIdentifiers.VERIFICATION_BUTTON)
@@ -90,7 +93,7 @@ final class loginViewTest: ClientUiTestCase {
                                 value: correct_token)
         tapButton(accessibilityId: accessibilityIdentifiers.VERIFICATION_BUTTON)
         
-        sleep(6)
+        sleep(2)
         
         let map = app.otherElements[accessibilityIdentifiers.MAP]
         XCTAssert(map.exists)

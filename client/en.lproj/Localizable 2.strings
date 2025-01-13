@@ -27,3 +27,11 @@
 "SIGNUP_TITLE" = "Sign Up";
 "EMAIL" = "Mail";
 "PASSWORD_REPEAT" = "Repeat Password";
+
+"USERNAME_TOO_SHORT" = "Username must be at least 4 characters long.";
+"PASSWORD_TOO_SHORT" = "Password must be at least 8 characters long.";
+"PASSWORD_NO_SPECIAL_CHARACTER" = "Password must contain at least one special character: @#$%^&*()-_=+{}|:,.<>?";
+"PASSWORD_NO_CAPITAL_CHARACTER" = "Password must contain at least one uppercase letter.";
+"PASSWORD_HAS_INVALID_CHARACTER" = "Password must not contain special characters: <>'\"\\/;.";
+"PASSWORDS_DONT_MATCH" = "Passwords do not match.";
+"ILLEGAL_MAIL" = "Invalid email address.";

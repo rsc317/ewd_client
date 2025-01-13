@@ -18,7 +18,7 @@
                BlueprintIdentifier = "4EEC7A9B2CDBC12B005E2466"
                BuildableName = "client.app"
                BlueprintName = "client"
-               ReferencedContainer = "container:Client.xcodeproj">
+               ReferencedContainer = "container:client.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -38,7 +38,7 @@
                BlueprintIdentifier = "EB6B56462D1A071500F9A1CC"
                BuildableName = "clientTests.xctest"
                BlueprintName = "clientTests"
-               ReferencedContainer = "container:Client.xcodeproj">
+               ReferencedContainer = "container:client.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -49,7 +49,7 @@
                BlueprintIdentifier = "EB6B566C2D1A1FEF00F9A1CC"
                BuildableName = "clientUITests.xctest"
                BlueprintName = "clientUITests"
-               ReferencedContainer = "container:Client.xcodeproj">
+               ReferencedContainer = "container:client.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -71,9 +71,13 @@
             BlueprintIdentifier = "4EEC7A9B2CDBC12B005E2466"
             BuildableName = "client.app"
             BlueprintName = "client"
-            ReferencedContainer = "container:Client.xcodeproj">
+            ReferencedContainer = "container:client.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <LocationScenarioReference
+         identifier = "Berlin, Germany"
+         referenceType = "1">
+      </LocationScenarioReference>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -88,7 +92,7 @@
             BlueprintIdentifier = "4EEC7A9B2CDBC12B005E2466"
             BuildableName = "client.app"
             BlueprintName = "client"
-            ReferencedContainer = "container:Client.xcodeproj">
+            ReferencedContainer = "container:client.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

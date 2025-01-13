@@ -1,5 +1,7 @@
 {
     "priority": 1,
+    "scenarioName": "Signup",
+    "requiredScenarioState": "Started",
     "request": {
         "method": "POST",
         "url": "/auth/signup",
@@ -12,6 +14,6 @@
         "headers": {
             "Content-Type": "text/plain"
         },
-      	"body": "[Mock] Failure"
+      	"body": "[Mock Scenario: Signup] Failure"
     }
 }

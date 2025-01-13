@@ -1,5 +1,8 @@
 {
     "priority": 2,
+    "scenarioName": "Signup",
+    "requiredScenarioState": "Started",
+    "newScenarioState": "UserCreated",
     "request": {
         "method": "POST",
         "url": "/auth/signup"
@@ -9,6 +12,6 @@
         "headers": {
             "Content-Type": "text/plain"
         },
-      	"body": "[Mock] Success"
+      	"body": "[Mock Scenario: Signup] Success"
     }
 }

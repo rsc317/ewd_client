@@ -41,6 +41,7 @@ class ViewElementFactory {
             .padding()
             .background(Color(UIColor.systemGray6))
             .cornerRadius(12)
+            .textContentType(.oneTimeCode)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(.accent, lineWidth: 1)
@@ -89,19 +90,19 @@ class ViewElementFactory {
             ForEach(errors, id: \.self) { showError in
                 switch showError {
                 case .usernameToShort:
-                    errorText("Benutzername muss mindestens 4 Zeichen lang sein!")
+                    errorText(localizationIdentifiers.USERNAME_TOO_SHORT.localized)
                 case .passwordToShort:
-                    errorText("Password muss mindestens 8 Zeichen lang sein!")
+                    errorText(localizationIdentifiers.PASSWORD_TOO_SHORT.localized)
                 case .passwordNoSpecialCharacter:
-                    errorText("Password muss mindestens ein Sonderzeichen: @#$%^&*()-_=+{}|:,.<>? enthalten!")
+                    errorText(localizationIdentifiers.PASSWORD_NO_SPECIAL_CHARACTER.localized)
                 case .passwordNoCapitalCharacter:
-                    errorText("Password muss mindestens ein Großbuchstabe enthalten!")
+                    errorText(localizationIdentifiers.PASSWORD_NO_CAPITAL_CHARACTER.localized)
                 case .passwordHasInvalidCharacter:
-                    errorText("Password darf kein Specialzeichen: <>'\"\\/; enthalten!")
+                    errorText(localizationIdentifiers.PASSWORD_HAS_INVALID_CHARACTER.localized)
                 case .passwordNotMatch:
-                    errorText("Passwörter stimmen nicht überein!")
+                    errorText(localizationIdentifiers.PASSWORDS_DONT_MATCH.localized)
                 case .emailInvalid:
-                    errorText("Keine gültige E-Mail Addresse!")
+                    errorText(localizationIdentifiers.ILLEGAL_MAIL.localized)
                 }
             }
         }

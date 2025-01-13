@@ -14,7 +14,7 @@ xcuserdata/
 *.xccheckout
 *.moved-aside
 *.xcuserstate
-
+/tempDerivedData
 # Swift Package Manager
 Packages
 .build/

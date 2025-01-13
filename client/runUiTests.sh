@@ -27,13 +27,6 @@ xcrun simctl boot "iPhone 16 Pro"
 echo "Checking available Simulators"
 xcrun simctl list devices
 
-echo "Creating DerivedData directory"
-DERIVED_DATA_PATH="tempDerivedData"
-rm -rf "$DERIVED_DATA_PATH"
-ls "$DERIVED_DATA_PATH"
-mkdir -p "$DERIVED_DATA_PATH"
-ls "$DERIVED_DATA_PATH"
-
 xcodebuild test \
     -project "client.xcodeproj" \
     -scheme "clientUITests" \
@@ -42,7 +35,7 @@ xcodebuild test \
     -testPlan clientUITests \
     -parallel-testing-enabled NO \
     -disable-concurrent-testing \
-    -retry-tests-on-failure \
+    -retry-tests-on-failure
 TEST_EXIT_CODE=$?
 
 echo "Tests returned exit code $TEST_EXIT_CODE"

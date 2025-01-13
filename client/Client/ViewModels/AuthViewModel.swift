@@ -27,6 +27,12 @@ class AuthViewModel {
         case badCredentials
     }
     
+    enum PasswordResetError: Error, Identifiable {
+        var id: Self { self }
+        case badCredentials
+        case requestFailed
+    }
+    
     private(set) var validationErrors: [ValidationError] = []
     private var authManager = AuthenticationManager.shared
     
@@ -63,6 +69,43 @@ class AuthViewModel {
         } catch {
             throw LoginError.badCredentials
         }
+    }
+    
+    func sendPasswordRequest() async throws(PasswordResetError) {
+        if hasPasswordFotgotErrors() {
+            throw PasswordResetError.badCredentials
+        }
+        do {
+            let body = PasswordForgotRequest(email: email)
+            let _: String = try await apiService.postPasswordRequest(body: body)
+        } catch {
+            throw PasswordResetError.requestFailed
+        }
+    }
+    
+    func sendPasswordConfirmRequest(token: String) async throws(PasswordResetError) {
+        if hasPasswordFotgotErrors() {
+            throw PasswordResetError.badCredentials
+        }
+        do {
+            let body = PasswordForgotConfirmRequest(token: token, password: password)
+            let _: String = try await apiService.postPasswordResetConfirm(body: body)
+        } catch {
+            throw PasswordResetError.requestFailed
+        }
+    }
+    
+    func reset() {
+        validationErrors = []
+        username = ""
+        password = ""
+        confirmPassword = ""
+        email = ""
+        showConfirmRegistrationView = false
+    }
+    
+    private func hasPasswordFotgotErrors() -> Bool {
+        return !isValidEmail(email) || password != confirmPassword || password.count < 8 || password.rangeOfCharacter(from: .uppercaseLetters) == nil || password.rangeOfCharacter(from: CharacterSet(charactersIn: "!@#$%^&*()-_=+{}|:,.<>?")) == nil || password.rangeOfCharacter(from: CharacterSet(charactersIn: "<>'\"\\/;")) != nil
     }
     
     func hasValidationErrors() {

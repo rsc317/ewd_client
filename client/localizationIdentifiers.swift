@@ -38,4 +38,9 @@ struct localizationIdentifiers {
     static let PASSWORD_NO_SPECIAL_CHARACTER: String.LocalizationValue = "PASSWORD_NO_SPECIAL_CHARACTER"
     static let PASSWORD_NO_CAPITAL_CHARACTER: String.LocalizationValue = "PASSWORD_NO_CAPITAL_CHARACTER"
     static let PASSWORD_HAS_INVALID_CHARACTER: String.LocalizationValue = "PASSWORD_HAS_INVALID_CHARACTER"
+    // PasswordForgot View
+    static let PASSWORD_FORGET_BTN_TITLE: String.LocalizationValue = "PASSWORD_FORGOT_BTN_TITLE"
+    static let PASSWORD_FORGET_TITLE: String.LocalizationValue = "PASSWORD_FORGET_TITLE"
+    static let PASSWORD_FORGET_TEXT: String.LocalizationValue = "PASSWORD_FORGET_TEXT"
+    static let PASSWORD_FORGET: String.LocalizationValue = "PASSWORD_FORGET"
 }

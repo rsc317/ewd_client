@@ -45,6 +45,14 @@ struct LoginView: View {
                 ViewElementFactory.createInteractionButton(label: localizationIdentifiers.LOGIN,
                                                            action: login,
                                                            accessibilityId: accessibilityIdentifiers.LOGIN_BTN)
+                
+                ViewElementFactory.createInteractionFooter(
+                    footerText: localizationIdentifiers.PASSWORD_FORGET_TEXT,
+                    footerButtonText: localizationIdentifiers.PASSWORD_FORGET,
+                    view: PasswordResetView(viewModel: $viewModel),
+                    accessibilityId: accessibilityIdentifiers.PASSWORD_FORGET_BTN
+                )
+                
                 ViewElementFactory.createInteractionFooter(
                     footerText: localizationIdentifiers.NOT_SIGNED_UP_YET,
                     footerButtonText: localizationIdentifiers.SIGNUP,

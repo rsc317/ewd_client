@@ -22,7 +22,7 @@ struct DetailPinPointView: View {
                 ScrollViewReader { scrollView in
                     ScrollView {
                         VStack(alignment: .leading, spacing: 20) {
-                            NavigationLink(destination: DetailPinPointInfoView(viewModel: $viewModel)) {
+                            NavigationLink(destination: DetailPinPointInfoView(viewModel: $viewModel, onDismiss: {self.dismiss()})) {
                                 VStack(alignment: .leading) {
                                     Text(viewModel.pinPoint.description)
                                         .font(.body)
@@ -31,7 +31,6 @@ struct DetailPinPointView: View {
                                         .lineLimit(5)
                                         .truncationMode(.tail)
                                         .cornerRadius(10)
-                                        .foregroundStyle(.black)
                                 }
                             }
                             .padding()

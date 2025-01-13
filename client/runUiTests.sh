@@ -42,7 +42,8 @@ xcodebuild test \
     -testPlan clientUITests \
     -parallel-testing-enabled NO \
     -disable-concurrent-testing \
-    -retry-tests-on-failure
+    -retry-tests-on-failure \
+    -derivedDataPath "$DERIVED_DATA_PATH"
 TEST_EXIT_CODE=$?
 
 echo "Tests returned exit code $TEST_EXIT_CODE"

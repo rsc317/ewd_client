@@ -11,9 +11,9 @@ final class loginViewTest: ClientUiTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        app.buttons[accessibilityIdentifiers.SIGNUP_BTN].tap()
-        sleep(2)
-        app.navigationBars.buttons["Anmelden"].tap()
+//        app.buttons[accessibilityIdentifiers.SIGNUP_BTN].tap()
+//        sleep(2)
+//        app.navigationBars.buttons["Anmelden"].tap()
     }
       
     @MainActor
